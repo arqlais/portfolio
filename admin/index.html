@@ -19,7 +19,10 @@
       <p>aqui você troca fotos e textos do site. as mudanças aparecem em <b>www.lais3d.com.br</b> cerca de 1 minuto depois de salvar.</p>
       <form id="form-entrada">
         <label for="campo-token">seu token do GitHub</label>
-        <input id="campo-token" type="password" autocomplete="current-password" placeholder="github_pat_…" required>
+        <!-- campo de usuário invisível: ajuda o navegador a salvar o token como uma senha -->
+        <input class="so-leitor" type="text" name="username" autocomplete="username" value="arqlais" tabindex="-1" aria-hidden="true" readonly>
+        <input id="campo-token" name="password" type="password" autocomplete="current-password" placeholder="github_pat_…" required>
+        <label class="lembrar"><input type="checkbox" id="campo-lembrar" checked> manter conectada neste aparelho</label>
         <button class="btn btn-primary" type="submit">entrar</button>
         <p class="erro" id="erro-entrada" hidden></p>
       </form>
@@ -31,7 +34,7 @@
           <li>em <b>Permissions → Contents</b>, escolha <b>Read and write</b>;</li>
           <li>clique em <b>Generate token</b>, copie o código e cole aqui.</li>
         </ol>
-        <p>este aparelho lembra o token — nas próximas vezes você já entra direto. não compartilhe o token com ninguém: ele funciona como uma senha.</p>
+        <p>com “manter conectada” marcado, este aparelho lembra o token e nas próximas vezes você já entra direto. use só no seu celular ou computador, e não compartilhe o token com ninguém: ele funciona como uma senha.</p>
       </details>
     </div>
   </section>
