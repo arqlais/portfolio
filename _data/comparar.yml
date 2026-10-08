@@ -1,0 +1,21 @@
+chamada: v-ray × ia
+titulo: arraste para *comparar*
+texto: domino os dois fluxos de renderização — fotorrealismo tradicional em V-Ray e renderização com inteligência artificial. nas imagens abaixo, arraste o marcador pra ver o print simples ao lado do resultado final com IA.
+vray_texto: "renderização tradicional: cada material, luz e sombra é calculado do zero, com controle total sobre cada detalhe da cena."
+ia_texto: "renderização com inteligência artificial: parte de uma imagem-base e gera resultados rápidos, com uma estética mais livre."
+comparacoes:
+  - ambiente: sala de estar / home office
+    descricao_alt: Sala de estar e home office
+    credito: proj. Natasha Vieira · render Laís
+    imagem_ia: /assets/img/compare/sala-ia.jpg
+    imagem_print: /assets/img/compare/sala-print.jpg
+  - ambiente: quarto
+    descricao_alt: Quarto
+    credito: proj. Natasha Vieira · render Laís
+    imagem_ia: /assets/img/compare/quarto-ia.jpg
+    imagem_print: /assets/img/compare/quarto-print.jpg
+  - ambiente: área externa gourmet
+    descricao_alt: Área externa gourmet
+    credito: proj. Natasha Vieira · render Laís
+    imagem_ia: /assets/img/compare/area-ia.jpg
+    imagem_print: /assets/img/compare/area-print.jpg

@@ -1,0 +1,13 @@
+chamada: sobre mim
+titulo: um *método próprio*, construído com experiência
+texto: sou estudante de Arquitetura e Urbanismo, no 9º período, e tenho experiência anterior na área de design — um diferencial que aparece na organização visual, na apresentação, na composição e no cuidado com cada entrega. ao longo do caminho, fiz dezenas de cursos de renderização, modelagem e detalhamento, unindo o fotorrealismo tradicional com as novas ferramentas de IA.
+selos:
+  - icone: formatura
+    titulo: formando em Arquitetura
+    texto: Arquitetura e Urbanismo — 9º período
+  - icone: medalha
+    titulo: experiência em design
+    texto: organização visual, apresentação e composição
+  - icone: alvo
+    titulo: método próprio
+    texto: V-Ray e IA combinados no mesmo fluxo

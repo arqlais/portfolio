@@ -1,19 +1,26 @@
+---
+# Esta página é montada a partir dos arquivos em _data/ (editáveis pelo painel em /admin).
+---
+{%- assign g = site.data.geral -%}
+{%- assign inicio = site.data.inicio -%}
+{%- capture wa -%}https://api.whatsapp.com/send?phone={{ g.whatsapp_numero }}{%- endcapture -%}
+{%- capture insta -%}https://www.instagram.com/{{ g.instagram_usuario }}{%- endcapture -%}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laís Vieira — Portfólio</title>
-<meta name="description" content="Portfólio de Laís Vieira: renderização, modelagem 3D, detalhamento e projeto executivo para arquitetos, designers, construtoras e estudantes de arquitetura.">
+<title>{{ g.titulo_pagina | escape }}</title>
+<meta name="description" content="{{ g.descricao_pagina | escape }}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%234b5e6c'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Georgia,serif' font-style='italic' fill='%23f5f2ee' text-anchor='middle'%3El%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
 
 <!-- ============ HEADER ============ -->
 <header class="site-header">
   <div class="wrap">
-    <a href="#" class="brand"><b>laís</b><span class="dot">.</span></a>
+    <a href="#" class="brand"><b>{{ g.marca | escape }}</b><span class="dot">.</span></a>
 
     <nav class="nav-desktop">
       <a href="#sobre">sobre</a>
@@ -26,8 +33,8 @@
     </nav>
 
     <div class="header-actions">
-      <a href="https://api.whatsapp.com/send?phone=5511969288192" target="_blank" rel="noopener" class="btn btn-accent btn-sm">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .105 5.36.105 11.943c0 2.104.549 4.157 1.595 5.965L0 24l6.335-1.662a11.86 11.86 0 0 0 5.71 1.457h.006c6.585 0 11.94-5.359 11.943-11.942 0-3.19-1.24-6.19-3.474-8.45"/></svg>
+      <a href="{{ wa }}" target="_blank" rel="noopener" class="btn btn-accent btn-sm">
+        {% include icone.html nome="whatsapp" %}
         WhatsApp
       </a>
       <button class="nav-toggle" aria-label="Abrir menu"><span></span></button>
@@ -43,7 +50,7 @@
   <a href="#projetos">projetos</a>
   <a href="#cursos">formação</a>
   <a href="#contato">contato</a>
-  <a href="https://api.whatsapp.com/send?phone=5511969288192" target="_blank" rel="noopener" class="btn btn-accent">falar no whatsapp</a>
+  <a href="{{ wa }}" target="_blank" rel="noopener" class="btn btn-accent">{{ inicio.botao_whatsapp | escape }}</a>
 </div>
 
 <main>
@@ -52,41 +59,34 @@
   <section class="hero" id="hero">
     <div class="wrap">
       <div class="hero-top">
-        <span class="eyebrow">renderização · modelagem · detalhamento</span>
-        <span class="year">2026</span>
+        <span class="eyebrow">{{ inicio.chamada_topo | escape }}</span>
+        <span class="year">{{ inicio.ano | escape }}</span>
       </div>
 
       <div class="hero-grid">
         <div class="hero-photo reveal">
-          <img src="assets/img/profile.jpg" alt="Retrato de Laís Vieira" fetchpriority="high" decoding="async">
+          <img src="{{ inicio.foto | relative_url }}" alt="{{ inicio.foto_alt | escape }}" fetchpriority="high" decoding="async">
         </div>
 
         <div class="hero-copy reveal">
-          <span class="script script-lead">muito prazer!</span>
-          <p>sou <b>Laís</b> — estudante de Arquitetura e Urbanismo, no 9º período, com experiência anterior na área de design gráfico que contribui pra minha organização visual, apresentação, composição e cuidado com as entregas.</p>
-          <p><b>você projeta, eu cuido da produção:</b> ofereço apoio e terceirização pra arquitetos, designers e escritórios — assumindo renderização, modelagem 3D, detalhamento e projeto executivo — e também atendo estudantes com demandas acadêmicas.</p>
+          <span class="script script-lead">{{ inicio.saudacao | escape }}</span>
+          {{ inicio.apresentacao | markdownify | replace: '<strong>', '<b>' | replace: '</strong>', '</b>' }}
 
           <div class="hero-badges">
+            {%- for selo in inicio.selos %}
             <div class="badge">
-              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg></div>
-              <div><h4>formando em Arquitetura</h4><p>cursando Arquitetura e Urbanismo — 9º período</p></div>
+              <div class="ic">{% include icone.html nome=selo.icone %}</div>
+              <div><h4>{{ selo.titulo | escape }}</h4><p>{{ selo.texto | escape }}</p></div>
             </div>
-            <div class="badge">
-              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="5"/><path d="M8.5 13 7 22l5-3 5 3-1.5-9"/></svg></div>
-              <div><h4>múltiplos cursos</h4><p>renderização · modelagem · detalhamento</p></div>
-            </div>
-            <div class="badge">
-              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
-              <div><h4>experiência em escritório</h4><p>2 anos de estágio + freelancer em andamento</p></div>
-            </div>
+            {%- endfor %}
           </div>
 
           <div class="hero-cta">
             <a href="#portfolio" class="btn btn-primary">
-              ver portfólio
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              {{ inicio.botao_portfolio | escape }}
+              {% include icone.html nome="seta" %}
             </a>
-            <a href="https://api.whatsapp.com/send?phone=5511969288192" target="_blank" rel="noopener" class="btn btn-ghost">falar no whatsapp</a>
+            <a href="{{ wa }}" target="_blank" rel="noopener" class="btn btn-ghost">{{ inicio.botao_whatsapp | escape }}</a>
           </div>
         </div>
       </div>
@@ -96,17 +96,17 @@
   <!-- ============ MARQUEE ============ -->
   <div class="marquee">
     <div class="marquee-track">
-      <span>renderização</span><span>modelagem 3d</span><span>detalhamento</span><span>projeto executivo</span><span>mapas urbanos</span><span>pranchas e monografia</span>
-      <span>renderização</span><span>modelagem 3d</span><span>detalhamento</span><span>projeto executivo</span><span>mapas urbanos</span><span>pranchas e monografia</span>
+      {% for i in (1..2) %}{% for item in inicio.faixa_rolante %}<span>{{ item | escape }}</span>{% endfor %}
+      {% endfor %}
     </div>
   </div>
 
   <!-- ============ STATS ============ -->
   <section class="stats">
     <div class="wrap stats-grid">
-      <div class="stat reveal"><div class="num" data-count="5" data-suffix="+">5+</div><div class="lbl">anos de experiência na área do design gráfico</div></div>
-      <div class="stat reveal"><div class="num" data-count="100" data-suffix="+">100+</div><div class="lbl">imagens no portfólio</div></div>
-      <div class="stat reveal"><div class="num" data-count="8" data-suffix="+">8+</div><div class="lbl">softwares dominados</div></div>
+      {%- for n in inicio.numeros %}
+      <div class="stat reveal"><div class="num" data-count="{{ n.numero }}" data-suffix="{{ n.sufixo | escape }}">{{ n.numero }}{{ n.sufixo | escape }}</div><div class="lbl">{{ n.legenda | escape }}</div></div>
+      {%- endfor %}
     </div>
   </section>
 
@@ -114,103 +114,68 @@
   <section class="thesis">
     <div class="wrap">
       <div class="thesis-box reveal">
-        <span class="script">você projeta</span>
-        <h2>eu cuido da produção</h2>
-        <p>ofereço apoio e terceirização de produção pra arquitetos, designers e escritórios — assumindo renderização, modelagem 3D, detalhamento e projeto executivo, pra você ganhar tempo e entregar com qualidade.</p>
+        <span class="script">{{ inicio.destaque_frase | escape }}</span>
+        <h2>{{ inicio.destaque_titulo | escape }}</h2>
+        <p>{{ inicio.destaque_texto | escape }}</p>
       </div>
     </div>
   </section>
 
   <!-- ============ SOBRE / AUDIENCE ============ -->
+  {%- assign pq = site.data.para_quem %}
   <section id="sobre" class="audience">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">para quem</span>
-        <h2>trabalho lado a lado com quem projeta — <span class="script">e com quem está aprendendo a projetar</span></h2>
+        <span class="eyebrow">{{ pq.chamada | escape }}</span>
+        <h2>{% include destaque.html texto=pq.titulo %}</h2>
       </div>
 
       <div class="switch reveal" role="tablist">
-        <button class="switch-btn active" data-target="pane-arq" role="tab" aria-selected="true">sou arquiteto ou designer</button>
-        <button class="switch-btn" data-target="pane-est" role="tab" aria-selected="false">sou estudante</button>
+        {%- for p in pq.publicos %}
+        <button class="switch-btn{% if forloop.first %} active{% endif %}" data-target="pane-{{ forloop.index }}" role="tab" aria-selected="{{ forloop.first }}">{{ p.botao | escape }}</button>
+        {%- endfor %}
       </div>
-
-      <div class="audience-pane reveal" id="pane-arq" data-pane>
+      {% for p in pq.publicos %}
+      <div class="audience-pane{% if forloop.first %} reveal{% endif %}" id="pane-{{ forloop.index }}" data-pane{% unless forloop.first %} hidden{% endunless %}>
         <div class="ap-body">
-          <span class="tag">arquitetos &amp; designers</span>
-          <h3>terceirização técnica para escritórios e construtoras</h3>
-          <p>com agilidade e consistência, pra você entregar aos seus clientes imagens e documentos que comunicam o projeto com clareza.</p>
+          <span class="tag">{{ p.etiqueta | escape }}</span>
+          <h3>{{ p.titulo | escape }}</h3>
+          <p>{{ p.texto | escape }}</p>
         </div>
         <ul class="ap-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>renderização IA ou V-Ray</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>modelagem 3D</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>detalhamento</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>executivo</li>
+          {%- for item in p.itens %}
+          <li>{% include icone.html nome="check" %}{{ item | escape }}</li>
+          {%- endfor %}
         </ul>
       </div>
-
-      <div class="audience-pane" id="pane-est" data-pane hidden>
-        <div class="ap-body">
-          <span class="tag">estudantes</span>
-          <h3>apoio para trabalhos, pranchas e apresentações</h3>
-          <p>ainda estou na graduação de Arquitetura e Urbanismo — sei exatamente a pressão de uma entrega. faço o material técnico enquanto você foca no conceito do projeto.</p>
-        </div>
-        <ul class="ap-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>mapas urbanos</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>diagramação de prancha</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>renderizações</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>modelagem 3D</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>diagramas e esquemas técnicos</li>
-        </ul>
-      </div>
+      {% endfor %}
     </div>
   </section>
 
   <!-- ============ SERVICES ============ -->
+  {%- assign sv = site.data.servicos %}
   <section id="servicos" class="services">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">o que eu faço</span>
-        <h2>serviços</h2>
-        <p>da modelagem à entrega final — cada etapa pensada pra comunicar o projeto com clareza, qualidade e sensibilidade.</p>
+        <span class="eyebrow">{{ sv.chamada | escape }}</span>
+        <h2>{% include destaque.html texto=sv.titulo %}</h2>
+        <p>{{ sv.texto | escape }}</p>
       </div>
 
       <div class="services-grid reveal-stagger">
+        {%- for s in sv.servicos %}
         <div class="service-card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M3 15l5-5 4 4 5-6 4 5"/><circle cx="8" cy="8.5" r="1.3"/></svg></div>
-          <h3>renderização</h3>
-          <p>imagens fotorrealistas em V-Ray e IA, com a atmosfera do projeto.</p>
+          <div class="ic">{% include icone.html nome=s.icone %}</div>
+          <h3>{{ s.titulo | escape }}</h3>
+          <p>{{ s.texto | escape }}</p>
         </div>
-        <div class="service-card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg></div>
-          <h3>modelagem 3d</h3>
-          <p>o projeto ganha forma em 3D — visualize os espaços antes da obra.</p>
-        </div>
-        <div class="service-card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3 21 10 10 21H3v-7L14 3z"/><path d="M13.5 6.5l4 4"/></svg></div>
-          <h3>detalhamento</h3>
-          <p>medidas, materiais e acabamentos definidos com precisão pra obra.</p>
-        </div>
-        <div class="service-card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2h6l1 3h3v17H5V5h3l1-3z"/><path d="M9 11h6M9 15h6"/></svg></div>
-          <h3>projeto executivo</h3>
-          <p>detalhamentos técnicos organizados, prontos pra execução.</p>
-        </div>
-        <div class="service-card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg></div>
-          <h3>mapas urbanos</h3>
-          <p>uso de solo, gabarito de altura, cheios e vazios, macrozoneamento, áreas verdes, hipsometria, etc.</p>
-        </div>
-        <div class="service-card">
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-          <h3>pranchas e monografia</h3>
-          <p>diagramação de pranchas e monografias com identidade visual própria.</p>
-        </div>
+        {%- endfor %}
       </div>
 
       <div class="services-cta reveal">
-        <a href="https://api.whatsapp.com/send?phone=5511969288192&text=Ol%C3%A1!%20Quero%20um%20or%C3%A7amento%20personalizado." target="_blank" rel="noopener" class="btn btn-primary">
-          quero um orçamento personalizado
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <a href="{{ wa }}&text={{ sv.mensagem_whatsapp | url_encode | replace: '+', '%20' }}" target="_blank" rel="noopener" class="btn btn-primary">
+          {{ sv.botao | escape }}
+          {% include icone.html nome="seta" %}
         </a>
       </div>
     </div>
@@ -220,89 +185,65 @@
   <section id="ferramentas" class="tools">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">bastidores</span>
-        <h2>softwares que <span class="script">utilizo</span></h2>
-        <p>domino essas ferramentas pra cobrir qualquer etapa do seu projeto — veja o que dá pra terceirizar comigo.</p>
+        <span class="eyebrow">{{ sv.softwares_chamada | escape }}</span>
+        <h2>{% include destaque.html texto=sv.softwares_titulo %}</h2>
+        <p>{{ sv.softwares_texto | escape }}</p>
       </div>
       <div class="tools-grid reveal-stagger">
-        <span class="tool-chip">AutoCAD</span>
-        <span class="tool-chip">SketchUp</span>
-        <span class="tool-chip">Layout</span>
-        <span class="tool-chip">Vectorworks</span>
-        <span class="tool-chip">Illustrator</span>
-        <span class="tool-chip">Photoshop</span>
-        <span class="tool-chip">V-Ray</span>
-        <span class="tool-chip">Canva</span>
-        <span class="tool-chip">IA</span>
+        {%- for t in sv.softwares %}
+        <span class="tool-chip">{{ t | escape }}</span>
+        {%- endfor %}
       </div>
     </div>
   </section>
 
   <!-- ============ COMPARE V-RAY x IA ============ -->
+  {%- assign cp = site.data.comparar %}
   <section id="compare" class="compare">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">v-ray × ia</span>
-        <h2>arraste para <span class="script">comparar</span></h2>
-        <p>domino os dois fluxos de renderização — fotorrealismo tradicional em V-Ray e renderização com inteligência artificial. nas imagens abaixo, arraste o marcador pra ver o print simples ao lado do resultado final com IA.</p>
+        <span class="eyebrow">{{ cp.chamada | escape }}</span>
+        <h2>{% include destaque.html texto=cp.titulo %}</h2>
+        <p>{{ cp.texto | escape }}</p>
       </div>
 
       <div class="modality-grid reveal">
         <div class="modality">
           <span class="lbl-inline lb-over">V-Ray</span>
-          <p>renderização tradicional: cada material, luz e sombra é calculado do zero, com controle total sobre cada detalhe da cena.</p>
+          <p>{{ cp.vray_texto | escape }}</p>
         </div>
         <div class="modality">
           <span class="lbl-inline lb-base">IA</span>
-          <p>renderização com inteligência artificial: parte de uma imagem-base e gera resultados rápidos, com uma estética mais livre.</p>
+          <p>{{ cp.ia_texto | escape }}</p>
         </div>
       </div>
 
       <div class="cmp-grid reveal-stagger">
+        {%- for c in cp.comparacoes %}
         <div class="cmp-col">
           <div class="cmp" data-cmp>
             <div class="cmp-hint">arraste ↔</div>
-            <div class="base"><img src="assets/img/compare/sala-ia.jpg" alt="Sala de estar e home office renderizada com IA" loading="lazy" decoding="async"></div>
-            <div class="over"><img src="assets/img/compare/sala-print.jpg" alt="Sala de estar e home office — imagem de referência (print)" loading="lazy" decoding="async"></div>
+            <div class="base"><img src="{{ c.imagem_ia | relative_url }}" alt="{{ c.descricao_alt | escape }} — renderização com IA" loading="lazy" decoding="async"></div>
+            <div class="over"><img src="{{ c.imagem_print | relative_url }}" alt="{{ c.descricao_alt | escape }} — imagem de referência (print)" loading="lazy" decoding="async"></div>
             <div class="handle"></div>
             <span class="lbl lb-base">IA</span>
             <span class="lbl lb-over">PRINT</span>
           </div>
-          <div class="cmp-cap"><span class="cmp-env">sala de estar / home office</span> <span class="cmp-credit">· proj. Natasha Vieira · render Laís</span></div>
+          <div class="cmp-cap"><span class="cmp-env">{{ c.ambiente | escape }}</span>{% if c.credito %} <span class="cmp-credit">· {{ c.credito | escape }}</span>{% endif %}</div>
         </div>
-        <div class="cmp-col">
-          <div class="cmp" data-cmp>
-            <div class="cmp-hint">arraste ↔</div>
-            <div class="base"><img src="assets/img/compare/quarto-ia.jpg" alt="Quarto renderizado com IA" loading="lazy" decoding="async"></div>
-            <div class="over"><img src="assets/img/compare/quarto-print.jpg" alt="Quarto — imagem de referência (print)" loading="lazy" decoding="async"></div>
-            <div class="handle"></div>
-            <span class="lbl lb-base">IA</span>
-            <span class="lbl lb-over">PRINT</span>
-          </div>
-          <div class="cmp-cap"><span class="cmp-env">quarto</span> <span class="cmp-credit">· proj. Natasha Vieira · render Laís</span></div>
-        </div>
-        <div class="cmp-col">
-          <div class="cmp" data-cmp>
-            <div class="cmp-hint">arraste ↔</div>
-            <div class="base"><img src="assets/img/compare/area-ia.jpg" alt="Área externa gourmet renderizada com IA" loading="lazy" decoding="async"></div>
-            <div class="over"><img src="assets/img/compare/area-print.jpg" alt="Área externa gourmet — imagem de referência (print)" loading="lazy" decoding="async"></div>
-            <div class="handle"></div>
-            <span class="lbl lb-base">IA</span>
-            <span class="lbl lb-over">PRINT</span>
-          </div>
-          <div class="cmp-cap"><span class="cmp-env">área externa gourmet</span> <span class="cmp-credit">· proj. Natasha Vieira · render Laís</span></div>
-        </div>
+        {%- endfor %}
       </div>
     </div>
   </section>
 
   <!-- ============ PORTFOLIO GALLERY ============ -->
+  {%- assign pf = site.data.portfolio %}
   <section id="portfolio" class="gallery">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">trabalhos</span>
-        <h2>portfólio de <span class="script">renders</span></h2>
-        <p>uma seleção de imagens produzidas pra escritórios de arquitetura, designers e projetos autorais — em V-Ray e com renderização por IA.</p>
+        <span class="eyebrow">{{ pf.chamada | escape }}</span>
+        <h2>{% include destaque.html texto=pf.titulo %}</h2>
+        <p>{{ pf.texto | escape }}</p>
       </div>
 
       <div class="filters reveal">
@@ -312,126 +253,13 @@
       </div>
 
       <div class="g-grid" id="gallery-grid">
-        <div class="g-item" data-tag="vray" data-caption="projeto: Barlô Arquitetura — V-Ray">
-          <img src="assets/img/gallery/g01.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">v-ray</span></div>
+        {%- for item in pf.imagens %}
+        {%- if item.tipo == 'ia' %}{% assign tipo_nome = 'renderização com IA' %}{% assign tipo_tag = 'renderização com IA' %}{% else %}{% assign tipo_nome = 'V-Ray' %}{% assign tipo_tag = 'v-ray' %}{% endif %}
+        <div class="g-item" data-tag="{{ item.tipo | default: 'vray' }}" data-caption="projeto: {{ item.projeto | escape }} — {{ tipo_nome }}">
+          <img src="{{ item.imagem | relative_url }}" alt="Render 3D — Projeto {{ item.projeto | escape }}" loading="lazy" decoding="async">
+          <div class="g-overlay"><span class="proj">{{ item.projeto | escape }}</span><span class="tag">{{ tipo_tag }}</span></div>
         </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Barlô Arquitetura — V-Ray">
-          <img src="assets/img/gallery/g02.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Natasha Vieira — renderização com IA">
-          <img src="assets/img/gallery/g03.jpg" alt="Render 3D — Projeto Natasha Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Natasha Vieira</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Barlô Arquitetura — V-Ray">
-          <img src="assets/img/gallery/g04.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Barlô Arquitetura — V-Ray">
-          <img src="assets/img/gallery/g05.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Barlô Arquitetura — V-Ray">
-          <img src="assets/img/gallery/g06.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Barlô Arquitetura — V-Ray">
-          <img src="assets/img/gallery/g07.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Barlô Arquitetura — V-Ray">
-          <img src="assets/img/gallery/g08.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Lucas Oliveira — V-Ray">
-          <img src="assets/img/gallery/g09.jpg" alt="Render 3D — Projeto Lucas Oliveira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Lucas Oliveira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Lucas Oliveira — V-Ray">
-          <img src="assets/img/gallery/g10.jpg" alt="Render 3D — Projeto Lucas Oliveira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Lucas Oliveira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g11.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g12.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g13.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Natasha Vieira — renderização com IA">
-          <img src="assets/img/gallery/g14.jpg" alt="Render 3D — Projeto Natasha Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Natasha Vieira</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g15.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Natasha Vieira — renderização com IA">
-          <img src="assets/img/gallery/g16.jpg" alt="Render 3D — Projeto Natasha Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Natasha Vieira</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g17.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g18.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g19.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Laís Vieira — V-Ray">
-          <img src="assets/img/gallery/g20.jpg" alt="Render 3D — Projeto Laís Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Laís Vieira</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Morada — renderização com IA">
-          <img src="assets/img/gallery/g21.jpg" alt="Render 3D — Projeto Morada" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Morada</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Morada — renderização com IA">
-          <img src="assets/img/gallery/g22.jpg" alt="Render 3D — Projeto Morada" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Morada</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Barlô Arquitetura — renderização com IA">
-          <img src="assets/img/gallery/g23.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Barlô Arquitetura — renderização com IA">
-          <img src="assets/img/gallery/g24.jpg" alt="Render 3D — Projeto Barlô Arquitetura" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Barlô Arquitetura</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Natasha Vieira — renderização com IA">
-          <img src="assets/img/gallery/g25.jpg" alt="Render 3D — Projeto Natasha Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Natasha Vieira</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Marla Riva — renderização com IA">
-          <img src="assets/img/gallery/g26.jpg" alt="Render 3D — Projeto Marla Riva" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Marla Riva</span><span class="tag">renderização com IA</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Marla Riva — V-Ray">
-          <img src="assets/img/gallery/g27.jpg" alt="Render 3D — Projeto Marla Riva" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Marla Riva</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Marla Riva — V-Ray">
-          <img src="assets/img/gallery/g28.jpg" alt="Render 3D — Projeto Marla Riva" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Marla Riva</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="vray" data-caption="projeto: Marla Riva — V-Ray">
-          <img src="assets/img/gallery/g29.jpg" alt="Render 3D — Projeto Marla Riva" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Marla Riva</span><span class="tag">v-ray</span></div>
-        </div>
-        <div class="g-item" data-tag="ia" data-caption="projeto: Natasha Vieira — renderização com IA">
-          <img src="assets/img/gallery/g30.jpg" alt="Render 3D — Projeto Natasha Vieira" loading="lazy" decoding="async">
-          <div class="g-overlay"><span class="proj">Natasha Vieira</span><span class="tag">renderização com IA</span></div>
-        </div>
+        {%- endfor %}
       </div>
 
       <div class="g-more-wrap">
@@ -441,186 +269,99 @@
   </section>
 
   <!-- ============ CASE STUDIES ============ -->
+  {%- assign pj = site.data.projetos %}
   <section id="projetos" class="cases">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">estudos de caso</span>
-        <h2>do <span class="script">papel</span> à entrega técnica</h2>
-        <p>cinco frentes de trabalho que mostram como cada etapa contribui para um projeto claro, do conceito à execução.</p>
+        <span class="eyebrow">{{ pj.chamada | escape }}</span>
+        <h2>{% include destaque.html texto=pj.titulo %}</h2>
+        <p>{{ pj.texto | escape }}</p>
       </div>
-
+      {% for c in pj.projetos %}
       <div class="case reveal">
         <div class="case-media">
-          <img src="assets/img/cases/planta-baixa.webp" alt="Planta baixa humanizada" loading="lazy" decoding="async" data-caption="Planta baixa humanizada — Projeto: Letícia Guedes">
+          <img src="{{ c.imagem | relative_url }}" alt="{{ c.descricao_alt | escape }}" loading="lazy" decoding="async" data-caption="{{ c.legenda | escape }}">
         </div>
         <div class="case-body">
-          <span class="eyebrow">diagramação de prancha</span>
-          <h3>planta baixa <span class="script">humanizada</span></h3>
-          <p class="desc">humanizei essa planta baixa pro projeto da Letícia, deixando os ambientes mais visuais e realistas pra facilitar a leitura antes da entrega final.</p>
+          <span class="eyebrow">{{ c.categoria | escape }}</span>
+          <h3>{% include destaque.html texto=c.titulo %}</h3>
+          <p class="desc">{{ c.texto | escape }}</p>
           <div class="case-meta">
-            <div><div class="k">projeto</div><div class="v">Letícia Guedes</div></div>
-            <div><div class="k">modelagem</div><div class="v">Laís A. Vieira</div></div>
-            <div><div class="k">software utilizado</div><div class="v">Sketchup · IA</div></div>
-            <div><div class="k">softwares que podemos utilizar</div><div class="v">Sketchup · IA · AutoCAD</div></div>
+            {%- for f in c.ficha %}
+            <div><div class="k">{{ f.rotulo | escape }}</div><div class="v">{{ f.valor | escape }}</div></div>
+            {%- endfor %}
           </div>
         </div>
       </div>
-
-      <div class="case reveal">
-        <div class="case-media">
-          <img src="assets/img/cases/corte.webp" alt="Corte humanizado — prancha de arquitetura de interiores" loading="lazy" decoding="async" data-caption="Corte humanizado — Projeto: Laís A. Vieira">
-        </div>
-        <div class="case-body">
-          <span class="eyebrow">documentação técnica</span>
-          <h3>corte <span class="script">humanizado</span></h3>
-          <p class="desc">esse corte é de um projeto autoral meu, onde quis mostrar a relação de alturas e profundidade entre os ambientes de forma mais visual.</p>
-          <div class="case-meta">
-            <div><div class="k">projeto</div><div class="v">Laís A. Vieira</div></div>
-            <div><div class="k">modelagem</div><div class="v">Laís A. Vieira</div></div>
-            <div><div class="k">software utilizado</div><div class="v">Sketchup · Layout</div></div>
-            <div><div class="k">softwares que podemos utilizar</div><div class="v">AutoCAD · Vectorworks · Layout</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case reveal">
-        <div class="case-media">
-          <img src="assets/img/cases/executivo.webp" alt="Prancha de projeto executivo" loading="lazy" decoding="async" data-caption="Projeto executivo — Projeto: Prazark Arquitetura">
-        </div>
-        <div class="case-body">
-          <span class="eyebrow">projeto executivo</span>
-          <h3>do conceito à <span class="script">execução</span></h3>
-          <p class="desc">reuni os detalhamentos técnicos desse projeto executivo pra Prazark Arquitetura, com as medidas e especificações que a equipe de obra precisava pra executar sem erros.</p>
-          <div class="case-meta">
-            <div><div class="k">projeto</div><div class="v">Prazark Arquitetura</div></div>
-            <div><div class="k">detalhamento</div><div class="v">Laís A. Vieira</div></div>
-            <div><div class="k">software utilizado</div><div class="v">Sketchup · Layout</div></div>
-            <div><div class="k">softwares que podemos utilizar</div><div class="v">AutoCAD · Vectorworks · Layout</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case reveal">
-        <div class="case-media">
-          <img src="assets/img/cases/detalhamento.webp" alt="Prancha de detalhamento de marcenaria" loading="lazy" decoding="async" data-caption="Detalhamentos — Projeto: Daniele Rossi">
-        </div>
-        <div class="case-body">
-          <span class="eyebrow">detalhamento</span>
-          <h3>precisão em cada <span class="script">detalhe</span></h3>
-          <p class="desc">esse detalhamento foi feito pro projeto da Daniele, especificando medidas, materiais e acabamentos de marcenaria pra evitar erros na produção.</p>
-          <div class="case-meta">
-            <div><div class="k">projeto</div><div class="v">Daniele Rossi</div></div>
-            <div><div class="k">detalhamento</div><div class="v">Laís A. Vieira</div></div>
-            <div><div class="k">software utilizado</div><div class="v">Sketchup · Layout</div></div>
-            <div><div class="k">softwares que podemos utilizar</div><div class="v">AutoCAD · Vectorworks · Layout</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="case reveal">
-        <div class="case-media">
-          <img src="assets/img/cases/modelagem.webp" alt="Modelagem 3D isométrica de apartamento" loading="lazy" decoding="async" data-caption="Modelagem 3D — Projeto: Barlô Arquitetura">
-        </div>
-        <div class="case-body">
-          <span class="eyebrow">modelagem 3d</span>
-          <h3>ideias que ganham <span class="script">forma</span></h3>
-          <p class="desc">essa modelagem 3D isométrica foi feita pro projeto da Barlô Arquitetura, pra dar uma visão geral do apartamento antes da execução da obra.</p>
-          <div class="case-meta">
-            <div><div class="k">projeto</div><div class="v">Barlô Arquitetura</div></div>
-            <div><div class="k">modelagem</div><div class="v">Laís A. Vieira</div></div>
-            <div><div class="k">software utilizado</div><div class="v">Sketchup</div></div>
-            <div><div class="k">softwares que podemos utilizar</div><div class="v">Sketchup</div></div>
-          </div>
-        </div>
-      </div>
+      {% endfor %}
     </div>
   </section>
 
   <!-- ============ COMO FUNCIONA ============ -->
+  {%- assign cf = site.data.como_funciona %}
   <section id="como-funciona" class="how">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">passo a passo</span>
-        <h2>como <span class="script">funciona</span></h2>
-        <p>do primeiro contato até os arquivos finais na sua mão — um processo simples, pensado pra não te dar trabalho.</p>
+        <span class="eyebrow">{{ cf.chamada | escape }}</span>
+        <h2>{% include destaque.html texto=cf.titulo %}</h2>
+        <p>{{ cf.texto | escape }}</p>
       </div>
 
       <div class="how-grid reveal-stagger">
-        <div class="how-card">
-          <span class="how-num">01</span>
-          <h3>briefing</h3>
-          <p>você me manda os arquivos, referências e o que precisa pro seu projeto.</p>
-        </div>
+        {%- for e in cf.etapas %}
+        {%- unless forloop.first %}
         <div class="how-arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          {% include icone.html nome="seta" %}
         </div>
+        {%- endunless %}
         <div class="how-card">
-          <span class="how-num">02</span>
-          <h3>ajustes</h3>
-          <p>faço os possíveis ajustes necessários no arquivo recebido antes de começar.</p>
+          <span class="how-num">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+          <h3>{{ e.titulo | escape }}</h3>
+          <p>{{ e.texto | escape }}</p>
         </div>
-        <div class="how-arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </div>
-        <div class="how-card">
-          <span class="how-num">03</span>
-          <h3>execução</h3>
-          <p>desenvolvo o serviço combinado — render, modelagem, detalhamento ou diagramação.</p>
-        </div>
-        <div class="how-arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </div>
-        <div class="how-card">
-          <span class="how-num">04</span>
-          <h3>entrega final</h3>
-          <p>você recebe os arquivos prontos pra apresentar — ao cliente, à obra ou à banca.</p>
-        </div>
+        {%- endfor %}
       </div>
     </div>
   </section>
 
   <!-- ============ FORMAÇÃO ============ -->
+  {%- assign sm = site.data.sobre_mim %}
   <section id="cursos" class="formation">
     <div class="wrap">
       <div class="formation-box reveal">
         <div class="formation-copy">
-          <span class="eyebrow">sobre mim</span>
-          <h2>um <span class="script">método próprio</span>, construído com experiência</h2>
-          <p>sou estudante de Arquitetura e Urbanismo, no 9º período, e tenho experiência anterior na área de design — um diferencial que aparece na organização visual, na apresentação, na composição e no cuidado com cada entrega. ao longo do caminho, fiz dezenas de cursos de renderização, modelagem e detalhamento, unindo o fotorrealismo tradicional com as novas ferramentas de IA.</p>
+          <span class="eyebrow">{{ sm.chamada | escape }}</span>
+          <h2>{% include destaque.html texto=sm.titulo %}</h2>
+          <p>{{ sm.texto | escape }}</p>
         </div>
         <div class="formation-badges">
+          {%- for selo in sm.selos %}
           <div class="badge">
-            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg></div>
-            <div><h4>formando em Arquitetura</h4><p>Arquitetura e Urbanismo — 9º período</p></div>
+            <div class="ic">{% include icone.html nome=selo.icone %}</div>
+            <div><h4>{{ selo.titulo | escape }}</h4><p>{{ selo.texto | escape }}</p></div>
           </div>
-          <div class="badge">
-            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="5"/><path d="M8.5 13 7 22l5-3 5 3-1.5-9"/></svg></div>
-            <div><h4>experiência em design</h4><p>organização visual, apresentação e composição</p></div>
-          </div>
-          <div class="badge">
-            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div>
-            <div><h4>método próprio</h4><p>V-Ray e IA combinados no mesmo fluxo</p></div>
-          </div>
+          {%- endfor %}
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============ CTA ============ -->
+  {%- assign ct = site.data.contato %}
   <section class="cta">
     <div class="wrap">
       <div class="cta-box reveal">
-        <span class="script">cada projeto tem uma história</span>
-        <h2>curiosa pra ver a sua</h2>
-        <p>se fizer sentido pra você, é só chamar e pedir um orçamento — sem compromisso.</p>
+        <span class="script">{{ ct.frase | escape }}</span>
+        <h2>{{ ct.titulo | escape }}</h2>
+        <p>{{ ct.texto | escape }}</p>
         <div class="cta-actions">
-          <a href="https://api.whatsapp.com/send?phone=5511969288192" target="_blank" rel="noopener" class="btn btn-accent">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .105 5.36.105 11.943c0 2.104.549 4.157 1.595 5.965L0 24l6.335-1.662a11.86 11.86 0 0 0 5.71 1.457h.006c6.585 0 11.94-5.359 11.943-11.942 0-3.19-1.24-6.19-3.474-8.45"/></svg>
-            pedir orçamento
+          <a href="{{ wa }}" target="_blank" rel="noopener" class="btn btn-accent">
+            {% include icone.html nome="whatsapp" %}
+            {{ ct.botao_orcamento | escape }}
           </a>
-          <a href="mailto:arq.laisav@gmail.com" class="btn btn-ghost" style="border-color:rgba(255,255,255,.3);color:#fff">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 6 8-6"/></svg>
-            enviar e-mail
+          <a href="mailto:{{ g.email }}" class="btn btn-ghost" style="border-color:rgba(255,255,255,.3);color:#fff">
+            {% include icone.html nome="email" %}
+            {{ ct.botao_email | escape }}
           </a>
         </div>
       </div>
@@ -634,17 +375,17 @@
   <div class="wrap">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="#" class="brand"><b>laís</b><span class="dot">.</span></a>
-        <p>renderização, modelagem 3D, detalhamento e projeto executivo para arquitetos, designers, construtoras e estudantes.</p>
+        <a href="#" class="brand"><b>{{ g.marca | escape }}</b><span class="dot">.</span></a>
+        <p>{{ g.rodape_descricao | escape }}</p>
         <div class="footer-social">
-          <a href="https://www.instagram.com/lais_3d" target="_blank" rel="noopener" aria-label="Instagram">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          <a href="{{ insta }}" target="_blank" rel="noopener" aria-label="Instagram">
+            {% include icone.html nome="instagram" %}
           </a>
-          <a href="https://api.whatsapp.com/send?phone=5511969288192" target="_blank" rel="noopener" aria-label="WhatsApp">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .105 5.36.105 11.943c0 2.104.549 4.157 1.595 5.965L0 24l6.335-1.662a11.86 11.86 0 0 0 5.71 1.457h.006c6.585 0 11.94-5.359 11.943-11.942 0-3.19-1.24-6.19-3.474-8.45"/></svg>
+          <a href="{{ wa }}" target="_blank" rel="noopener" aria-label="WhatsApp">
+            {% include icone.html nome="whatsapp" %}
           </a>
-          <a href="mailto:arq.laisav@gmail.com" aria-label="E-mail">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 6 8 6 8-6"/></svg>
+          <a href="mailto:{{ g.email }}" aria-label="E-mail">
+            {% include icone.html nome="email" %}
           </a>
         </div>
       </div>
@@ -659,22 +400,22 @@
         </div>
         <div class="footer-col">
           <h4>contato</h4>
-          <a href="mailto:arq.laisav@gmail.com">arq.laisav@gmail.com</a>
-          <a href="https://api.whatsapp.com/send?phone=5511969288192" target="_blank" rel="noopener">+55 11 96928-8192</a>
-          <a href="https://www.instagram.com/lais_3d" target="_blank" rel="noopener">@lais_3d</a>
+          <a href="mailto:{{ g.email }}">{{ g.email }}</a>
+          <a href="{{ wa }}" target="_blank" rel="noopener">{{ g.whatsapp_exibicao | escape }}</a>
+          <a href="{{ insta }}" target="_blank" rel="noopener">@{{ g.instagram_usuario | escape }}</a>
         </div>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span>© <span class="js-year">2026</span> Laís Vieira. todos os direitos reservados.</span>
-      <span>renderização · modelagem 3d · detalhamento · projeto executivo</span>
+      <span>© <span class="js-year">{{ inicio.ano | escape }}</span> {{ g.nome | escape }}. todos os direitos reservados.</span>
+      <span>{{ g.rodape_servicos | escape }}</span>
     </div>
   </div>
 </footer>
 
-<a href="https://api.whatsapp.com/send?phone=5511969288192" target="_blank" rel="noopener" class="float-wa" aria-label="Falar no WhatsApp">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .105 5.36.105 11.943c0 2.104.549 4.157 1.595 5.965L0 24l6.335-1.662a11.86 11.86 0 0 0 5.71 1.457h.006c6.585 0 11.94-5.359 11.943-11.942 0-3.19-1.24-6.19-3.474-8.45"/></svg>
+<a href="{{ wa }}" target="_blank" rel="noopener" class="float-wa" aria-label="Falar no WhatsApp">
+  {% include icone.html nome="whatsapp" %}
 </a>
 
 <!-- ============ LIGHTBOX ============ -->
@@ -688,6 +429,6 @@
   <button class="lb-nav lb-next" aria-label="Próxima"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
 </div>
 
-<script src="assets/js/main.js"></script>
+<script src="{{ '/assets/js/main.js' | relative_url }}"></script>
 </body>
 </html>

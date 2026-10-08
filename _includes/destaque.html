@@ -1,0 +1,6 @@
+{%- comment -%} Texto entre *asteriscos* vira o trecho em letra cursiva (classe .script). {%- endcomment -%}
+{%- assign partes = include.texto | split: '*' -%}
+{%- for parte in partes -%}
+{%- assign impar = forloop.index0 | modulo: 2 -%}
+{%- if impar == 1 -%}<span class="script">{{ parte | escape }}</span>{%- else -%}{{ parte | escape }}{%- endif -%}
+{%- endfor -%}
