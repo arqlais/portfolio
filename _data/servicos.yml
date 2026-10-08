@@ -1,0 +1,37 @@
+chamada: o que eu faço
+titulo: serviços
+texto: da modelagem à entrega final — cada etapa pensada pra comunicar o projeto com clareza, qualidade e sensibilidade.
+servicos:
+  - icone: imagem
+    titulo: renderização
+    texto: imagens fotorrealistas em V-Ray e IA, com a atmosfera do projeto.
+  - icone: cubo
+    titulo: modelagem 3d
+    texto: o projeto ganha forma em 3D — visualize os espaços antes da obra.
+  - icone: lapis
+    titulo: detalhamento
+    texto: medidas, materiais e acabamentos definidos com precisão pra obra.
+  - icone: prancheta
+    titulo: projeto executivo
+    texto: detalhamentos técnicos organizados, prontos pra execução.
+  - icone: mapa
+    titulo: mapas urbanos
+    texto: uso de solo, gabarito de altura, cheios e vazios, macrozoneamento, áreas verdes, hipsometria, etc.
+  - icone: prancha
+    titulo: pranchas e monografia
+    texto: diagramação de pranchas e monografias com identidade visual própria.
+botao: quero um orçamento personalizado
+mensagem_whatsapp: Olá! Quero um orçamento personalizado.
+softwares_chamada: bastidores
+softwares_titulo: softwares que *utilizo*
+softwares_texto: domino essas ferramentas pra cobrir qualquer etapa do seu projeto — veja o que dá pra terceirizar comigo.
+softwares:
+  - AutoCAD
+  - SketchUp
+  - Layout
+  - Vectorworks
+  - Illustrator
+  - Photoshop
+  - V-Ray
+  - Canva
+  - IA

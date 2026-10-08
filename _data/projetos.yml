@@ -1,0 +1,79 @@
+chamada: estudos de caso
+titulo: do *papel* à entrega técnica
+texto: cinco frentes de trabalho que mostram como cada etapa contribui para um projeto claro, do conceito à execução.
+projetos:
+  - imagem: /assets/img/cases/planta-baixa.webp
+    descricao_alt: Planta baixa humanizada
+    legenda: "Planta baixa humanizada — Projeto: Letícia Guedes"
+    categoria: diagramação de prancha
+    titulo: planta baixa *humanizada*
+    texto: humanizei essa planta baixa pro projeto da Letícia, deixando os ambientes mais visuais e realistas pra facilitar a leitura antes da entrega final.
+    ficha:
+      - rotulo: projeto
+        valor: Letícia Guedes
+      - rotulo: modelagem
+        valor: Laís A. Vieira
+      - rotulo: software utilizado
+        valor: Sketchup · IA
+      - rotulo: softwares que podemos utilizar
+        valor: Sketchup · IA · AutoCAD
+  - imagem: /assets/img/cases/corte.webp
+    descricao_alt: Corte humanizado — prancha de arquitetura de interiores
+    legenda: "Corte humanizado — Projeto: Laís A. Vieira"
+    categoria: documentação técnica
+    titulo: corte *humanizado*
+    texto: esse corte é de um projeto autoral meu, onde quis mostrar a relação de alturas e profundidade entre os ambientes de forma mais visual.
+    ficha:
+      - rotulo: projeto
+        valor: Laís A. Vieira
+      - rotulo: modelagem
+        valor: Laís A. Vieira
+      - rotulo: software utilizado
+        valor: Sketchup · Layout
+      - rotulo: softwares que podemos utilizar
+        valor: AutoCAD · Vectorworks · Layout
+  - imagem: /assets/img/cases/executivo.webp
+    descricao_alt: Prancha de projeto executivo
+    legenda: "Projeto executivo — Projeto: Prazark Arquitetura"
+    categoria: projeto executivo
+    titulo: do conceito à *execução*
+    texto: reuni os detalhamentos técnicos desse projeto executivo pra Prazark Arquitetura, com as medidas e especificações que a equipe de obra precisava pra executar sem erros.
+    ficha:
+      - rotulo: projeto
+        valor: Prazark Arquitetura
+      - rotulo: detalhamento
+        valor: Laís A. Vieira
+      - rotulo: software utilizado
+        valor: Sketchup · Layout
+      - rotulo: softwares que podemos utilizar
+        valor: AutoCAD · Vectorworks · Layout
+  - imagem: /assets/img/cases/detalhamento.webp
+    descricao_alt: Prancha de detalhamento de marcenaria
+    legenda: "Detalhamentos — Projeto: Daniele Rossi"
+    categoria: detalhamento
+    titulo: precisão em cada *detalhe*
+    texto: esse detalhamento foi feito pro projeto da Daniele, especificando medidas, materiais e acabamentos de marcenaria pra evitar erros na produção.
+    ficha:
+      - rotulo: projeto
+        valor: Daniele Rossi
+      - rotulo: detalhamento
+        valor: Laís A. Vieira
+      - rotulo: software utilizado
+        valor: Sketchup · Layout
+      - rotulo: softwares que podemos utilizar
+        valor: AutoCAD · Vectorworks · Layout
+  - imagem: /assets/img/cases/modelagem.webp
+    descricao_alt: Modelagem 3D isométrica de apartamento
+    legenda: "Modelagem 3D — Projeto: Barlô Arquitetura"
+    categoria: modelagem 3d
+    titulo: ideias que ganham *forma*
+    texto: essa modelagem 3D isométrica foi feita pro projeto da Barlô Arquitetura, pra dar uma visão geral do apartamento antes da execução da obra.
+    ficha:
+      - rotulo: projeto
+        valor: Barlô Arquitetura
+      - rotulo: modelagem
+        valor: Laís A. Vieira
+      - rotulo: software utilizado
+        valor: Sketchup
+      - rotulo: softwares que podemos utilizar
+        valor: Sketchup

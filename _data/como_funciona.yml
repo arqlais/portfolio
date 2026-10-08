@@ -1,0 +1,12 @@
+chamada: passo a passo
+titulo: como *funciona*
+texto: do primeiro contato até os arquivos finais na sua mão — um processo simples, pensado pra não te dar trabalho.
+etapas:
+  - titulo: briefing
+    texto: você me manda os arquivos, referências e o que precisa pro seu projeto.
+  - titulo: ajustes
+    texto: faço os possíveis ajustes necessários no arquivo recebido antes de começar.
+  - titulo: execução
+    texto: desenvolvo o serviço combinado — render, modelagem, detalhamento ou diagramação.
+  - titulo: entrega final
+    texto: você recebe os arquivos prontos pra apresentar — ao cliente, à obra ou à banca.

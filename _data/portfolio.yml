@@ -1,0 +1,94 @@
+chamada: trabalhos
+titulo: portfólio de *renders*
+texto: uma seleção de imagens produzidas pra escritórios de arquitetura, designers e projetos autorais — em V-Ray e com renderização por IA.
+imagens:
+  - imagem: /assets/img/gallery/g01.jpg
+    projeto: Barlô Arquitetura
+    tipo: vray
+  - imagem: /assets/img/gallery/g02.jpg
+    projeto: Barlô Arquitetura
+    tipo: vray
+  - imagem: /assets/img/gallery/g03.jpg
+    projeto: Natasha Vieira
+    tipo: ia
+  - imagem: /assets/img/gallery/g04.jpg
+    projeto: Barlô Arquitetura
+    tipo: vray
+  - imagem: /assets/img/gallery/g05.jpg
+    projeto: Barlô Arquitetura
+    tipo: vray
+  - imagem: /assets/img/gallery/g06.jpg
+    projeto: Barlô Arquitetura
+    tipo: vray
+  - imagem: /assets/img/gallery/g07.jpg
+    projeto: Barlô Arquitetura
+    tipo: vray
+  - imagem: /assets/img/gallery/g08.jpg
+    projeto: Barlô Arquitetura
+    tipo: vray
+  - imagem: /assets/img/gallery/g09.jpg
+    projeto: Lucas Oliveira
+    tipo: vray
+  - imagem: /assets/img/gallery/g10.jpg
+    projeto: Lucas Oliveira
+    tipo: vray
+  - imagem: /assets/img/gallery/g11.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g12.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g13.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g14.jpg
+    projeto: Natasha Vieira
+    tipo: ia
+  - imagem: /assets/img/gallery/g15.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g16.jpg
+    projeto: Natasha Vieira
+    tipo: ia
+  - imagem: /assets/img/gallery/g17.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g18.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g19.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g20.jpg
+    projeto: Laís Vieira
+    tipo: vray
+  - imagem: /assets/img/gallery/g21.jpg
+    projeto: Morada
+    tipo: ia
+  - imagem: /assets/img/gallery/g22.jpg
+    projeto: Morada
+    tipo: ia
+  - imagem: /assets/img/gallery/g23.jpg
+    projeto: Barlô Arquitetura
+    tipo: ia
+  - imagem: /assets/img/gallery/g24.jpg
+    projeto: Barlô Arquitetura
+    tipo: ia
+  - imagem: /assets/img/gallery/g25.jpg
+    projeto: Natasha Vieira
+    tipo: ia
+  - imagem: /assets/img/gallery/g26.jpg
+    projeto: Marla Riva
+    tipo: ia
+  - imagem: /assets/img/gallery/g27.jpg
+    projeto: Marla Riva
+    tipo: vray
+  - imagem: /assets/img/gallery/g28.jpg
+    projeto: Marla Riva
+    tipo: vray
+  - imagem: /assets/img/gallery/g29.jpg
+    projeto: Marla Riva
+    tipo: vray
+  - imagem: /assets/img/gallery/g30.jpg
+    projeto: Natasha Vieira
+    tipo: ia

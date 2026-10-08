@@ -1,0 +1,22 @@
+chamada: para quem
+titulo: trabalho lado a lado com quem projeta — *e com quem está aprendendo a projetar*
+publicos:
+  - botao: sou arquiteto ou designer
+    etiqueta: arquitetos & designers
+    titulo: terceirização técnica para escritórios e construtoras
+    texto: com agilidade e consistência, pra você entregar aos seus clientes imagens e documentos que comunicam o projeto com clareza.
+    itens:
+      - renderização IA ou V-Ray
+      - modelagem 3D
+      - detalhamento
+      - executivo
+  - botao: sou estudante
+    etiqueta: estudantes
+    titulo: apoio para trabalhos, pranchas e apresentações
+    texto: ainda estou na graduação de Arquitetura e Urbanismo — sei exatamente a pressão de uma entrega. faço o material técnico enquanto você foca no conceito do projeto.
+    itens:
+      - mapas urbanos
+      - diagramação de prancha
+      - renderizações
+      - modelagem 3D
+      - diagramas e esquemas técnicos
