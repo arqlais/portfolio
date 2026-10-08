@@ -5,9 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
   <title>Editar portfólio — Laís</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%234b5e6c'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Georgia,serif' font-style='italic' fill='%23f5f2ee' text-anchor='middle'%3El%3C/text%3E%3C/svg%3E">
+  <style>
+    /* Identidade visual do portfólio aplicada ao painel (Sveltia CMS). */
+    @font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+    @font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-Medium.woff2') format('woff2');font-weight:500;font-display:swap}
+    @font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+    @font-face{font-family:'The Seasons';src:url('/assets/fonts/TheSeasonsIt.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
+
+    /* Mesmas cores do site, em claro e também no lugar do modo escuro. */
+    html:root,
+    html:root[data-theme] {
+      color-scheme: light;
+      --sui-base-hue: 205;
+      --sui-font-family-default: 'Poppins', system-ui, sans-serif;
+
+      --sui-foreground-color-1-hsl: 205 18% 22%;
+      --sui-foreground-color-2-hsl: 205 14% 30%;
+      --sui-foreground-color-3-hsl: 205 10% 40%;
+      --sui-foreground-color-4-hsl: 205 7% 52%;
+      --sui-foreground-color-5-hsl: 205 6% 66%;
+
+      --sui-background-color-1-hsl: 0 0% 100%;
+      --sui-background-color-2-hsl: 34 30% 97%;
+      --sui-background-color-3-hsl: 34 27% 95%;
+      --sui-background-color-4-hsl: 38 22% 91%;
+      --sui-background-color-5-hsl: 43 20% 84%;
+
+      --sui-border-color-1-hsl: 43 14% 66%;
+      --sui-border-color-2-hsl: 43 18% 78%;
+      --sui-border-color-3-hsl: 43 22% 85%;
+      --sui-shadow-color: 210 6% 21%;
+
+      --sui-primary-accent-color: #4b5e6c;
+      --sui-primary-accent-color-light: #5d7282;
+      --sui-primary-accent-color-dark: #3e4d59;
+      --sui-primary-accent-color-text: #3e4d59;
+      --sui-primary-accent-color-inverted: #ffffff;
+      --sui-primary-accent-color-translucent: rgba(75, 94, 108, .6);
+      --sui-primary-accent-color-translucent-light: rgba(75, 94, 108, .35);
+      --sui-focus-ring-color: #ab8e86;
+      --sui-selected-background-color: #eee0dc;
+      --sui-info-color-hue: 205;
+
+      --sui-control-medium-border-radius: 10px;
+      --sui-textbox-border-radius: 10px;
+    }
+
+    body { background: #f5f2ee; }
+
+    /* Tela de entrada */
+    .sui.app-shell .inner > img.logo {
+      width: 112px; height: 112px; object-fit: cover;
+      border-radius: 50%; box-shadow: 0 10px 40px rgba(51, 54, 58, .12);
+      border: 4px solid #fff;
+    }
+    .sui.app-shell .inner > h1 {
+      font-family: 'The Seasons', Georgia, serif; font-style: italic; font-weight: 500;
+      color: #ab8e86; font-size: 40px; letter-spacing: 0;
+    }
+
+    /* Ajuda para a primeira vez, só na tela de entrada */
+    #ajuda-token {
+      position: fixed; z-index: 10000; left: 50%; bottom: 24px; transform: translateX(-50%);
+      width: min(440px, calc(100% - 32px)); box-sizing: border-box;
+      background: #fff; border: 1px solid #e0dbce; border-radius: 18px;
+      padding: 16px 20px; box-shadow: 0 10px 40px rgba(51, 54, 58, .08);
+      font: 400 14px/1.55 'Poppins', system-ui, sans-serif; color: #334049; text-align: center;
+    }
+    #ajuda-token b { color: #3e4d59; font-weight: 600; }
+    #ajuda-token a { color: #ab8e86; font-weight: 600; }
+    #ajuda-token[hidden] { display: none; }
+  </style>
 </head>
 <body>
   <!-- Painel de edição do site (Sveltia CMS). A configuração fica em admin/config.yml. -->
+  <div id="ajuda-token" hidden>
+    <b>primeira vez aqui?</b> clique em “Entrar usando token de acesso” e cole o seu token do GitHub.
+    ainda não tem um? <a href="https://github.com/settings/personal-access-tokens/new?name=Painel%20portf%C3%B3lio&description=Editar%20o%20site%20lais3d.com.br&target_name=arqlais&expires_in=366&contents=write" target="_blank" rel="noopener">criar meu token</a>
+  </div>
   <script src="https://unpkg.com/@sveltia/cms@0.219.0/dist/sveltia-cms.js"></script>
+  <script>
+    // Mostra a ajuda só enquanto a tela de entrada (com a foto) estiver aberta.
+    (function () {
+      var ajuda = document.getElementById('ajuda-token');
+      var atualizar = function () {
+        ajuda.hidden = !document.querySelector('.sui.app-shell .inner > img.logo');
+      };
+      new MutationObserver(atualizar).observe(document.body, { childList: true, subtree: true });
+      atualizar();
+    })();
+  </script>
 </body>
 </html>
