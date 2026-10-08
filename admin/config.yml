@@ -1,0 +1,263 @@
+# Painel de edição do portfólio — abra www.lais3d.com.br/admin
+# Cada "Salvar" grava as mudanças no GitHub e o site se atualiza sozinho em ~1 minuto.
+
+app_title: Editar portfólio — Laís
+site_url: https://www.lais3d.com.br
+logo:
+  src: /assets/img/profile.jpg
+
+backend:
+  name: github
+  repo: arqlais/portfolio
+  branch: main
+  auth_methods: [token]
+  commit_messages:
+    update: "Atualiza {{path}} pelo painel"
+    uploadMedia: "Envia {{path}} pelo painel"
+    deleteMedia: "Remove {{path}} pelo painel"
+
+media_folder: assets/img
+public_folder: /assets/img
+
+singletons:
+  - name: inicio
+    label: Início (topo do site)
+    file: _data/inicio.yml
+    fields:
+      - { name: foto, label: Foto de perfil, widget: image }
+      - { name: foto_alt, label: Descrição da foto (acessibilidade), widget: string }
+      - { name: chamada_topo, label: Chamada no topo, widget: string }
+      - { name: ano, label: Ano, widget: string }
+      - { name: saudacao, label: Saudação (letra cursiva), widget: string }
+      - name: apresentacao
+        label: Apresentação
+        widget: markdown
+        buttons: [bold, italic]
+        editor_components: []
+        hint: Use o negrito para destacar palavras.
+      - name: selos
+        label: Selos
+        widget: list
+        summary: "{{fields.titulo}}"
+        fields: &selo
+          - name: icone
+            label: Ícone
+            widget: select
+            options: [formatura, medalha, maleta, alvo, imagem, cubo, lapis, prancheta, mapa, prancha]
+          - { name: titulo, label: Título, widget: string }
+          - { name: texto, label: Texto, widget: string }
+      - { name: botao_portfolio, label: Botão “ver portfólio”, widget: string }
+      - { name: botao_whatsapp, label: Botão do WhatsApp, widget: string }
+      - name: faixa_rolante
+        label: Faixa rolante (palavras)
+        widget: list
+        field: { name: palavra, label: Palavra, widget: string }
+      - name: numeros
+        label: Números
+        widget: list
+        summary: "{{fields.numero}}{{fields.sufixo}} {{fields.legenda}}"
+        fields:
+          - { name: numero, label: Número, widget: number, value_type: int }
+          - { name: sufixo, label: Sufixo (ex. +), widget: string, required: false }
+          - { name: legenda, label: Legenda, widget: string }
+      - { name: destaque_frase, label: Faixa escura — frase cursiva, widget: string }
+      - { name: destaque_titulo, label: Faixa escura — título, widget: string }
+      - { name: destaque_texto, label: Faixa escura — texto, widget: text }
+
+  - name: portfolio
+    label: Portfólio (galeria de renders)
+    file: _data/portfolio.yml
+    fields:
+      - { name: chamada, label: Chamada, widget: string }
+      - &titulo_cursivo
+        name: titulo
+        label: Título
+        widget: string
+        hint: "Coloque *entre asteriscos* o trecho que aparece em letra cursiva."
+      - { name: texto, label: Texto, widget: text }
+      - name: imagens
+        label: Imagens
+        label_singular: Imagem
+        widget: list
+        summary: "{{fields.projeto}} — {{fields.tipo}}"
+        fields:
+          - name: imagem
+            label: Imagem
+            widget: image
+            media_folder: /assets/img/gallery
+            public_folder: /assets/img/gallery
+          - { name: projeto, label: Projeto / cliente, widget: string }
+          - name: tipo
+            label: Tipo de render
+            widget: select
+            default: vray
+            options:
+              - { label: V-Ray, value: vray }
+              - { label: Renderização com IA, value: ia }
+
+  - name: comparar
+    label: Comparar (V-Ray × IA)
+    file: _data/comparar.yml
+    fields:
+      - { name: chamada, label: Chamada, widget: string }
+      - *titulo_cursivo
+      - { name: texto, label: Texto, widget: text }
+      - { name: vray_texto, label: Texto do V-Ray, widget: text }
+      - { name: ia_texto, label: Texto da IA, widget: text }
+      - name: comparacoes
+        label: Comparações (arrastar)
+        label_singular: Comparação
+        widget: list
+        summary: "{{fields.ambiente}}"
+        fields:
+          - { name: ambiente, label: Ambiente, widget: string }
+          - { name: descricao_alt, label: Descrição da imagem (acessibilidade), widget: string }
+          - { name: credito, label: Crédito, widget: string, required: false }
+          - name: imagem_print
+            label: Imagem “print” (antes)
+            widget: image
+            media_folder: /assets/img/compare
+            public_folder: /assets/img/compare
+          - name: imagem_ia
+            label: Imagem final com IA (depois)
+            widget: image
+            media_folder: /assets/img/compare
+            public_folder: /assets/img/compare
+
+  - name: projetos
+    label: Estudos de caso
+    file: _data/projetos.yml
+    fields:
+      - { name: chamada, label: Chamada, widget: string }
+      - *titulo_cursivo
+      - { name: texto, label: Texto, widget: text }
+      - name: projetos
+        label: Projetos
+        label_singular: Projeto
+        widget: list
+        summary: "{{fields.categoria}}"
+        fields:
+          - name: imagem
+            label: Imagem
+            widget: image
+            media_folder: /assets/img/cases
+            public_folder: /assets/img/cases
+          - { name: descricao_alt, label: Descrição da imagem (acessibilidade), widget: string }
+          - { name: legenda, label: Legenda ao ampliar, widget: string }
+          - { name: categoria, label: Categoria, widget: string }
+          - *titulo_cursivo
+          - { name: texto, label: Texto, widget: text }
+          - name: ficha
+            label: Ficha técnica
+            widget: list
+            summary: "{{fields.rotulo}}: {{fields.valor}}"
+            fields:
+              - { name: rotulo, label: Rótulo, widget: string }
+              - { name: valor, label: Valor, widget: string }
+
+  - name: para_quem
+    label: Para quem
+    file: _data/para_quem.yml
+    fields:
+      - { name: chamada, label: Chamada, widget: string }
+      - *titulo_cursivo
+      - name: publicos
+        label: Públicos (abas)
+        label_singular: Público
+        widget: list
+        summary: "{{fields.botao}}"
+        fields:
+          - { name: botao, label: Texto do botão, widget: string }
+          - { name: etiqueta, label: Etiqueta, widget: string }
+          - { name: titulo, label: Título, widget: string }
+          - { name: texto, label: Texto, widget: text }
+          - name: itens
+            label: Itens da lista
+            widget: list
+            field: { name: item, label: Item, widget: string }
+
+  - name: servicos
+    label: Serviços e softwares
+    file: _data/servicos.yml
+    fields:
+      - { name: chamada, label: Chamada, widget: string }
+      - *titulo_cursivo
+      - { name: texto, label: Texto, widget: text }
+      - name: servicos
+        label: Serviços
+        label_singular: Serviço
+        widget: list
+        summary: "{{fields.titulo}}"
+        fields:
+          - name: icone
+            label: Ícone
+            widget: select
+            options: [imagem, cubo, lapis, prancheta, mapa, prancha, formatura, medalha, maleta, alvo]
+          - { name: titulo, label: Título, widget: string }
+          - { name: texto, label: Texto, widget: text }
+      - { name: botao, label: Texto do botão de orçamento, widget: string }
+      - { name: mensagem_whatsapp, label: Mensagem pronta do WhatsApp, widget: string }
+      - { name: softwares_chamada, label: Softwares — chamada, widget: string }
+      - name: softwares_titulo
+        label: Softwares — título
+        widget: string
+        hint: "Coloque *entre asteriscos* o trecho que aparece em letra cursiva."
+      - { name: softwares_texto, label: Softwares — texto, widget: text }
+      - name: softwares
+        label: Softwares
+        widget: list
+        field: { name: software, label: Software, widget: string }
+
+  - name: como_funciona
+    label: Como funciona
+    file: _data/como_funciona.yml
+    fields:
+      - { name: chamada, label: Chamada, widget: string }
+      - *titulo_cursivo
+      - { name: texto, label: Texto, widget: text }
+      - name: etapas
+        label: Etapas
+        label_singular: Etapa
+        widget: list
+        summary: "{{fields.titulo}}"
+        fields:
+          - { name: titulo, label: Título, widget: string }
+          - { name: texto, label: Texto, widget: text }
+
+  - name: sobre_mim
+    label: Sobre mim
+    file: _data/sobre_mim.yml
+    fields:
+      - { name: chamada, label: Chamada, widget: string }
+      - *titulo_cursivo
+      - { name: texto, label: Texto, widget: text }
+      - name: selos
+        label: Selos
+        widget: list
+        summary: "{{fields.titulo}}"
+        fields: *selo
+
+  - name: contato
+    label: Chamada final
+    file: _data/contato.yml
+    fields:
+      - { name: frase, label: Frase cursiva, widget: string }
+      - { name: titulo, label: Título, widget: string }
+      - { name: texto, label: Texto, widget: text }
+      - { name: botao_orcamento, label: Botão de orçamento, widget: string }
+      - { name: botao_email, label: Botão de e-mail, widget: string }
+
+  - name: geral
+    label: Dados gerais e contato
+    file: _data/geral.yml
+    fields:
+      - { name: titulo_pagina, label: Título da aba do navegador, widget: string }
+      - { name: descricao_pagina, label: Descrição para o Google, widget: text }
+      - { name: marca, label: Logo (texto), widget: string }
+      - { name: nome, label: Nome completo, widget: string }
+      - { name: whatsapp_numero, label: "WhatsApp (só números, com 55 e DDD)", widget: string, hint: "Ex.: 5511969288192" }
+      - { name: whatsapp_exibicao, label: WhatsApp (como aparece no rodapé), widget: string }
+      - { name: email, label: E-mail, widget: string }
+      - { name: instagram_usuario, label: Instagram (sem @), widget: string }
+      - { name: rodape_descricao, label: Descrição no rodapé, widget: text }
+      - { name: rodape_servicos, label: Linha final do rodapé, widget: string }
