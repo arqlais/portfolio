@@ -603,7 +603,9 @@
     if (campo.label) wrap.append(el('span', 'rotulo', campo.label));
     const linha = el('div', 'foto-campo');
     const enq = campo.enquadramento ? obj[campo.enquadramento] : null;
-    linha.append(criarMoldura(obj[campo.name], campo, enq));
+    const miniatura = criarMoldura(obj[campo.name], campo, enq);
+    miniatura.classList.add('tocavel');
+    linha.append(miniatura);
     const botoes = el('div', 'foto-botoes');
 
     const trocar = el('button', 'btn btn-ghost btn-sm', obj[campo.name] ? (campo.curto ? 'trocar' : 'trocar foto') : 'escolher foto');
@@ -640,6 +642,10 @@
       };
       botoes.append(ajustar);
     }
+    // Tocar/clicar na própria foto: enquadra (se der) ou escolhe outra foto.
+    const acaoFoto = botoes.querySelector('.btn-terra') || trocar;
+    miniatura.title = acaoFoto === trocar ? 'escolher foto' : 'ajustar enquadramento';
+    miniatura.onclick = () => acaoFoto.click();
     linha.append(botoes);
     wrap.append(linha);
     return wrap;
