@@ -227,8 +227,18 @@
     if (conteudo != null) e.textContent = conteudo;
     return e;
   };
-  const guardar = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (_) {} };
-  const ler = (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } };
+  // "manter conectada": o token fica no aparelho (localStorage); sem isso, só até fechar o
+  // navegador (sessionStorage).
+  const guardarToken = (valor, lembrar) => {
+    try {
+      localStorage.removeItem(CHAVE_TOKEN);
+      sessionStorage.removeItem(CHAVE_TOKEN);
+      if (valor) (lembrar ? localStorage : sessionStorage).setItem(CHAVE_TOKEN, valor);
+    } catch (_) {}
+  };
+  const lerToken = () => {
+    try { return localStorage.getItem(CHAVE_TOKEN) || sessionStorage.getItem(CHAVE_TOKEN) || ''; } catch (_) { return ''; }
+  };
   const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
 
   let timerAviso;
@@ -839,9 +849,11 @@
   };
 
   const sair = (mensagem) => {
-    if (alterados.size && !mensagem && !confirm('você tem alterações não salvas. sair mesmo assim?')) return;
+    if (!mensagem && !confirm(alterados.size
+      ? 'você tem alterações não salvas. sair mesmo assim?'
+      : 'sair do painel neste aparelho? para entrar de novo, vai precisar do token.')) return;
     token = '';
-    guardar(CHAVE_TOKEN, null);
+    guardarToken(null);
     alterados.clear();
     $('#tela-painel').hidden = true;
     $('#tela-entrada').hidden = false;
@@ -861,7 +873,12 @@
     botao.textContent = 'entrando…';
     try {
       await verificarToken();
-      guardar(CHAVE_TOKEN, token);
+      const lembrar = $('#campo-lembrar').checked;
+      guardarToken(token, lembrar);
+      // Oferece salvar o token no gerenciador de senhas do navegador (Chrome/Android).
+      if (lembrar && window.PasswordCredential && navigator.credentials) {
+        navigator.credentials.store(new PasswordCredential({ id: 'arqlais', password: token, name: 'Painel do portfólio' })).catch(() => {});
+      }
       await entrarNoPainel();
     } catch (e) {
       token = '';
@@ -891,7 +908,7 @@
     if (alterados.size) { ev.preventDefault(); ev.returnValue = ''; }
   });
 
-  token = ler(CHAVE_TOKEN);
+  token = lerToken();
   if (token) entrarNoPainel();
   else $('#tela-entrada').hidden = false;
 })();
