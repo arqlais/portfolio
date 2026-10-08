@@ -439,6 +439,10 @@ h1,h2,h3,h4{font-family:var(--display);color:var(--navy-dark);font-weight:700;le
 .case-media{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg);background:var(--cream)}
 .case-media img{width:100%;height:auto;display:block;cursor:zoom-in;transition:transform .5s var(--ease)}
 .case-media:hover img{transform:scale(1.03)}
+/* Estudo de caso com formato escolhido no painel: recorta e aplica o enquadramento */
+.case-media.recorte img{height:100%;object-fit:cover;object-position:var(--fx,50%) var(--fy,50%);
+  transform:scale(var(--fz,1));transform-origin:var(--fx,50%) var(--fy,50%)}
+.case-media.recorte:hover img{transform:scale(calc(var(--fz,1) * 1.03))}
 .case-body h3{font-size:clamp(24px,3vw,32px);margin:8px 0 20px}
 .case-body p.desc{color:var(--ink);font-size:15.5px;margin-bottom:22px}
 .case-meta{

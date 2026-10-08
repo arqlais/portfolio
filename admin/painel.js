@@ -39,6 +39,12 @@
     novo: () => ({ icone: 'medalha', titulo: '', texto: '' }),
   };
 
+  // Formatos possíveis para a imagem de um estudo de caso ("inteira" = sem corte).
+  const FORMATOS_CASO = [
+    ['inteira', 'inteira'], ['1.414/1', 'prancha'], ['4/3', 'paisagem'],
+    ['16/9', 'panorâmica'], ['1/1', 'quadrada'], ['4/5', 'retrato'],
+  ];
+
   const SECOES = [
     {
       arquivo: 'inicio', nome: 'início', ancora: '#hero',
@@ -109,12 +115,13 @@
     {
       arquivo: 'projetos', nome: 'estudos de caso', ancora: '#projetos',
       titulo: 'estudos de <span class="script">caso</span>',
-      descricao: 'as pranchas e projetos com descrição e ficha técnica. aqui a imagem aparece inteira, sem corte.',
+      descricao: 'as pranchas e projetos com descrição e ficha técnica. escolha se a imagem aparece inteira ou num formato fixo — aí dá para enquadrar.',
       grupos: [
         { titulo: 'projetos', campos: [
           { type: 'list', name: 'projetos', label: '', singular: 'projeto', resumo: (p) => p.categoria,
             fields: [
-              { type: 'image', name: 'imagem', label: 'imagem', pasta: 'assets/img/cases' },
+              { type: 'formato', name: 'formato', label: 'formato da imagem no site', opcoes: FORMATOS_CASO },
+              { type: 'image', name: 'imagem', label: 'imagem', pasta: 'assets/img/cases', proporcaoDe: 'formato', enquadramento: 'enquadramento' },
               { type: 'duas', campos: [texto('categoria', 'categoria (texto pequeno)'), titulo()] },
               textoLongo('texto', 'descrição'),
               { type: 'list', name: 'ficha', label: 'ficha técnica', singular: 'linha', layout: 'linhas',
@@ -430,7 +437,11 @@
     const est = { x: valor?.x ?? 50, y: valor?.y ?? 50, zoom: valor?.zoom ?? 1 };
     caixa.innerHTML = '';
 
-    const largura = fotos.length > 1 ? 'min(300px, 42vw)' : (campo.forma === 'arco' ? 'min(320px, 70vw)' : 'min(380px, 80vw)');
+    const [pw, ph] = String(campo.proporcao || '1/1').split('/').map(Number);
+    const deitada = pw / (ph || 1) > 1.05;
+    const largura = fotos.length > 1 ? 'min(300px, 42vw)'
+      : campo.forma === 'arco' ? 'min(320px, 70vw)'
+      : deitada ? 'min(620px, 86vw)' : 'min(380px, 80vw)';
     const molduras = fotos.map((f) => {
       const fig = el('figure');
       const m = criarMoldura(f.caminho, campo, est, largura);
@@ -591,6 +602,7 @@
         obj[campo.name] = valor;
         grupo.querySelectorAll('button').forEach((x) => x.classList.toggle('ativo', x === b));
         marcar();
+        if (campo.redesenhar) redesenhar();
       };
       grupo.append(b);
     });
@@ -598,7 +610,32 @@
     return wrap;
   };
 
-  const campoFoto = (campo, obj) => {
+  // Escolha do formato: grade com um desenho da proporção em cada opção.
+  const campoFormato = (campo, obj) => {
+    const wrap = el('div', 'campo');
+    wrap.append(el('span', 'rotulo', campo.label));
+    const grade = el('div', 'formatos');
+    const atual = obj[campo.name] || campo.opcoes[0][0];
+    campo.opcoes.forEach(([valor, nome]) => {
+      const b = el('button', valor === atual ? 'ativo' : '');
+      b.type = 'button';
+      const forma = el('span', 'forma' + (valor === 'inteira' ? ' livre' : ''));
+      if (valor !== 'inteira') forma.style.aspectRatio = valor;
+      b.append(forma, el('span', null, nome));
+      b.onclick = () => { obj[campo.name] = valor; marcar(); redesenhar(); };
+      grade.append(b);
+    });
+    wrap.append(grade);
+    return wrap;
+  };
+
+  const campoFoto = (campoBase, obj) => {
+    let campo = campoBase;
+    if (campoBase.proporcaoDe) {
+      const formato = obj[campoBase.proporcaoDe];
+      const fixo = formato && formato !== 'inteira';
+      campo = { ...campoBase, proporcao: fixo ? formato : null, enquadramento: fixo ? campoBase.enquadramento : null };
+    }
     const wrap = el('div', 'campo');
     if (campo.label) wrap.append(el('span', 'rotulo', campo.label));
     const linha = el('div', 'foto-campo');
@@ -617,7 +654,7 @@
       trocar.textContent = 'preparando…';
       try {
         obj[campo.name] = await prepararFoto(arquivo, campo.pasta);
-        if (campo.enquadramento && !campo.par) delete obj[campo.enquadramento];
+        if (campoBase.enquadramento && !campo.par) delete obj[campoBase.enquadramento];
         marcar();
       } catch (_) {
         avisar('não consegui abrir essa imagem. tente uma foto em JPG ou PNG.', true);
@@ -641,6 +678,9 @@
         });
       };
       botoes.append(ajustar);
+    }
+    if (campoBase.proporcaoDe && !campo.proporcao && obj[campo.name]) {
+      botoes.append(el('p', 'dica', 'a imagem aparece inteira. para enquadrar, escolha um formato acima.'));
     }
     // Tocar/clicar na própria foto: enquadra (se der) ou escolhe outra foto.
     const acaoFoto = botoes.querySelector('.btn-terra') || trocar;
@@ -776,6 +816,7 @@
       case 'image': return campoFoto(campo, obj);
       case 'icon': return campoIcone(campo, obj);
       case 'opcoes': return campoOpcoes(campo, obj);
+      case 'formato': return campoFormato(campo, obj);
       case 'list': return campoLista(campo, obj);
       default: return campoTexto(campo, obj);
     }

@@ -279,8 +279,9 @@
       </div>
       {% for c in pj.projetos %}
       <div class="case reveal">
-        <div class="case-media">
-          <img src="{{ c.imagem | relative_url }}" alt="{{ c.descricao_alt | escape }}" loading="lazy" decoding="async" data-caption="{{ c.legenda | escape }}">
+        {%- assign formato = c.formato | default: 'inteira' %}
+        <div class="case-media{% if formato != 'inteira' %} recorte" style="aspect-ratio:{{ formato }}{% endif %}">
+          <img src="{{ c.imagem | relative_url }}"{% if formato != 'inteira' %}{% include enquadramento.html e=c.enquadramento %}{% endif %} alt="{{ c.descricao_alt | escape }}" loading="lazy" decoding="async" data-caption="{{ c.legenda | escape }}">
         </div>
         <div class="case-body">
           <span class="eyebrow">{{ c.categoria | escape }}</span>

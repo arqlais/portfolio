@@ -157,6 +157,17 @@ textarea{min-height:92px;resize:vertical;line-height:1.5}
 .opcoes button{border:none;background:none;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--muted)}
 .opcoes button.ativo{background:#fff;color:var(--navy-dark);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
+/* Formato da imagem (estudos de caso) */
+.formatos{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.formatos button{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-height:84px;
+  padding:12px 6px 10px;border:1.5px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted)}
+.formatos button:hover{border-color:var(--navy)}
+.formatos .forma{display:block;height:34px;max-width:52px;border-radius:5px;background:var(--cream-2)}
+.formatos .forma.livre{width:40px;height:30px;background:none;border:2px dashed var(--cream-2)}
+.formatos button.ativo{border-color:var(--navy);color:var(--navy-dark);box-shadow:0 0 0 3px var(--navy-soft)}
+.formatos button.ativo .forma{background:var(--terra)}
+.formatos button.ativo .forma.livre{background:none;border-color:var(--terra)}
+
 /* Barra de salvar */
 .barra-salvar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:30;width:min(640px,calc(100% - 32px));
   background:var(--navy-dark);color:#fff;border-radius:999px;padding:10px 10px 10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -215,6 +226,7 @@ textarea{min-height:92px;resize:vertical;line-height:1.5}
 }
 
 @media (max-width:560px){
+  .formatos{grid-template-columns:repeat(3,minmax(0,1fr))}
   .duas-colunas{grid-template-columns:minmax(0,1fr)}
   .comparacao-par{grid-template-columns:repeat(2,minmax(0,1fr))}
   .barra-salvar{border-radius:20px;padding:10px 12px;gap:8px}
