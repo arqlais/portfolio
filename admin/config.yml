@@ -16,6 +16,9 @@ backend:
     uploadMedia: "Envia {{path}} pelo painel"
     deleteMedia: "Remove {{path}} pelo painel"
 
+editor:
+  preview: false
+
 media_folder: assets/img
 public_folder: /assets/img
 
