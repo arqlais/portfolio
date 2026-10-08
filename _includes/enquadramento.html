@@ -1,0 +1,3 @@
+{%- comment -%} Gera o style com o enquadramento (posição x/y em % e zoom) escolhido no painel. {%- endcomment -%}
+{%- assign e = include.e -%}
+{%- if e %} style="--fx:{{ e.x | default: 50 }}%;--fy:{{ e.y | default: 50 }}%;--fz:{{ e.zoom | default: 1 }}"{% endif -%}

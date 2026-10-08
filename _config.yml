@@ -1,5 +1,5 @@
 # Configuração do Jekyll (o GitHub Pages monta o site automaticamente).
-# Os textos e imagens ficam em _data/ e são editados pelo painel em /admin (Sveltia CMS).
+# Os textos e imagens ficam em _data/ e são editados pelo painel em /admin (admin/painel.js).
 title: Laís Vieira — Portfólio
 markdown: kramdown
 exclude:

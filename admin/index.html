@@ -4,97 +4,80 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <title>Editar portfólio — Laís</title>
+  <title>Painel — laís</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%234b5e6c'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Georgia,serif' font-style='italic' fill='%23f5f2ee' text-anchor='middle'%3El%3C/text%3E%3C/svg%3E">
-  <style>
-    /* Identidade visual do portfólio aplicada ao painel (Sveltia CMS). */
-    @font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
-    @font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-Medium.woff2') format('woff2');font-weight:500;font-display:swap}
-    @font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
-    @font-face{font-family:'The Seasons';src:url('/assets/fonts/TheSeasonsIt.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
-
-    /* Mesmas cores do site, em claro e também no lugar do modo escuro. */
-    html:root,
-    html:root[data-theme] {
-      color-scheme: light;
-      --sui-base-hue: 205;
-      --sui-font-family-default: 'Poppins', system-ui, sans-serif;
-
-      --sui-foreground-color-1-hsl: 205 18% 22%;
-      --sui-foreground-color-2-hsl: 205 14% 30%;
-      --sui-foreground-color-3-hsl: 205 10% 40%;
-      --sui-foreground-color-4-hsl: 205 7% 52%;
-      --sui-foreground-color-5-hsl: 205 6% 66%;
-
-      --sui-background-color-1-hsl: 0 0% 100%;
-      --sui-background-color-2-hsl: 34 30% 97%;
-      --sui-background-color-3-hsl: 34 27% 95%;
-      --sui-background-color-4-hsl: 38 22% 91%;
-      --sui-background-color-5-hsl: 43 20% 84%;
-
-      --sui-border-color-1-hsl: 43 14% 66%;
-      --sui-border-color-2-hsl: 43 18% 78%;
-      --sui-border-color-3-hsl: 43 22% 85%;
-      --sui-shadow-color: 210 6% 21%;
-
-      --sui-primary-accent-color: #4b5e6c;
-      --sui-primary-accent-color-light: #5d7282;
-      --sui-primary-accent-color-dark: #3e4d59;
-      --sui-primary-accent-color-text: #3e4d59;
-      --sui-primary-accent-color-inverted: #ffffff;
-      --sui-primary-accent-color-translucent: rgba(75, 94, 108, .6);
-      --sui-primary-accent-color-translucent-light: rgba(75, 94, 108, .35);
-      --sui-focus-ring-color: #ab8e86;
-      --sui-selected-background-color: #eee0dc;
-      --sui-info-color-hue: 205;
-
-      --sui-control-medium-border-radius: 10px;
-      --sui-textbox-border-radius: 10px;
-    }
-
-    body { background: #f5f2ee; }
-
-    /* Tela de entrada */
-    .sui.app-shell .inner > img.logo {
-      width: 112px; height: 112px; object-fit: cover;
-      border-radius: 50%; box-shadow: 0 10px 40px rgba(51, 54, 58, .12);
-      border: 4px solid #fff;
-    }
-    .sui.app-shell .inner > h1 {
-      font-family: 'The Seasons', Georgia, serif; font-style: italic; font-weight: 500;
-      color: #ab8e86; font-size: 40px; letter-spacing: 0;
-    }
-
-    /* Ajuda para a primeira vez, só na tela de entrada */
-    #ajuda-token {
-      position: fixed; z-index: 10000; left: 50%; bottom: 24px; transform: translateX(-50%);
-      width: min(440px, calc(100% - 32px)); box-sizing: border-box;
-      background: #fff; border: 1px solid #e0dbce; border-radius: 18px;
-      padding: 16px 20px; box-shadow: 0 10px 40px rgba(51, 54, 58, .08);
-      font: 400 14px/1.55 'Poppins', system-ui, sans-serif; color: #334049; text-align: center;
-    }
-    #ajuda-token b { color: #3e4d59; font-weight: 600; }
-    #ajuda-token a { color: #ab8e86; font-weight: 600; }
-    #ajuda-token[hidden] { display: none; }
-  </style>
+  <link rel="stylesheet" href="painel.css">
 </head>
 <body>
-  <!-- Painel de edição do site (Sveltia CMS). A configuração fica em admin/config.yml. -->
-  <div id="ajuda-token" hidden>
-    <b>primeira vez aqui?</b> clique em “Entrar usando token de acesso” e cole o seu token do GitHub.
-    ainda não tem um? <a href="https://github.com/settings/personal-access-tokens/new?name=Painel%20portf%C3%B3lio&description=Editar%20o%20site%20lais3d.com.br&target_name=arqlais&expires_in=366&contents=write" target="_blank" rel="noopener">criar meu token</a>
+
+  <!-- Entrada -->
+  <section id="tela-entrada" class="entrada" hidden>
+    <div class="entrada-card">
+      <img class="entrada-foto" src="/assets/img/profile.jpg" alt="">
+      <span class="script">olá, Laís!</span>
+      <h1>painel do portfólio</h1>
+      <p>aqui você troca fotos e textos do site. as mudanças aparecem em <b>www.lais3d.com.br</b> cerca de 1 minuto depois de salvar.</p>
+      <form id="form-entrada">
+        <label for="campo-token">seu token do GitHub</label>
+        <input id="campo-token" type="password" autocomplete="current-password" placeholder="github_pat_…" required>
+        <button class="btn btn-primary" type="submit">entrar</button>
+        <p class="erro" id="erro-entrada" hidden></p>
+      </form>
+      <details class="ajuda">
+        <summary>como consigo meu token? (só na primeira vez)</summary>
+        <ol>
+          <li>abra <a href="https://github.com/settings/personal-access-tokens/new?name=Painel%20portf%C3%B3lio&description=Editar%20o%20site%20lais3d.com.br&target_name=arqlais&expires_in=366&contents=write" target="_blank" rel="noopener">esta página do GitHub</a> (entre na sua conta, se pedir);</li>
+          <li>em <b>Repository access</b>, escolha <b>Only select repositories</b> → <b>portfolio</b>;</li>
+          <li>em <b>Permissions → Contents</b>, escolha <b>Read and write</b>;</li>
+          <li>clique em <b>Generate token</b>, copie o código e cole aqui.</li>
+        </ol>
+        <p>este aparelho lembra o token — nas próximas vezes você já entra direto. não compartilhe o token com ninguém: ele funciona como uma senha.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Painel -->
+  <div id="tela-painel" class="painel" hidden>
+    <header class="topo">
+      <a class="marca" href="/" target="_blank" rel="noopener"><b>laís</b><span>.</span> <small>painel</small></a>
+      <div class="topo-acoes">
+        <a class="btn btn-ghost btn-sm" href="/" target="_blank" rel="noopener">ver site ↗</a>
+        <button class="btn btn-ghost btn-sm" id="botao-sair" type="button">sair</button>
+      </div>
+    </header>
+    <nav class="menu" id="menu"></nav>
+    <main class="conteudo" id="conteudo"><p class="carregando">carregando…</p></main>
+    <div class="barra-salvar" id="barra-salvar" hidden>
+      <span id="barra-texto">alterações não salvas</span>
+      <div>
+        <button class="btn btn-ghost btn-sm" id="botao-descartar" type="button">descartar</button>
+        <button class="btn btn-primary btn-sm" id="botao-salvar" type="button">salvar e publicar</button>
+      </div>
+    </div>
   </div>
-  <script src="https://unpkg.com/@sveltia/cms@0.219.0/dist/sveltia-cms.js"></script>
-  <script>
-    // Mostra a ajuda só enquanto a tela de entrada (com a foto) estiver aberta.
-    (function () {
-      var ajuda = document.getElementById('ajuda-token');
-      var atualizar = function () {
-        ajuda.hidden = !document.querySelector('.sui.app-shell .inner > img.logo');
-      };
-      new MutationObserver(atualizar).observe(document.body, { childList: true, subtree: true });
-      atualizar();
-    })();
-  </script>
+
+  <!-- Enquadramento -->
+  <div class="modal" id="modal-enquadrar" hidden>
+    <div class="modal-caixa">
+      <h2>ajustar <span class="script">enquadramento</span></h2>
+      <p class="modal-dica">arraste a foto para posicionar e use o zoom (no celular, também dá para usar dois dedos). é exatamente assim que ela vai aparecer no site.</p>
+      <div class="enq-molduras" id="enq-molduras"></div>
+      <div class="enq-zoom">
+        <span>zoom</span>
+        <input type="range" id="enq-zoom" min="1" max="3" step="0.01" value="1">
+      </div>
+      <div class="modal-acoes">
+        <button class="btn btn-ghost btn-sm" id="enq-centralizar" type="button">centralizar</button>
+        <span class="espaco"></span>
+        <button class="btn btn-ghost btn-sm" id="enq-cancelar" type="button">cancelar</button>
+        <button class="btn btn-primary btn-sm" id="enq-aplicar" type="button">aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="aviso" id="aviso" hidden></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script src="painel.js"></script>
 </body>
 </html>

@@ -65,7 +65,7 @@
 
       <div class="hero-grid">
         <div class="hero-photo reveal">
-          <img src="{{ inicio.foto | relative_url }}" alt="{{ inicio.foto_alt | escape }}" fetchpriority="high" decoding="async">
+          <img src="{{ inicio.foto | relative_url }}"{% include enquadramento.html e=inicio.foto_enquadramento %} alt="{{ inicio.foto_alt | escape }}" fetchpriority="high" decoding="async">
         </div>
 
         <div class="hero-copy reveal">
@@ -223,8 +223,8 @@
         <div class="cmp-col">
           <div class="cmp" data-cmp>
             <div class="cmp-hint">arraste ↔</div>
-            <div class="base"><img src="{{ c.imagem_ia | relative_url }}" alt="{{ c.descricao_alt | escape }} — renderização com IA" loading="lazy" decoding="async"></div>
-            <div class="over"><img src="{{ c.imagem_print | relative_url }}" alt="{{ c.descricao_alt | escape }} — imagem de referência (print)" loading="lazy" decoding="async"></div>
+            <div class="base"><img src="{{ c.imagem_ia | relative_url }}"{% include enquadramento.html e=c.enquadramento %} alt="{{ c.descricao_alt | escape }} — renderização com IA" loading="lazy" decoding="async"></div>
+            <div class="over"><img src="{{ c.imagem_print | relative_url }}"{% include enquadramento.html e=c.enquadramento %} alt="{{ c.descricao_alt | escape }} — imagem de referência (print)" loading="lazy" decoding="async"></div>
             <div class="handle"></div>
             <span class="lbl lb-base">IA</span>
             <span class="lbl lb-over">PRINT</span>
@@ -256,7 +256,7 @@
         {%- for item in pf.imagens %}
         {%- if item.tipo == 'ia' %}{% assign tipo_nome = 'renderização com IA' %}{% assign tipo_tag = 'renderização com IA' %}{% else %}{% assign tipo_nome = 'V-Ray' %}{% assign tipo_tag = 'v-ray' %}{% endif %}
         <div class="g-item" data-tag="{{ item.tipo | default: 'vray' }}" data-caption="projeto: {{ item.projeto | escape }} — {{ tipo_nome }}">
-          <img src="{{ item.imagem | relative_url }}" alt="Render 3D — Projeto {{ item.projeto | escape }}" loading="lazy" decoding="async">
+          <img src="{{ item.imagem | relative_url }}"{% include enquadramento.html e=item.enquadramento %} alt="Render 3D — Projeto {{ item.projeto | escape }}" loading="lazy" decoding="async">
           <div class="g-overlay"><span class="proj">{{ item.projeto | escape }}</span><span class="tag">{{ tipo_tag }}</span></div>
         </div>
         {%- endfor %}
