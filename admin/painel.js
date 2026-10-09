@@ -24,8 +24,40 @@
     mapa: '<path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 4v13M15 7v13"/>',
     prancha: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
   };
-  const svgIcone = (nome) =>
-    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${ICONES[nome] || ''}</svg>`;
+  const svgIcone = (nome, mapa = ICONES) =>
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${mapa[nome] || ''}</svg>`;
+  // Ícones da página de orçamento (os mesmos de _includes/icones-orcamento.html).
+  const ICONES_ORCAMENTO = {
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+    tag: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1.2"/>',
+    spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>',
+    cube: '<path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/>',
+    layers: '<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+    image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    refresh: '<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+    edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    sliders: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 8h4M18 16h4"/>',
+    home: '<path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+    eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+    phone: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+    angles: '<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/>',
+    trend: '<path d="M22 17l-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/>',
+    star: '<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+    msg: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/>',
+    mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/>',
+    insta: '<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/>',
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="M9 13h6M9 17h6"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+  };
 
   /* ---------- O que cada seção do painel mostra ---------- */
   const CURSIVA = 'o trecho entre *asteriscos* aparece em letra cursiva.';
@@ -196,6 +228,112 @@
         texto('frase', 'frase em letra cursiva'), texto('titulo', 'título'), textoLongo('texto', 'texto'),
         { type: 'duas', campos: [texto('botao_orcamento', 'botão de orçamento'), texto('botao_email', 'botão de e-mail')] },
       ] }],
+    },
+    {
+      arquivo: 'orcamento', nome: 'orçamento', ancora: 'orcamento/',
+      titulo: 'página de <span class="script">orçamento</span>',
+      descricao: 'a página www.lais3d.com.br/orcamento — textos, fotos, preços e links. o trecho entre *asteriscos* nos títulos aparece em letra cursiva; **dois asteriscos** deixam em negrito.',
+      grupos: [
+        { titulo: 'topo e apresentação', campos: [
+          { type: 'duas', campos: [texto('topo_esquerda', 'faixa do topo (esquerda)'), texto('topo_direita', 'faixa do topo (direita)')] },
+          { type: 'image', name: 'foto', label: 'sua foto', pasta: 'assets/img/orcamento', proporcao: '25/31', forma: 'arco', enquadramento: 'foto_enquadramento' },
+          texto('foto_alt', 'descrição da foto', { hint: 'usada por leitores de tela (acessibilidade).' }),
+          texto('saudacao', 'saudação (em letra cursiva)'),
+          { type: 'markdown', name: 'apresentacao', label: 'texto de apresentação', hint: 'selecione palavras e clique em B para deixar em negrito. deixe uma linha em branco para começar outro parágrafo.' },
+          { type: 'list', name: 'ferramentas', label: 'programas (pílulas)', singular: 'programa', layout: 'chips' },
+          { type: 'list', name: 'credenciais', label: 'faixa com ✓', singular: 'item', layout: 'chips' },
+        ] },
+        { titulo: 'os dois métodos', campos: [
+          texto('metodos_chamada', 'chamada (texto pequeno acima do título)'), titulo('metodos_titulo'), textoLongo('metodos_texto', 'texto'),
+          texto('ideal_rotulo', 'título da lista (ex.: ideal para)'),
+          { type: 'list', name: 'metodos', label: 'cartões', singular: 'método', resumo: (m) => m.nome,
+            fields: [
+              { type: 'image', name: 'imagem', label: 'imagem de exemplo', pasta: 'assets/img/orcamento', proporcao: '16/10', enquadramento: 'enquadramento' },
+              { type: 'duas', campos: [texto('nome', 'nome'), texto('destaque', 'pílula de destaque', { hint: 'ex.: mais escolhido, em alta. deixe vazio para não mostrar.' })] },
+              texto('rotulo', 'texto pequeno acima do nome'),
+              textoLongo('descricao', 'descrição', { hint: 'use **dois asteriscos** para negrito.' }),
+              { type: 'list', name: 'medidores', label: 'barrinhas (nota de 0 a 5)', singular: 'barrinha', resumo: (b) => `${b.nome || ''} ${b.nota ?? ''}/5`,
+                fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, { type: 'duas', campos: [texto('nome', 'nome'), { type: 'number', name: 'nota', label: 'nota (0 a 5)' }] }],
+                novo: () => ({ icone: 'target', nome: '', nota: 3 }) },
+              { type: 'list', name: 'ideal', label: 'lista “ideal para”', singular: 'item', resumo: (i) => i.texto,
+                fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, texto('texto', 'texto')],
+                novo: () => ({ icone: 'check', texto: '' }) },
+              { type: 'icon', name: 'ponto_icone', label: 'ícone do ponto forte', icones: ICONES_ORCAMENTO },
+              { type: 'duas', campos: [texto('ponto_titulo', 'ponto forte (título)'), texto('ponto_texto', 'ponto forte (texto)')] },
+            ],
+            novo: () => ({ imagem: '', nome: '', destaque: '', rotulo: '', descricao: '', medidores: [], ideal: [], ponto_icone: 'star', ponto_titulo: '', ponto_texto: '' }) },
+        ] },
+        { titulo: 'tabela lado a lado', campos: [
+          { type: 'duas', campos: [texto('comparativo_coluna_1', 'nome da 1ª coluna'), texto('comparativo_coluna_2', 'nome da 2ª coluna')] },
+          texto('comparativo_rotulo', 'título da tabela'),
+          { type: 'list', name: 'comparativo', label: 'linhas', singular: 'linha', resumo: (c) => c.criterio,
+            fields: [
+              { type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO },
+              texto('criterio', 'critério'),
+              { type: 'duas', campos: [texto('vray', '1ª coluna'), texto('vray_detalhe', 'detalhe (menor)')] },
+              { type: 'opcoes', name: 'vray_vantagem', label: '1ª coluna é vantagem?', opcoes: [['sim', '✓ sim'], ['nao', 'não']] },
+              { type: 'duas', campos: [texto('ia', '2ª coluna'), texto('ia_detalhe', 'detalhe (menor)')] },
+              { type: 'opcoes', name: 'ia_vantagem', label: '2ª coluna é vantagem?', opcoes: [['sim', '✓ sim'], ['nao', 'não']] },
+            ],
+            novo: () => ({ icone: 'check', criterio: '', vray: '', vray_detalhe: '', vray_vantagem: 'nao', ia: '', ia_detalhe: '', ia_vantagem: 'nao' }) },
+          textoLongo('comparativo_dica', 'frase abaixo da tabela', { hint: 'use **dois asteriscos** para negrito.' }),
+        ] },
+        { titulo: 'valores', campos: [
+          texto('valores_chamada', 'chamada'), titulo('valores_titulo'),
+          { type: 'duas', campos: [texto('valores_rotulo_por_imagem', 'texto “valor por imagem”'), texto('selo_mais_pedido', 'selo do mais pedido')] },
+          { type: 'list', name: 'pacotes', label: 'pacotes', singular: 'pacote', resumo: (p) => `${p.quantidade} imagem(ns)`,
+            hint: 'digite só o total de cada pacote. o valor por imagem e a economia são calculados sozinhos, comparando com o primeiro pacote.',
+            fields: [
+              { type: 'number', name: 'quantidade', label: 'quantidade de imagens' },
+              { type: 'duas', campos: [{ type: 'number', name: 'vray', label: 'total na 1ª coluna (R$)' }, { type: 'number', name: 'ia', label: 'total na 2ª coluna (R$)' }] },
+              { type: 'opcoes', name: 'mais_pedido', label: 'mais pedido em', opcoes: [['nenhum', 'nenhum'], ['vray', '1ª coluna'], ['ia', '2ª coluna'], ['ambos', 'os dois']] },
+            ],
+            novo: () => ({ quantidade: 20, vray: 0, ia: 0, mais_pedido: 'nenhum' }) },
+          texto('inclusos_titulo', 'título dos inclusos'),
+          { type: 'list', name: 'inclusos', label: 'o que está incluso', singular: 'item', resumo: (i) => i.texto,
+            fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, texto('texto', 'texto')],
+            novo: () => ({ icone: 'check', texto: '' }) },
+          { type: 'duas', campos: [texto('mais_titulo', 'chamada “projeto completo”'), texto('mais_botao', 'texto do botão')] },
+          textoLongo('mais_texto', 'texto'),
+          texto('mais_mensagem', 'mensagem que já vem escrita no WhatsApp'),
+        ] },
+        { titulo: 'portfólio', campos: [
+          texto('portfolio_chamada', 'chamada'), titulo('portfolio_titulo'),
+          { type: 'duas', campos: [texto('legenda_vray', 'legenda do selo V-Ray'), texto('legenda_ia', 'legenda do selo IA')] },
+          { type: 'duas', campos: [texto('portfolio_rotulo_projeto', 'texto acima do nome (ex.: Projeto)'), texto('portfolio_link_texto', 'link do Instagram')] },
+          { type: 'list', name: 'portfolio', label: 'fotos', singular: 'foto', layout: 'grade', fotoEmMassa: 'imagem',
+            fields: [
+              { type: 'image', name: 'imagem', label: '', pasta: 'assets/img/orcamento', proporcao: '4/5', enquadramento: 'enquadramento', curto: true },
+              texto('projeto', 'projeto / cliente'),
+              { type: 'opcoes', name: 'tipo', label: '', opcoes: [['vray', 'V-Ray'], ['ia', 'IA']] },
+            ],
+            novo: () => ({ imagem: '', projeto: '', tipo: 'vray' }) },
+        ] },
+        { titulo: 'como funciona, prazos e bom saber', campos: [
+          texto('etapas_chamada', 'chamada'), titulo('etapas_titulo'),
+          { type: 'list', name: 'etapas', label: 'etapas (a numeração é automática)', singular: 'etapa', resumo: (e) => e.titulo,
+            fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, texto('titulo', 'título'), textoLongo('texto', 'texto')],
+            novo: () => ({ icone: 'check', titulo: '', texto: '' }) },
+          texto('prazos_titulo', 'título da coluna de prazos'),
+          { type: 'list', name: 'prazos', label: 'prazos', singular: 'item', resumo: (i) => i.texto,
+            fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, texto('texto', 'texto', { hint: 'use **dois asteriscos** para negrito.' })],
+            novo: () => ({ icone: 'check', texto: '' }) },
+          texto('saber_titulo', 'título da coluna “bom saber”'),
+          { type: 'list', name: 'saber', label: 'bom saber', singular: 'item', resumo: (i) => i.texto,
+            fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, texto('texto', 'texto', { hint: 'use **dois asteriscos** para negrito.' })],
+            novo: () => ({ icone: 'check', texto: '' }) },
+        ] },
+        { titulo: 'chamada final e contatos', campos: [
+          texto('final_titulo', 'título (em letra cursiva)'), textoLongo('final_texto', 'texto'),
+          { type: 'duas', campos: [texto('final_botao', 'texto do botão'), texto('final_mensagem', 'mensagem que já vem escrita no WhatsApp')] },
+          { type: 'duas', campos: [
+            texto('whatsapp_numero', 'WhatsApp (só números)', { hint: 'com 55 e DDD. ex.: 5511969288192' }),
+            texto('whatsapp_exibicao', 'WhatsApp (como aparece)'),
+          ] },
+          { type: 'duas', campos: [texto('email', 'e-mail'), texto('instagram_usuario', 'Instagram (sem @)')] },
+          texto('titulo_aba', 'título da aba do navegador'),
+        ] },
+      ],
     },
     {
       arquivo: 'geral', nome: 'contato e dados', ancora: '#contato',
@@ -575,11 +713,12 @@
     const wrap = el('div', 'campo');
     wrap.append(el('span', 'rotulo', campo.label));
     const grade = el('div', 'icones');
-    Object.keys(ICONES).forEach((nome) => {
+    const mapa = campo.icones || ICONES;
+    Object.keys(mapa).forEach((nome) => {
       const b = el('button', obj[campo.name] === nome ? 'ativo' : '');
       b.type = 'button';
       b.title = nome;
-      b.innerHTML = svgIcone(nome);
+      b.innerHTML = svgIcone(nome, mapa);
       b.onclick = () => {
         obj[campo.name] = nome;
         grade.querySelectorAll('button').forEach((x) => x.classList.toggle('ativo', x === b));
