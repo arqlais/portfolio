@@ -14,7 +14,7 @@ ferramentas:
   - "Vectorworks"
 credenciais:
   - icone: "cube"
-    titulo: "v-ray"
+    titulo: "V-Ray"
     texto: "múltiplos cursos de renderização"
   - icone: "spark"
     titulo: "Render por IA"
@@ -29,7 +29,7 @@ ideal_rotulo: "ideal para"
 metodos:
   - imagem: "/assets/img/orcamento/vray.jpg"
     rotulo: "método 01 · fotorrealismo técnico"
-    nome: "V-Ray"
+    nome: "v-ray"
     destaque: ""
     descricao: "Luz, materiais e texturas configurados um a um no 3D. Resultado técnico e **fiel a cada detalhe** do projeto."
     medidores:
@@ -54,7 +54,7 @@ metodos:
     ponto_texto: "Medidas, materiais e luz exatamente como no projeto."
   - imagem: "/assets/img/orcamento/ia-sala-cozinha.jpg"
     rotulo: "método 02 · inteligência artificial"
-    nome: "IA"
+    nome: "i.a"
     destaque: "mais escolhido"
     descricao: "Render por IA com o **meu próprio método**. Imagens realistas, rápidas e com ótimo custo-benefício."
     medidores:
@@ -64,7 +64,7 @@ metodos:
       - icone: "zap"
         nome: "Rapidez"
         nota: 5
-      - icone: "tag"
+      - icone: "target"
         nome: "Economia"
         nota: 5
     ideal:
