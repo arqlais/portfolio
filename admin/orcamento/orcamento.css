@@ -134,11 +134,14 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 /* portfólio */
 .legenda{display:flex;flex-wrap:wrap;gap:10px 26px;font-size:calc(15px * var(--t));color:var(--muted);margin:-8px 0 24px}
 .legenda span{display:flex;align-items:center;gap:9px}
-.galeria{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px 6px 12px}
-.moldura{aspect-ratio:4/5;border-radius:11px;overflow:hidden;background:var(--line)}
+.galeria{--colunas:3;display:grid;grid-template-columns:repeat(var(--colunas),minmax(0,1fr));gap:20px}
+.galeria[style*="--colunas:3"] figcaption{flex-direction:row;justify-content:space-between;align-items:center;gap:12px}
+.galeria[style*="--colunas:3"] figcaption b{font-size:calc(14px * var(--t))}
+.galeria[style*="--colunas:3"] figcaption span{font-size:calc(12px * var(--t))}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px 8px 12px}
+.moldura{aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:var(--line)}
 .moldura img{width:100%;height:100%;object-fit:cover}
-.card figcaption{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px 6px 0}
+.card figcaption{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px 6px 0}
 .card figcaption span{font-size:calc(11px * var(--t));color:var(--muted);line-height:1.25;min-width:0;max-width:100%}
 .card figcaption b{display:block;color:var(--ink);font-weight:500;font-size:calc(12.5px * var(--t))}
 .tipo{display:inline-flex;align-items:center;gap:4px;font-style:normal;font-size:calc(10.5px * var(--t));font-weight:600;letter-spacing:.08em;padding:2px 9px 2px 7px;border-radius:99px;border:1px solid var(--slate);color:var(--slate);white-space:nowrap}

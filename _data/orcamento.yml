@@ -177,6 +177,7 @@ portfolio_chamada: "portfólio"
 portfolio_titulo: "trabalhos *reais*"
 legenda_vray: "renderizado em V-Ray"
 legenda_ia: "renderizado com inteligência artificial"
+portfolio_colunas: "3"
 portfolio_rotulo_projeto: "Projeto"
 portfolio_link_texto: "veja mais no Instagram"
 

@@ -143,7 +143,7 @@
 <section class="sec"><div class="wrap">
   <div class="head"><span class="eyebrow">${esc(o.portfolio_chamada)}</span><h2>${titulo(o.portfolio_titulo)}</h2></div>
   <div class="legenda"><span>${tipo('vray')}${esc(o.legenda_vray)}</span><span>${tipo('ia')}${esc(o.legenda_ia)}</span></div>
-  <div class="galeria">${lista(o.portfolio).map((g) => `
+  <div class="galeria" style="--colunas:${[3, 4, 5].includes(num(o.portfolio_colunas)) ? num(o.portfolio_colunas) : 3}">${lista(o.portfolio).map((g) => `
     <figure class="card"><div class="moldura"><img src="${img(g.imagem)}"${enq(g.enquadramento)} alt=""></div>
     <figcaption><span>${esc(o.portfolio_rotulo_projeto)}<b>${esc(g.projeto)}</b></span>${tipo(g.tipo)}</figcaption></figure>`).join('')}
   </div>

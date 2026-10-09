@@ -335,6 +335,7 @@
         { titulo: 'portfólio', campos: [
           texto('portfolio_chamada', 'chamada'), titulo('portfolio_titulo'),
           { type: 'duas', campos: [texto('legenda_vray', 'legenda do selo V-Ray'), texto('legenda_ia', 'legenda do selo IA')] },
+          { type: 'opcoes', name: 'portfolio_colunas', label: 'fotos por linha (menos fotos = imagens maiores)', opcoes: [['3', '3 por linha'], ['4', '4 por linha'], ['5', '5 por linha']] },
           { type: 'duas', campos: [texto('portfolio_rotulo_projeto', 'texto acima do nome (ex.: Projeto)'), texto('portfolio_link_texto', 'link do Instagram')] },
           { type: 'list', name: 'portfolio', label: 'fotos', singular: 'foto', layout: 'grade', fotoEmMassa: 'imagem',
             fields: [
