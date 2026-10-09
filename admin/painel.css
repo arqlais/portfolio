@@ -23,6 +23,27 @@ a{color:var(--terra-dark)}
 button,input,select,textarea{font:inherit;color:inherit}
 .script{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--terra-dark)}
 
+/* Abas: site × orçamento */
+.abas{grid-column:1/-1;display:flex;gap:6px;padding:14px 28px 0}
+.abas button{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:9px 20px;font-weight:600;font-size:14px;color:var(--navy-dark);cursor:pointer}
+.abas button:hover{border-color:var(--navy)}
+.abas button.ativo{background:var(--navy);border-color:var(--navy);color:#fff}
+.abas .ponto{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--terra);margin-left:7px;vertical-align:middle}
+
+/* Orçamento: tamanho das letras, ações e pré-visualização */
+.escala{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.escala input{flex:1;min-width:160px;accent-color:var(--navy);height:28px}
+.escala output{min-width:48px;font-weight:600;color:var(--navy-dark)}
+.acoes-orcamento{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
+.acoes-orcamento .dica{flex-basis:100%;margin:0}
+.modal-previa{position:fixed;inset:0;z-index:55;background:#e9e4dd;display:flex;flex-direction:column}
+.previa-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--line)}
+.previa-topo > span{font-weight:600;color:var(--navy-dark)}
+.previa-topo > div{display:flex;gap:8px}
+.previa-palco{flex:1;overflow:auto;padding:20px;-webkit-overflow-scrolling:touch}
+.previa-folha{margin:0 auto;overflow:hidden;box-shadow:var(--shadow);background:#fff}
+.previa-folha iframe{width:1024px;border:0;display:block;transform-origin:0 0}
+
 /* Botões */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid transparent;border-radius:999px;
   padding:12px 22px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;transition:.2s;white-space:nowrap}
@@ -67,7 +88,7 @@ input:not([type=range]):focus,select:focus,textarea:focus{border-color:var(--ter
 textarea{min-height:92px;resize:vertical;line-height:1.5}
 
 /* Estrutura do painel */
-.painel{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr);grid-template-rows:auto 1fr}
+.painel{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr);grid-template-rows:auto auto 1fr}
 .topo{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 28px;
   background:rgba(245,242,238,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
 .marca{font-size:22px;color:var(--navy-dark);text-decoration:none;letter-spacing:-.02em}
@@ -210,6 +231,12 @@ textarea{min-height:92px;resize:vertical;line-height:1.5}
   .enq-zoom{max-width:none}
   .enq-zoom input{height:32px}
   .topo{padding:12px 16px}
+  .abas{padding:10px 16px 0}
+  .abas button{flex:1;padding:9px 10px;font-size:13.5px}
+  .previa-topo{padding:10px 12px}
+  .previa-topo > span{display:none}
+  .previa-topo > div{width:100%;justify-content:space-between}
+  .previa-palco{padding:10px}
   .menu{position:sticky;top:57px;z-index:15;flex-direction:row;overflow-x:auto;padding:10px 16px;gap:6px;background:var(--cream);
     border-bottom:1px solid var(--line);max-height:none}
   .menu a{white-space:nowrap;padding:8px 14px}

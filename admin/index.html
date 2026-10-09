@@ -48,6 +48,7 @@
         <button class="btn btn-ghost btn-sm" id="botao-sair" type="button">sair</button>
       </div>
     </header>
+    <div class="abas" id="abas" role="tablist" aria-label="o que editar"></div>
     <nav class="menu" id="menu"></nav>
     <main class="conteudo" id="conteudo"><p class="carregando">carregando…</p></main>
     <div class="barra-salvar" id="barra-salvar" hidden>
@@ -78,9 +79,22 @@
     </div>
   </div>
 
+  <!-- Pré-visualização do orçamento -->
+  <div class="modal-previa" id="modal-previa" hidden>
+    <div class="previa-topo">
+      <span>pré-visualização do <span class="script">orçamento</span></span>
+      <div>
+        <button class="btn btn-ghost btn-sm" id="previa-fechar" type="button">fechar</button>
+        <button class="btn btn-primary btn-sm" id="previa-pdf" type="button">salvar em PDF</button>
+      </div>
+    </div>
+    <div class="previa-palco" id="previa-palco"></div>
+  </div>
+
   <div class="aviso" id="aviso" hidden></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script src="orcamento/render.js"></script>
   <script src="painel.js"></script>
 </body>
 </html>

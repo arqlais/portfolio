@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<!-- largura fixa: no celular a página aparece igual ao PDF, só que reduzida -->
+<meta name="viewport" content="width=1024">
+<meta name="robots" content="noindex">
+<title>Orçamento — Laís Vieira</title>
+<link rel="stylesheet" href="orcamento.css">
+<style id="tamanho-pagina"></style>
+</head>
+<body>
+<div id="orcamento"><p class="vazio">abra o orçamento pelo painel em lais3d.com.br/admin.</p></div>
+<div class="aviso-pdf" id="aviso-pdf" hidden>
+  <span>na janela que abrir, escolha <b>salvar como PDF</b></span>
+  <button type="button" id="botao-imprimir">salvar em PDF</button>
+</div>
+
+<script src="render.js"></script>
+<script>
+/* Recebe os dados do painel (janela que abriu esta, ou a página onde está embutida),
+ * desenha o orçamento e, se pedido, abre a janela de impressão para salvar em PDF. */
+(() => {
+  const params = new URLSearchParams(location.search);
+  const imprimir = params.has('imprimir');
+  const painel = window.opener || (window.parent !== window ? window.parent : null);
+
+  // PDF em uma página só, contínua, do tamanho exato do conteúdo.
+  const ajustarPagina = () => {
+    const altura = Math.ceil(document.documentElement.scrollHeight);
+    document.getElementById('tamanho-pagina').textContent =
+      `@page{size:1024px ${altura}px;margin:0}html,body{width:1024px}`;
+    return altura;
+  };
+
+  const esperarCarregar = async () => {
+    await (document.fonts ? document.fonts.ready : Promise.resolve());
+    await Promise.all([...document.images].map((img) => (img.complete ? null
+      : new Promise((ok) => { img.onload = img.onerror = ok; }))));
+  };
+
+  const abrirImpressao = () => { ajustarPagina(); window.print(); };
+  document.getElementById('botao-imprimir').onclick = abrirImpressao;
+
+  window.addEventListener('message', async (ev) => {
+    if (ev.origin !== location.origin || !ev.data || ev.data.tipo !== 'orcamento-dados') return;
+    const fotos = ev.data.fotos || {};
+    document.getElementById('orcamento').innerHTML =
+      window.renderOrcamento(ev.data.dados, (c) => fotos[c] || (c && !/^(https?:|blob:|data:|\/)/.test(c) ? '/' + c : c));
+    if (ev.data.dados && ev.data.dados.titulo_aba) document.title = ev.data.dados.titulo_aba;
+    await esperarCarregar();
+    const altura = ajustarPagina();
+    if (painel) painel.postMessage({ tipo: 'orcamento-altura', altura }, location.origin);
+    if (imprimir) {
+      document.getElementById('aviso-pdf').hidden = false;
+      setTimeout(abrirImpressao, 300);
+    }
+  });
+
+  if (painel) painel.postMessage({ tipo: 'orcamento-pronto' }, location.origin);
+})();
+</script>
+</body>
+</html>

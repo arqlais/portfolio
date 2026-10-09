@@ -26,38 +26,8 @@
   };
   const svgIcone = (nome, mapa = ICONES) =>
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${mapa[nome] || ''}</svg>`;
-  // Ícones da página de orçamento (os mesmos de _includes/icones-orcamento.html).
-  const ICONES_ORCAMENTO = {
-    check: '<path d="M20 6 9 17l-5-5"/>',
-    alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
-    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
-    zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
-    tag: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1.2"/>',
-    spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>',
-    cube: '<path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/>',
-    layers: '<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
-    image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
-    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
-    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
-    refresh: '<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
-    edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
-    sliders: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 8h4M18 16h4"/>',
-    home: '<path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
-    eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-    download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
-    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
-    phone: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
-    angles: '<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/>',
-    trend: '<path d="M22 17l-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/>',
-    star: '<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
-    msg: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/>',
-    mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/>',
-    insta: '<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/>',
-    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
-    info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
-    file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="M9 13h6M9 17h6"/>',
-    plus: '<path d="M12 5v14M5 12h14"/>',
-  };
+  // Ícones da página de orçamento (vêm de orcamento/render.js).
+  const ICONES_ORCAMENTO = window.ICONES_ORCAMENTO || {};
 
   /* ---------- O que cada seção do painel mostra ---------- */
   const CURSIVA = 'o trecho entre *asteriscos* aparece em letra cursiva.';
@@ -230,12 +200,47 @@
       ] }],
     },
     {
-      arquivo: 'orcamento', nome: 'orçamento', ancora: 'orcamento/',
-      titulo: 'página de <span class="script">orçamento</span>',
-      descricao: 'a página www.lais3d.com.br/orcamento — textos, fotos, preços e links. o trecho entre *asteriscos* nos títulos aparece em letra cursiva; **dois asteriscos** deixam em negrito.',
+      arquivo: 'geral', nome: 'contato e dados', ancora: '#contato',
+      titulo: 'contato e <span class="script">dados gerais</span>',
+      descricao: 'WhatsApp, e-mail e Instagram valem para todos os botões e links do site.',
+      grupos: [
+        { titulo: 'contato', campos: [
+          { type: 'duas', campos: [
+            texto('whatsapp_numero', 'WhatsApp (só números)', { hint: 'com 55 e DDD. ex.: 5511969288192' }),
+            texto('whatsapp_exibicao', 'WhatsApp (como aparece no rodapé)'),
+          ] },
+          { type: 'duas', campos: [texto('email', 'e-mail'), texto('instagram_usuario', 'Instagram (sem @)')] },
+        ] },
+        { titulo: 'rodapé', campos: [textoLongo('rodape_descricao', 'descrição'), texto('rodape_servicos', 'linha final')] },
+        { titulo: 'Google e aba do navegador', campos: [
+          texto('titulo_pagina', 'título da aba do navegador'),
+          textoLongo('descricao_pagina', 'descrição que aparece no Google'),
+          { type: 'duas', campos: [texto('marca', 'logo (texto)'), texto('nome', 'nome completo')] },
+        ] },
+      ],
+    },
+    {
+      id: 'orc-aparencia', aba: 'orcamento', arquivo: 'orcamento', nome: 'letras e topo',
+      titulo: 'letras e <span class="script">topo</span>',
+      descricao: 'o tamanho das letras de todo o orçamento e a faixa azul do topo. use “pré-visualizar” para ver o resultado.',
+      grupos: [
+        { titulo: 'tamanho das letras', campos: [
+          { type: 'escala', name: 'tamanho_textos', label: 'textos', hint: 'todos os textos do orçamento, mantendo a proporção entre eles.' },
+          { type: 'escala', name: 'tamanho_titulos', label: 'títulos em letra cursiva' },
+          { type: 'escala', name: 'tamanho_saudacao', label: '“muito prazer!”' },
+        ] },
+        { titulo: 'faixa do topo e arquivo', campos: [
+          { type: 'duas', campos: [texto('topo_esquerda', 'faixa do topo (esquerda)'), texto('topo_direita', 'faixa do topo (direita)')] },
+          texto('titulo_aba', 'nome do arquivo PDF', { hint: 'aparece como nome sugerido ao salvar o PDF.' }),
+        ] },
+      ],
+    },
+    {
+      id: 'orc-apresentacao', aba: 'orcamento', arquivo: 'orcamento', nome: 'apresentação',
+      titulo: 'sua <span class="script">apresentação</span>',
+      descricao: 'foto, saudação, texto, programas e a faixa com ✓.',
       grupos: [
         { titulo: 'topo e apresentação', campos: [
-          { type: 'duas', campos: [texto('topo_esquerda', 'faixa do topo (esquerda)'), texto('topo_direita', 'faixa do topo (direita)')] },
           { type: 'image', name: 'foto', label: 'sua foto', pasta: 'assets/img/orcamento', proporcao: '25/31', forma: 'arco', enquadramento: 'foto_enquadramento' },
           texto('foto_alt', 'descrição da foto', { hint: 'usada por leitores de tela (acessibilidade).' }),
           texto('saudacao', 'saudação (em letra cursiva)'),
@@ -243,6 +248,13 @@
           { type: 'list', name: 'ferramentas', label: 'programas (pílulas)', singular: 'programa', layout: 'chips' },
           { type: 'list', name: 'credenciais', label: 'faixa com ✓', singular: 'item', layout: 'chips' },
         ] },
+      ],
+    },
+    {
+      id: 'orc-metodos', aba: 'orcamento', arquivo: 'orcamento', nome: 'os dois métodos',
+      titulo: 'os dois <span class="script">métodos</span>',
+      descricao: 'os cartões lado a lado de cada método. o trecho entre *asteriscos* nos títulos sai em letra cursiva; **dois asteriscos** deixam em negrito.',
+      grupos: [
         { titulo: 'os dois métodos', campos: [
           texto('metodos_chamada', 'chamada (texto pequeno acima do título)'), titulo('metodos_titulo'), textoLongo('metodos_texto', 'texto'),
           texto('ideal_rotulo', 'título da lista (ex.: ideal para)'),
@@ -263,6 +275,13 @@
             ],
             novo: () => ({ imagem: '', nome: '', destaque: '', rotulo: '', descricao: '', medidores: [], ideal: [], ponto_icone: 'star', ponto_titulo: '', ponto_texto: '' }) },
         ] },
+      ],
+    },
+    {
+      id: 'orc-tabela', aba: 'orcamento', arquivo: 'orcamento', nome: 'tabela comparativa',
+      titulo: 'tabela <span class="script">lado a lado</span>',
+      descricao: 'as linhas da comparação e a frase abaixo dela.',
+      grupos: [
         { titulo: 'tabela lado a lado', campos: [
           { type: 'duas', campos: [texto('comparativo_coluna_1', 'nome da 1ª coluna'), texto('comparativo_coluna_2', 'nome da 2ª coluna')] },
           texto('comparativo_rotulo', 'título da tabela'),
@@ -278,6 +297,13 @@
             novo: () => ({ icone: 'check', criterio: '', vray: '', vray_detalhe: '', vray_vantagem: 'nao', ia: '', ia_detalhe: '', ia_vantagem: 'nao' }) },
           textoLongo('comparativo_dica', 'frase abaixo da tabela', { hint: 'use **dois asteriscos** para negrito.' }),
         ] },
+      ],
+    },
+    {
+      id: 'orc-valores', aba: 'orcamento', arquivo: 'orcamento', nome: 'valores',
+      titulo: '<span class="script">valores</span>',
+      descricao: 'os pacotes, o que está incluso e a chamada para projeto completo.',
+      grupos: [
         { titulo: 'valores', campos: [
           texto('valores_chamada', 'chamada'), titulo('valores_titulo'),
           { type: 'duas', campos: [texto('valores_rotulo_por_imagem', 'texto “valor por imagem”'), texto('selo_mais_pedido', 'selo do mais pedido')] },
@@ -297,6 +323,13 @@
           textoLongo('mais_texto', 'texto'),
           texto('mais_mensagem', 'mensagem que já vem escrita no WhatsApp'),
         ] },
+      ],
+    },
+    {
+      id: 'orc-portfolio', aba: 'orcamento', arquivo: 'orcamento', nome: 'portfólio',
+      titulo: 'portfólio do <span class="script">orçamento</span>',
+      descricao: 'as fotos que aparecem no orçamento (separadas da galeria do site).',
+      grupos: [
         { titulo: 'portfólio', campos: [
           texto('portfolio_chamada', 'chamada'), titulo('portfolio_titulo'),
           { type: 'duas', campos: [texto('legenda_vray', 'legenda do selo V-Ray'), texto('legenda_ia', 'legenda do selo IA')] },
@@ -309,6 +342,13 @@
             ],
             novo: () => ({ imagem: '', projeto: '', tipo: 'vray' }) },
         ] },
+      ],
+    },
+    {
+      id: 'orc-etapas', aba: 'orcamento', arquivo: 'orcamento', nome: 'etapas e prazos',
+      titulo: 'etapas e <span class="script">prazos</span>',
+      descricao: 'como funciona, prazos e bom saber.',
+      grupos: [
         { titulo: 'como funciona, prazos e bom saber', campos: [
           texto('etapas_chamada', 'chamada'), titulo('etapas_titulo'),
           { type: 'list', name: 'etapas', label: 'etapas (a numeração é automática)', singular: 'etapa', resumo: (e) => e.titulo,
@@ -323,6 +363,13 @@
             fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, texto('texto', 'texto', { hint: 'use **dois asteriscos** para negrito.' })],
             novo: () => ({ icone: 'check', texto: '' }) },
         ] },
+      ],
+    },
+    {
+      id: 'orc-contato', aba: 'orcamento', arquivo: 'orcamento', nome: 'contato',
+      titulo: 'chamada <span class="script">final</span>',
+      descricao: 'o bloco azul do fim, com WhatsApp, e-mail e Instagram.',
+      grupos: [
         { titulo: 'chamada final e contatos', campos: [
           texto('final_titulo', 'título (em letra cursiva)'), textoLongo('final_texto', 'texto'),
           { type: 'duas', campos: [texto('final_botao', 'texto do botão'), texto('final_mensagem', 'mensagem que já vem escrita no WhatsApp')] },
@@ -331,38 +378,21 @@
             texto('whatsapp_exibicao', 'WhatsApp (como aparece)'),
           ] },
           { type: 'duas', campos: [texto('email', 'e-mail'), texto('instagram_usuario', 'Instagram (sem @)')] },
-          texto('titulo_aba', 'título da aba do navegador'),
-        ] },
-      ],
-    },
-    {
-      arquivo: 'geral', nome: 'contato e dados', ancora: '#contato',
-      titulo: 'contato e <span class="script">dados gerais</span>',
-      descricao: 'WhatsApp, e-mail e Instagram valem para todos os botões e links do site.',
-      grupos: [
-        { titulo: 'contato', campos: [
-          { type: 'duas', campos: [
-            texto('whatsapp_numero', 'WhatsApp (só números)', { hint: 'com 55 e DDD. ex.: 5511969288192' }),
-            texto('whatsapp_exibicao', 'WhatsApp (como aparece no rodapé)'),
-          ] },
-          { type: 'duas', campos: [texto('email', 'e-mail'), texto('instagram_usuario', 'Instagram (sem @)')] },
-        ] },
-        { titulo: 'rodapé', campos: [textoLongo('rodape_descricao', 'descrição'), texto('rodape_servicos', 'linha final')] },
-        { titulo: 'Google e aba do navegador', campos: [
-          texto('titulo_pagina', 'título da aba do navegador'),
-          textoLongo('descricao_pagina', 'descrição que aparece no Google'),
-          { type: 'duas', campos: [texto('marca', 'logo (texto)'), texto('nome', 'nome completo')] },
         ] },
       ],
     },
   ];
+  SECOES.forEach((sc) => { sc.id = sc.id || sc.arquivo; sc.aba = sc.aba || 'site'; });
+  const ABAS = [['site', 'site'], ['orcamento', 'orçamento (PDF)']];
+  const secaoPorId = (id) => SECOES.find((sc) => sc.id === id);
+  const ARQUIVOS = [...new Set(SECOES.map((sc) => sc.arquivo))];
 
   /* ---------- Estado ---------- */
   let token = '';
   const dados = {};            // arquivo -> objeto
   const alterados = new Set(); // arquivos com mudanças não salvas
   const fotosNovas = new Map(); // caminho público -> { blob, url, enviada }
-  let secaoAtual = SECOES[0].arquivo;
+  let secaoAtual = SECOES[0].id;
 
   /* ---------- Utilidades ---------- */
   const $ = (sel) => document.querySelector(sel);
@@ -430,9 +460,9 @@
   const carregarDados = async () => {
     const ref = await gh(`/repos/${REPO}/git/ref/heads/${BRANCH}`);
     const sha = ref.object.sha;
-    await Promise.all(SECOES.map(async (s) => {
-      const txt = await gh(`/repos/${REPO}/contents/_data/${s.arquivo}.yml?ref=${sha}`, { cru: true });
-      dados[s.arquivo] = jsyaml.load(txt) || {};
+    await Promise.all(ARQUIVOS.map(async (arquivo) => {
+      const txt = await gh(`/repos/${REPO}/contents/_data/${arquivo}.yml?ref=${sha}`, { cru: true });
+      dados[arquivo] = jsyaml.load(txt) || {};
     }));
     alterados.clear();
   };
@@ -475,7 +505,7 @@
         method: 'POST',
         body: { base_tree: commitPai.tree.sha, tree: arvore.map(({ _foto, ...item }) => item) },
       });
-      const nomes = arquivos.map((a) => SECOES.find((s) => s.arquivo === a).nome).join(', ');
+      const nomes = arquivos.map((a) => (a === 'orcamento' ? 'orçamento' : SECOES.find((s) => s.arquivo === a).nome)).join(', ');
       const commit = await gh(`/repos/${REPO}/git/commits`, {
         method: 'POST',
         body: { message: `Atualiza o site pelo painel (${nomes})`, tree: novaArvore.sha, parents: [pai] },
@@ -486,7 +516,7 @@
       alterados.clear();
       atualizarBarra();
       montarMenu();
-      avisar('salvo! o site atualiza em cerca de 1 minuto.');
+      avisar(arquivos.every((a) => a === 'orcamento') ? 'orçamento salvo!' : 'salvo! o site atualiza em cerca de 1 minuto.');
     } catch (e) {
       console.error(e);
       avisar(e.status === 401
@@ -659,7 +689,7 @@
   };
 
   /* ---------- Formulários ---------- */
-  const marcar = () => { alterados.add(secaoAtual); atualizarBarra(); montarMenu(); };
+  const marcar = () => { alterados.add(secaoPorId(secaoAtual).arquivo); atualizarBarra(); montarMenu(); };
   const redesenhar = () => {
     const y = window.scrollY;
     mostrarSecao(secaoAtual, false);
@@ -830,6 +860,25 @@
     return wrap;
   };
 
+  // Tamanho em %: controle deslizante com o valor ao lado (100% = tamanho original).
+  const campoEscala = (campo, obj) => {
+    const wrap = el('div', 'campo');
+    const id = `c${++contadorId}`;
+    rotular(wrap, campo, id);
+    const linha = el('div', 'escala');
+    const input = el('input');
+    input.type = 'range'; input.id = id; input.min = 70; input.max = 140; input.step = 5;
+    input.value = obj[campo.name] || 100;
+    const valor = el('output', null, `${input.value}%`);
+    const voltar = el('button', 'btn btn-ghost btn-sm', 'original');
+    voltar.type = 'button';
+    input.oninput = () => { obj[campo.name] = Number(input.value); valor.textContent = `${input.value}%`; marcar(); };
+    voltar.onclick = () => { input.value = 100; input.oninput(); };
+    linha.append(input, valor, voltar);
+    wrap.append(linha);
+    return wrap;
+  };
+
   const botaoIcone = (simbolo, titulo, acao, desativado = false, perigo = false) => {
     const b = el('button', 'icone-btn' + (perigo ? ' perigo' : ''), simbolo);
     b.type = 'button';
@@ -957,18 +1006,97 @@
       case 'opcoes': return campoOpcoes(campo, obj);
       case 'formato': return campoFormato(campo, obj);
       case 'list': return campoLista(campo, obj);
+      case 'escala': return campoEscala(campo, obj);
       default: return campoTexto(campo, obj);
     }
   };
 
+  /* ---------- Orçamento: pré-visualizar e salvar em PDF ---------- */
+  const PAGINA_PDF = '/admin/orcamento/pdf.html';
+  // Dados enviados para a página do orçamento (inclui fotos novas ainda não salvas).
+  const pacoteOrcamento = () => {
+    const fotos = {};
+    fotosNovas.forEach((f, caminho) => { fotos[caminho] = f.url; });
+    return { tipo: 'orcamento-dados', dados: JSON.parse(JSON.stringify(dados.orcamento || {})), fotos };
+  };
+  // A página do orçamento avisa quando está pronta; respondemos com os dados.
+  window.addEventListener('message', (ev) => {
+    if (ev.origin !== location.origin || !ev.data) return;
+    if (ev.data.tipo === 'orcamento-pronto') ev.source.postMessage(pacoteOrcamento(), location.origin);
+    if (ev.data.tipo === 'orcamento-altura') ajustarPrevia(ev.data.altura);
+  });
+
+  const LARGURA_PDF = 1024;
+  let alturaPrevia = 0;
+  const ajustarPrevia = (altura) => {
+    if (altura) alturaPrevia = altura;
+    const palco = $('#previa-palco');
+    const quadro = $('#previa-quadro');
+    if (!palco || !quadro) return;
+    const escala = Math.min(1, (palco.clientWidth - 2) / LARGURA_PDF);
+    quadro.style.transform = `scale(${escala})`;
+    quadro.style.height = `${alturaPrevia || 2000}px`;
+    $('#previa-folha').style.width = `${LARGURA_PDF * escala}px`;
+    $('#previa-folha').style.height = `${(alturaPrevia || 2000) * escala}px`;
+  };
+  window.addEventListener('resize', () => ajustarPrevia());
+
+  const abrirPrevia = () => {
+    const modal = $('#modal-previa');
+    alturaPrevia = 0;
+    $('#previa-palco').innerHTML = '<div class="previa-folha" id="previa-folha"><iframe id="previa-quadro" title="pré-visualização do orçamento"></iframe></div>';
+    $('#previa-quadro').src = PAGINA_PDF;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    ajustarPrevia();
+  };
+  const fecharPrevia = () => {
+    $('#modal-previa').hidden = true;
+    $('#previa-palco').innerHTML = '';
+    document.body.style.overflow = '';
+  };
+  const salvarPdf = () => {
+    const janela = window.open(`${PAGINA_PDF}?imprimir`, '_blank');
+    if (!janela) avisar('o navegador bloqueou a nova aba. permita pop-ups para lais3d.com.br e tente de novo.', true);
+  };
+
+  const barraOrcamento = () => {
+    const barra = el('div', 'acoes-orcamento');
+    const ver = el('button', 'btn btn-ghost btn-sm', 'pré-visualizar');
+    ver.type = 'button';
+    ver.onclick = abrirPrevia;
+    const pdf = el('button', 'btn btn-primary btn-sm', 'salvar em PDF');
+    pdf.type = 'button';
+    pdf.onclick = salvarPdf;
+    barra.append(ver, pdf);
+    if (alterados.has('orcamento')) {
+      barra.append(el('span', 'dica', 'a pré-visualização e o PDF já mostram as alterações, mesmo antes de salvar.'));
+    }
+    return barra;
+  };
+
   /* ---------- Navegação ---------- */
   const montarMenu = () => {
+    const atual = secaoPorId(secaoAtual);
+    const abas = $('#abas');
+    abas.innerHTML = '';
+    ABAS.forEach(([aba, nome]) => {
+      const b = el('button', aba === atual.aba ? 'ativo' : '', nome);
+      b.type = 'button';
+      if (SECOES.some((sc) => sc.aba === aba && alterados.has(sc.arquivo))) {
+        const p = el('span', 'ponto');
+        p.title = 'alterações não salvas';
+        b.append(p);
+      }
+      b.onclick = () => { if (aba !== atual.aba) location.hash = SECOES.find((sc) => sc.aba === aba).id; };
+      abas.append(b);
+    });
     const menu = $('#menu');
     menu.innerHTML = '';
-    SECOES.forEach((s) => {
-      const a = el('a', s.arquivo === secaoAtual ? 'ativo' : '', s.nome);
-      a.href = `#${s.arquivo}`;
-      if (alterados.has(s.arquivo)) {
+    SECOES.filter((sc) => sc.aba === atual.aba).forEach((sc) => {
+      const a = el('a', sc.id === secaoAtual ? 'ativo' : '', sc.nome);
+      a.href = `#${sc.id}`;
+      if (sc.aba === 'site' && alterados.has(sc.arquivo)) {
         const p = el('span', 'ponto');
         p.title = 'alterações não salvas';
         a.append(p);
@@ -982,9 +1110,9 @@
     }
   };
 
-  const mostrarSecao = (arquivo, rolarParaTopo = true) => {
-    const secao = SECOES.find((s) => s.arquivo === arquivo) || SECOES[0];
-    secaoAtual = secao.arquivo;
+  const mostrarSecao = (id, rolarParaTopo = true) => {
+    const secao = secaoPorId(id) || SECOES[0];
+    secaoAtual = secao.id;
     const conteudo = $('#conteudo');
     conteudo.innerHTML = '';
 
@@ -992,12 +1120,16 @@
     const h1 = el('h1');
     h1.innerHTML = secao.titulo;
     const p = el('p', null, secao.descricao + ' ');
-    const link = el('a', null, 'ver no site ↗');
-    link.href = `/${secao.ancora}`;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    p.append(link);
-    topo.append(h1, p);
+    if (secao.aba === 'orcamento') {
+      topo.append(h1, p, barraOrcamento());
+    } else {
+      const link = el('a', null, 'ver no site ↗');
+      link.href = `/${secao.ancora}`;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      p.append(link);
+      topo.append(h1, p);
+    }
     conteudo.append(topo);
 
     const obj = dados[secao.arquivo];
@@ -1030,7 +1162,7 @@
       return;
     }
     const inicial = location.hash.slice(1);
-    mostrarSecao(SECOES.some((s) => s.arquivo === inicial) ? inicial : SECOES[0].arquivo);
+    mostrarSecao(secaoPorId(inicial) ? inicial : SECOES[0].id);
     atualizarBarra();
   };
 
@@ -1079,6 +1211,9 @@
   };
 
   $('#botao-sair').onclick = () => sair();
+  $('#previa-fechar').onclick = fecharPrevia;
+  $('#previa-pdf').onclick = salvarPdf;
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('#modal-previa').hidden) fecharPrevia(); });
   $('#botao-salvar').onclick = salvar;
   $('#botao-descartar').onclick = async () => {
     if (!confirm('descartar todas as alterações que ainda não foram salvas?')) return;
@@ -1088,7 +1223,7 @@
   };
   window.addEventListener('hashchange', () => {
     const alvo = location.hash.slice(1);
-    if (SECOES.some((s) => s.arquivo === alvo) && alvo !== secaoAtual) mostrarSecao(alvo);
+    if (secaoPorId(alvo) && alvo !== secaoAtual) mostrarSecao(alvo);
   });
   window.addEventListener('beforeunload', (ev) => {
     if (alterados.size) { ev.preventDefault(); ev.returnValue = ''; }
