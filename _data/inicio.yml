@@ -1,41 +1,38 @@
-chamada_topo: renderização · modelagem · detalhamento
+chamada_topo: "renderização · modelagem · detalhamento"
 ano: "2026"
-foto: /assets/img/profile.jpg
-foto_alt: Retrato de Laís Vieira
-saudacao: muito prazer!
-apresentacao: |-
-  sou **Laís** — estudante de Arquitetura e Urbanismo, no 9º período, com experiência anterior na área de design gráfico que contribui pra minha organização visual, apresentação, composição e cuidado com as entregas.
-
-  **você projeta, eu cuido da produção:** ofereço apoio e terceirização pra arquitetos, designers e escritórios — assumindo renderização, modelagem 3D, detalhamento e projeto executivo — e também atendo estudantes com demandas acadêmicas.
+foto: "/assets/img/profile.jpg"
+foto_alt: "Retrato de Laís Vieira"
+saudacao: "muito prazer!"
+apresentacao: "sou **Laís** — estudante de Arquitetura e Urbanismo, no 9º período, com experiência anterior na área de design gráfico que contribui pra minha organização visual, apresentação, composição e cuidado com as entregas.\n\n**você projeta, eu cuido da produção:** ofereço apoio e terceirização pra arquitetos, designers e escritórios — assumindo renderização, modelagem 3D, detalhamento e projeto executivo — e também atendo estudantes com demandas acadêmicas."
 selos:
-  - icone: formatura
-    titulo: formando em Arquitetura
-    texto: cursando Arquitetura e Urbanismo — 9º período
-  - icone: medalha
-    titulo: múltiplos cursos
-    texto: renderização · modelagem · detalhamento
-  - icone: maleta
-    titulo: experiência em escritório
-    texto: 2 anos de estágio + freelancer em andamento
-botao_portfolio: ver portfólio
-botao_whatsapp: falar no whatsapp
+  - icone: "formatura"
+    titulo: "formando em Arquitetura"
+    texto: "cursando Arquitetura e Urbanismo — 9º período"
+  - icone: "medalha"
+    titulo: "múltiplos cursos"
+    texto: "renderização · modelagem · detalhamento"
+  - icone: "maleta"
+    titulo: "experiência em escritório"
+    texto: "2 anos de estágio + freelancer em andamento"
+botao_portfolio: "ver portfólio"
+botao_whatsapp: "falar no whatsapp"
 faixa_rolante:
-  - renderização
-  - modelagem 3d
-  - detalhamento
-  - projeto executivo
-  - mapas urbanos
-  - pranchas e monografia
+  - "renderização"
+  - "modelagem 3d"
+  - "detalhamento"
+  - "projeto executivo"
+  - "mapas urbanos"
+  - "pranchas e monografia"
 numeros:
   - numero: 5
     sufixo: "+"
-    legenda: anos de experiência na área do design gráfico
-  - numero: 100
+    legenda: "anos de experiência na área do design gráfico"
+  - numero: 150
     sufixo: "+"
-    legenda: imagens no portfólio
+    legenda: "imagens no portfólio"
   - numero: 8
     sufixo: "+"
-    legenda: softwares dominados
-destaque_frase: você projeta
-destaque_titulo: eu cuido da produção
-destaque_texto: ofereço apoio e terceirização de produção pra arquitetos, designers e escritórios — assumindo renderização, modelagem 3D, detalhamento e projeto executivo, pra você ganhar tempo e entregar com qualidade.
+    legenda: "softwares dominados"
+destaque_frase: "você projeta"
+destaque_titulo: "eu cuido da produção"
+destaque_texto: "ofereço apoio e terceirização de produção pra arquitetos, designers e escritórios — assumindo renderização, modelagem 3D, detalhamento e projeto executivo, pra você ganhar tempo e entregar com qualidade."
