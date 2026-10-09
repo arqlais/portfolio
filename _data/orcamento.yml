@@ -285,3 +285,4 @@ portfolio:
   - imagem: "/assets/img/gallery/g27.jpg"
     projeto: "Marla Riva"
     tipo: "vray"
+cor_destaque: "#d1ada4"
