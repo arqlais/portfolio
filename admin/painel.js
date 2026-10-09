@@ -693,7 +693,11 @@
   };
 
   /* ---------- Formulários ---------- */
-  const marcar = () => { alterados.add(secaoPorId(secaoAtual).arquivo); atualizarBarra(); montarMenu(); };
+  const marcar = () => {
+    const secao = secaoPorId(secaoAtual);
+    alterados.add(secao.arquivo); atualizarBarra(); montarMenu();
+    if (secao.aba === 'orcamento') enviarLateral();
+  };
   const redesenhar = () => {
     const y = window.scrollY;
     mostrarSecao(secaoAtual, false);
@@ -1023,42 +1027,73 @@
     fotosNovas.forEach((f, caminho) => { fotos[caminho] = f.url; });
     return { tipo: 'orcamento-dados', dados: JSON.parse(JSON.stringify(dados.orcamento || {})), fotos };
   };
+  // Folhas de pré-visualização abertas (janela modal e coluna ao lado, no computador).
+  const LARGURA_PDF = 1024;
+  const folhas = new Set();
+  const ajustarFolha = (f) => {
+    if (!f.palco.isConnected) { folhas.delete(f); return; }
+    const escala = Math.min(1, (f.palco.clientWidth - 2) / LARGURA_PDF);
+    const altura = f.altura || 2000;
+    f.quadro.style.transform = `scale(${escala})`;
+    f.quadro.style.height = `${altura}px`;
+    f.folha.style.width = `${LARGURA_PDF * escala}px`;
+    f.folha.style.height = `${altura * escala}px`;
+  };
+  const criarFolha = (palco) => {
+    palco.innerHTML = '';
+    const folha = el('div', 'previa-folha');
+    const quadro = el('iframe');
+    quadro.title = 'pré-visualização do orçamento';
+    quadro.src = PAGINA_PDF;
+    folha.append(quadro);
+    palco.append(folha);
+    const f = { palco, folha, quadro, altura: 0 };
+    folhas.add(f);
+    ajustarFolha(f);
+    return f;
+  };
   // A página do orçamento avisa quando está pronta; respondemos com os dados.
   window.addEventListener('message', (ev) => {
     if (ev.origin !== location.origin || !ev.data) return;
     if (ev.data.tipo === 'orcamento-pronto') ev.source.postMessage(pacoteOrcamento(), location.origin);
-    if (ev.data.tipo === 'orcamento-altura') ajustarPrevia(ev.data.altura);
+    if (ev.data.tipo === 'orcamento-altura') {
+      folhas.forEach((f) => { if (f.quadro.contentWindow === ev.source) { f.altura = ev.data.altura; ajustarFolha(f); } });
+    }
   });
-
-  const LARGURA_PDF = 1024;
-  let alturaPrevia = 0;
-  const ajustarPrevia = (altura) => {
-    if (altura) alturaPrevia = altura;
-    const palco = $('#previa-palco');
-    const quadro = $('#previa-quadro');
-    if (!palco || !quadro) return;
-    const escala = Math.min(1, (palco.clientWidth - 2) / LARGURA_PDF);
-    quadro.style.transform = `scale(${escala})`;
-    quadro.style.height = `${alturaPrevia || 2000}px`;
-    $('#previa-folha').style.width = `${LARGURA_PDF * escala}px`;
-    $('#previa-folha').style.height = `${(alturaPrevia || 2000) * escala}px`;
-  };
-  window.addEventListener('resize', () => ajustarPrevia());
+  window.addEventListener('resize', () => { folhas.forEach(ajustarFolha); atualizarLateral(); });
 
   const abrirPrevia = () => {
-    const modal = $('#modal-previa');
-    alturaPrevia = 0;
-    $('#previa-palco').innerHTML = '<div class="previa-folha" id="previa-folha"><iframe id="previa-quadro" title="pré-visualização do orçamento"></iframe></div>';
-    $('#previa-quadro').src = PAGINA_PDF;
-    modal.hidden = false;
+    $('#modal-previa').hidden = false;
     document.body.style.overflow = 'hidden';
-    ajustarPrevia();
+    criarFolha($('#previa-palco'));
   };
   const fecharPrevia = () => {
     $('#modal-previa').hidden = true;
     $('#previa-palco').innerHTML = '';
     document.body.style.overflow = '';
   };
+
+  // No computador, a aba do orçamento mostra a prévia ao lado, atualizando enquanto você edita.
+  let lateral = null;
+  let timerLateral;
+  const telaLarga = () => window.matchMedia('(min-width: 1200px)').matches;
+  const atualizarLateral = () => {
+    const aside = $('#previa-lateral');
+    const secao = secaoPorId(secaoAtual);
+    const ligar = !!secao && secao.aba === 'orcamento' && telaLarga() && !$('#tela-painel').hidden;
+    aside.hidden = !ligar;
+    $('#tela-painel').classList.toggle('com-previa', ligar);
+    if (!ligar) { if (lateral) { folhas.delete(lateral); lateral = null; $('#lateral-palco').innerHTML = ''; } return; }
+    if (!lateral || !lateral.palco.isConnected || !$('#lateral-palco').firstChild) lateral = criarFolha($('#lateral-palco'));
+    else ajustarFolha(lateral);
+  };
+  const enviarLateral = () => {
+    clearTimeout(timerLateral);
+    timerLateral = setTimeout(() => {
+      if (lateral && lateral.quadro.contentWindow) lateral.quadro.contentWindow.postMessage(pacoteOrcamento(), location.origin);
+    }, 300);
+  };
+
   const salvarPdf = () => {
     const janela = window.open(`${PAGINA_PDF}?imprimir`, '_blank');
     if (!janela) avisar('o navegador bloqueou a nova aba. permita pop-ups para lais3d.com.br e tente de novo.', true);
@@ -1144,6 +1179,7 @@
       conteudo.append(cartao);
     });
     montarMenu();
+    atualizarLateral();
     if (rolarParaTopo) window.scrollTo(0, 0);
   };
 

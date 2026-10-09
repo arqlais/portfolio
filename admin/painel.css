@@ -44,6 +44,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .previa-folha{margin:0 auto;overflow:hidden;box-shadow:var(--shadow);background:#fff}
 .previa-folha iframe{width:1024px;border:0;display:block;transform-origin:0 0}
 
+.painel.com-previa{grid-template-columns:220px minmax(0,1fr) minmax(380px,40vw)}
+.painel.com-previa .conteudo{padding-inline:28px}
+.previa-lateral{grid-column:3;grid-row:3;position:sticky;top:65px;align-self:start;height:calc(100vh - 65px);display:flex;flex-direction:column;border-left:1px solid var(--line);background:#e9e4dd}
+.previa-lateral-topo{display:flex;align-items:center;gap:8px;padding:12px 18px;font-size:13px;font-weight:600;color:var(--navy-dark);background:#fff;border-bottom:1px solid var(--line)}
+.ponto-vivo{width:8px;height:8px;border-radius:50%;background:#5e8f63;box-shadow:0 0 0 4px rgba(94,143,99,.15)}
+.previa-lateral .previa-palco{padding:16px 16px 120px}
+
 /* Botões */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid transparent;border-radius:999px;
   padding:12px 22px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;transition:.2s;white-space:nowrap}
