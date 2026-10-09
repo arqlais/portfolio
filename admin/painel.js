@@ -380,6 +380,7 @@
             texto('whatsapp_exibicao', 'WhatsApp (como aparece)'),
           ] },
           { type: 'duas', campos: [texto('email', 'e-mail'), texto('instagram_usuario', 'Instagram (sem @)')] },
+          texto('site', 'site', { hint: 'ex.: lais3d.com.br. deixe vazio para não mostrar.' }),
         ] },
       ],
     },

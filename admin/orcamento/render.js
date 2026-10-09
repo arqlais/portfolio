@@ -32,6 +32,7 @@
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
     info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
     file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="M9 13h6M9 17h6"/>',
+    globo: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/>',
     minus: '<path d="M6 12h12"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
   };
@@ -164,6 +165,7 @@
   <a class="btn" href="${wa}&text=${encodeURIComponent(o.final_mensagem || '')}">${ic('msg')}${esc(o.final_botao)}</a>
   <div class="contatos">
     <a href="${wa}">${ic('msg')}${esc(o.whatsapp_exibicao)}</a>
+    ${String(o.site || '').trim() ? `<a href="https://${esc(String(o.site).replace(/^https?:\/\//, ''))}">${ic('globo')}${esc(String(o.site).replace(/^https?:\/\//, ''))}</a>` : ''}
     <a href="mailto:${esc(o.email)}">${ic('mail')}${esc(o.email)}</a>
     <a href="${insta}">${ic('insta')}@${esc(o.instagram_usuario)}</a>
   </div>
