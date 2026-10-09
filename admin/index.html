@@ -52,7 +52,8 @@
     <nav class="menu" id="menu"></nav>
     <main class="conteudo" id="conteudo"><p class="carregando">carregando…</p></main>
     <aside class="previa-lateral" id="previa-lateral" hidden>
-      <p class="previa-lateral-topo"><span class="ponto-vivo"></span>pré-visualização ao vivo</p>
+      <div class="previa-lateral-topo"><span class="ponto-vivo"></span>pré-visualização ao vivo
+        <span class="lateral-tamanhos" id="lateral-tamanhos" hidden><button type="button" class="ativo" data-largura="1280">computador</button><button type="button" data-largura="390">celular</button></span></div>
       <div class="previa-palco" id="lateral-palco"></div>
     </aside>
     <div class="barra-salvar" id="barra-salvar" hidden>
@@ -98,6 +99,7 @@
   <div class="aviso" id="aviso" hidden></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script src="vendor/liquid.browser.min.js"></script>
   <script src="orcamento/render.js"></script>
   <script src="painel.js"></script>
 </body>

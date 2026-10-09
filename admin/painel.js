@@ -425,6 +425,7 @@
   const dados = {};            // arquivo -> objeto
   const alterados = new Set(); // arquivos com mudanças não salvas
   const fotosNovas = new Map(); // caminho público -> { blob, url, enviada }
+  const modelosSite = {};      // index.html e _includes/*.html (prévia ao vivo do site)
   let secaoAtual = SECOES[0].id;
 
   /* ---------- Utilidades ---------- */
@@ -497,6 +498,14 @@
       const txt = await gh(`/repos/${REPO}/contents/_data/${arquivo}.yml?ref=${sha}`, { cru: true });
       dados[arquivo] = jsyaml.load(txt) || {};
     }));
+    // Modelos do site (para a prévia ao vivo): a página e os trechos em _includes/.
+    try {
+      const inc = await gh(`/repos/${REPO}/contents/_includes?ref=${sha}`);
+      const nomes = ['index.html', ...inc.filter((f) => f.type === 'file').map((f) => `_includes/${f.name}`)];
+      await Promise.all(nomes.map(async (n) => {
+        modelosSite[n.replace(/^_includes\//, '')] = await gh(`/repos/${REPO}/contents/${n}?ref=${sha}`, { cru: true });
+      }));
+    } catch (_) { /* sem modelos, a prévia do site não aparece */ }
     alterados.clear();
   };
 
@@ -725,7 +734,7 @@
   const marcar = () => {
     const secao = secaoPorId(secaoAtual);
     alterados.add(secao.arquivo); atualizarBarra(); montarMenu();
-    if (secao.aba === 'orcamento') enviarLateral();
+    enviarLateral();
   };
   const redesenhar = () => {
     const y = window.scrollY;
@@ -1218,7 +1227,7 @@
       folhas.forEach((f) => { if (f.quadro.contentWindow === ev.source) { f.altura = ev.data.altura; ajustarFolha(f); } });
     }
   });
-  window.addEventListener('resize', () => { folhas.forEach(ajustarFolha); atualizarLateral(); });
+  window.addEventListener('resize', () => { folhas.forEach(ajustarFolha); atualizarLateral(); ajustarSite(); });
 
   const abrirPrevia = () => {
     $('#modal-previa').hidden = false;
@@ -1231,25 +1240,109 @@
     document.body.style.overflow = '';
   };
 
-  // No computador, a aba do orçamento mostra a prévia ao lado, atualizando enquanto você edita.
-  let lateral = null;
+  /* ---------- Prévia ao vivo do site ---------- */
+  // Monta a página do site no navegador com o mesmo modelo do GitHub Pages (Liquid) e os dados em edição.
+  let motorSite = null;
+  const markdownSimples = (t) => String(t ?? '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
+    .map((p) => `<p>${p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>')}</p>`).join('\n');
+  const htmlDoSite = async () => {
+    if (!modelosSite['index.html'] || !window.liquidjs) return null;
+    if (!motorSite) {
+      motorSite = new window.liquidjs.Liquid({ jekyllInclude: true, templates: modelosSite, strictFilters: false });
+      motorSite.registerFilter('relative_url', (v) => urlFoto(String(v ?? '')));
+      motorSite.registerFilter('markdownify', markdownSimples);
+      motorSite.registerFilter('jsonify', (v) => JSON.stringify(v));
+    }
+    const fonte = modelosSite['index.html'].replace(/^---[\s\S]*?---\s*/, '');
+    const html = await motorSite.parseAndRender(fonte, { site: { data: dados } });
+    return html.replace(/<head>/i, `<head><base href="${location.origin}/">`);
+  };
+
+  /* ---------- Coluna de prévia ao lado (computador) ---------- */
+  // Orçamento: a página do PDF (1024px). Site: a página montada acima, em largura de computador ou celular.
+  let lateral = null;      // folha do orçamento
+  let lateralSite = null;  // { quadro, largura }
   let timerLateral;
+  let larguraSite = 1280;
   const telaLarga = () => window.matchMedia('(min-width: 1200px)').matches;
+
+  const ajustarSite = () => {
+    if (!lateralSite) return;
+    const palco = $('#lateral-palco');
+    const escala = Math.min(1, (palco.clientWidth - 2) / larguraSite);
+    const q = lateralSite.quadro;
+    q.style.width = `${larguraSite}px`;
+    q.style.height = `${Math.round((palco.clientHeight - 2) / escala)}px`;
+    q.style.transform = `scale(${escala})`;
+    lateralSite.folha.style.width = `${larguraSite * escala}px`;
+    lateralSite.folha.style.height = `${palco.clientHeight - 2}px`;
+  };
+  const desenharSite = async (ancora) => {
+    if (!lateralSite) return;
+    let html;
+    try { html = await htmlDoSite(); } catch (e) { console.error(e); return; }
+    if (!html) { $('#lateral-palco').innerHTML = '<p class="dica" style="padding:16px">não foi possível montar a prévia do site.</p>'; lateralSite = null; return; }
+    const q = lateralSite.quadro;
+    const y = q.contentWindow ? q.contentWindow.scrollY : 0;
+    q.onload = () => {
+      const w = q.contentWindow;
+      const alvo = ancora && ancora.startsWith('#') ? w.document.querySelector(ancora) : null;
+      if (alvo) alvo.scrollIntoView(); else w.scrollTo(0, y);
+    };
+    q.srcdoc = html;
+  };
+  const criarSite = (ancora) => {
+    const palco = $('#lateral-palco');
+    palco.innerHTML = '';
+    const folha = el('div', 'previa-folha previa-site');
+    const quadro = el('iframe');
+    quadro.title = 'pré-visualização do site';
+    folha.append(quadro);
+    palco.append(folha);
+    lateralSite = { folha, quadro };
+    ajustarSite();
+    desenharSite(ancora);
+  };
+
   const atualizarLateral = () => {
     const aside = $('#previa-lateral');
     const secao = secaoPorId(secaoAtual);
-    const ligar = !!secao && secao.aba === 'orcamento' && telaLarga() && !$('#tela-painel').hidden;
+    const ligar = !!secao && telaLarga() && !$('#tela-painel').hidden && (secao.aba === 'orcamento' || !!modelosSite['index.html']);
     aside.hidden = !ligar;
     $('#tela-painel').classList.toggle('com-previa', ligar);
-    if (!ligar) { if (lateral) { folhas.delete(lateral); lateral = null; $('#lateral-palco').innerHTML = ''; } return; }
-    if (!lateral || !lateral.palco.isConnected || !$('#lateral-palco').firstChild) lateral = criarFolha($('#lateral-palco'));
-    else ajustarFolha(lateral);
+    $('#lateral-tamanhos').hidden = !(ligar && secao.aba === 'site');
+    if (!ligar) {
+      if (lateral) folhas.delete(lateral);
+      lateral = null; lateralSite = null; $('#lateral-palco').innerHTML = '';
+      return;
+    }
+    if (secao.aba === 'orcamento') {
+      lateralSite = null;
+      if (!lateral || !$('#lateral-palco').contains(lateral.folha)) lateral = criarFolha($('#lateral-palco'));
+      else ajustarFolha(lateral);
+    } else {
+      if (lateral) { folhas.delete(lateral); lateral = null; }
+      if (!lateralSite || !$('#lateral-palco').contains(lateralSite.folha)) criarSite(secao.ancora);
+      else {
+        ajustarSite();
+        const alvo = secao.ancora && secao.ancora.startsWith('#') && lateralSite.quadro.contentDocument
+          ? lateralSite.quadro.contentDocument.querySelector(secao.ancora) : null;
+        if (alvo) alvo.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
   const enviarLateral = () => {
     clearTimeout(timerLateral);
     timerLateral = setTimeout(() => {
       if (lateral && lateral.quadro.contentWindow) lateral.quadro.contentWindow.postMessage(pacoteOrcamento(), location.origin);
-    }, 300);
+      if (lateralSite) desenharSite();
+    }, 350);
+  };
+  const escolherLarguraSite = (largura) => {
+    larguraSite = largura;
+    document.querySelectorAll('#lateral-tamanhos button').forEach((b) => b.classList.toggle('ativo', Number(b.dataset.largura) === largura));
+    ajustarSite();
   };
 
   const salvarPdf = () => {
@@ -1410,6 +1503,7 @@
 
   $('#botao-sair').onclick = () => sair();
   $('#previa-fechar').onclick = fecharPrevia;
+  document.querySelectorAll('#lateral-tamanhos button').forEach((b) => { b.onclick = () => escolherLarguraSite(Number(b.dataset.largura)); });
   $('#previa-pdf').onclick = salvarPdf;
   document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('#modal-previa').hidden) fecharPrevia(); });
   $('#botao-salvar').onclick = salvar;
