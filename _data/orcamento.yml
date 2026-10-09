@@ -1,14 +1,10 @@
 titulo_aba: "Orçamento de renderização — Laís Vieira"
 topo_esquerda: "orçamento · renderização"
 topo_direita: "2026"
-
 foto: "/assets/img/profile.jpg"
 foto_alt: "Retrato de Laís Vieira"
 saudacao: "muito prazer!"
-apresentacao: |-
-  Sou **Laís**, designer gráfica e estudante de Arquitetura e Urbanismo (9º período). Transformo projetos de arquitetos, designers de interiores e construtoras em **imagens que vendem a ideia**.
-
-  Trabalho com **dois métodos de renderização**, V-Ray e inteligência artificial. Aqui você vê os dois lado a lado, os valores e trabalhos reais.
+apresentacao: "Sou **Laís**, designer gráfica e estudante de Arquitetura e Urbanismo (9º período). Transformo projetos de arquitetos, designers de interiores e construtoras em **imagens que vendem a ideia**.\n\nTrabalho com **dois métodos de renderização**, V-Ray e inteligência artificial. Aqui você vê os dois lado a lado, os valores e trabalhos reais."
 ferramentas:
   - "SketchUp"
   - "V-Ray"
@@ -18,7 +14,7 @@ ferramentas:
   - "Vectorworks"
 credenciais:
   - icone: "cube"
-    titulo: "V-Ray"
+    titulo: "v-ray"
     texto: "múltiplos cursos de renderização"
   - icone: "spark"
     titulo: "Render por IA"
@@ -26,7 +22,6 @@ credenciais:
   - icone: "target"
     titulo: "Método próprio"
     texto: "fluxo de IA com boa consistência entre imagens"
-
 metodos_chamada: "os dois métodos"
 metodos_titulo: "v-ray *&* ia"
 metodos_texto: "Os dois entregam imagens lindas. Cada um brilha num tipo de projeto."
@@ -82,7 +77,6 @@ metodos:
     ponto_icone: "spark"
     ponto_titulo: "Método próprio de render por IA"
     ponto_texto: "Várias imagens do mesmo ambiente com boa consistência de luz e materiais."
-
 comparativo_rotulo: "lado a lado"
 comparativo_coluna_1: "V-Ray"
 comparativo_coluna_2: "IA"
@@ -136,7 +130,6 @@ comparativo:
     ia_detalhe: ""
     ia_vantagem: "sim"
 comparativo_dica: "Precisão milimétrica para a obra? **V-Ray.** Beleza, agilidade e ótimo custo? **IA.**"
-
 valores_chamada: "valores"
 valores_titulo: "mais imagens, *menor o valor*"
 valores_rotulo_por_imagem: "valor por imagem"
@@ -172,7 +165,6 @@ mais_titulo: "Projeto completo ou mais de 15 imagens?"
 mais_texto: "O valor por imagem fica ainda melhor. Eu monto o pacote ideal pra você."
 mais_botao: "consultar"
 mais_mensagem: "Olá, Laís! Quero um orçamento para um projeto completo."
-
 portfolio_chamada: "portfólio"
 portfolio_titulo: "trabalhos *reais*"
 legenda_vray: "renderizado em V-Ray"
@@ -180,7 +172,6 @@ legenda_ia: "renderizado com inteligência artificial"
 portfolio_colunas: "3"
 portfolio_rotulo_projeto: "Projeto"
 portfolio_link_texto: "veja mais no Instagram"
-
 etapas_chamada: "como funciona"
 etapas_titulo: "do projeto *à imagem final*"
 etapas:
@@ -212,18 +203,15 @@ saber:
     texto: "O resultado depende do **projeto e das referências**."
   - icone: "msg"
     texto: "Quanto mais claro o briefing, **melhor a imagem**."
-
 final_titulo: "vamos conversar?"
 final_texto: "Me envie o projeto e as referências. Retorno com prazo e valor fechado, sem surpresas no meio do caminho."
 final_botao: "falar no whatsapp"
 final_mensagem: "Olá, Laís! Vi seu orçamento de renderização e gostaria de conversar sobre o meu projeto."
-
 whatsapp_numero: "5511969288192"
 whatsapp_exibicao: "(11) 96928-8192"
 email: "arq.laisav@gmail.com"
 instagram_usuario: "lais_3d"
 site: "lais3d.com.br"
-
 portfolio:
   - imagem: "/assets/img/gallery/g03.jpg"
     projeto: "Natasha Vieira"
