@@ -238,7 +238,7 @@
     {
       id: 'orc-apresentacao', aba: 'orcamento', arquivo: 'orcamento', nome: 'apresentação',
       titulo: 'sua <span class="script">apresentação</span>',
-      descricao: 'foto, saudação, texto, programas e a faixa com ✓.',
+      descricao: 'foto, saudação, texto, programas e os selos de formação.',
       grupos: [
         { titulo: 'topo e apresentação', campos: [
           { type: 'image', name: 'foto', label: 'sua foto', pasta: 'assets/img/orcamento', proporcao: '25/31', forma: 'arco', enquadramento: 'foto_enquadramento' },
@@ -246,7 +246,9 @@
           texto('saudacao', 'saudação (em letra cursiva)'),
           { type: 'markdown', name: 'apresentacao', label: 'texto de apresentação', hint: 'selecione palavras e clique em B para deixar em negrito. deixe uma linha em branco para começar outro parágrafo.' },
           { type: 'list', name: 'ferramentas', label: 'programas (pílulas)', singular: 'programa', layout: 'chips' },
-          { type: 'list', name: 'credenciais', label: 'faixa com ✓', singular: 'item', layout: 'chips' },
+          { type: 'list', name: 'credenciais', label: 'selos abaixo da apresentação', singular: 'selo', resumo: (c) => (typeof c === 'string' ? c : c.titulo),
+            fields: [{ type: 'icon', name: 'icone', label: 'ícone', icones: ICONES_ORCAMENTO }, { type: 'duas', campos: [texto('titulo', 'título'), texto('texto', 'texto menor')] }],
+            novo: () => ({ icone: 'check', titulo: '', texto: '' }) },
         ] },
       ],
     },

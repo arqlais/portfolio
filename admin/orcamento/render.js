@@ -118,7 +118,9 @@
     <div class="chips">${lista(o.ferramentas).map((f) => `<span>${esc(f)}</span>`).join('')}</div>
   </div>
 </header>
-<div class="creds">${lista(o.credenciais).map((c) => `<span>${ic('check')}${esc(c)}</span>`).join('')}</div>
+<div class="creds wrap">${lista(o.credenciais).map((c) => (typeof c === 'string' ? { icone: 'check', titulo: c } : c)).map((c) => `
+  <div class="selo-cred"><span class="ic">${ic(c.icone)}</span><p><b>${esc(c.titulo)}</b>${String(c.texto || '').trim() ? esc(c.texto) : ''}</p></div>`).join('')}
+</div>
 
 <section class="sec"><div class="wrap">
   <div class="head"><span class="eyebrow">${esc(o.metodos_chamada)}</span><h2>${titulo(o.metodos_titulo)}</h2><p>${esc(o.metodos_texto)}</p></div>
