@@ -27,9 +27,12 @@
 
   // PDF em uma página só, contínua, do tamanho exato do conteúdo.
   const ajustarPagina = () => {
-    const altura = Math.ceil(document.documentElement.scrollHeight);
-    document.getElementById('tamanho-pagina').textContent =
-      `@page{size:1024px ${altura}px;margin:0}html,body{width:1024px}`;
+    const estilo = document.getElementById('tamanho-pagina');
+    estilo.textContent = '';
+    const altura = Math.ceil(document.getElementById('orcamento').getBoundingClientRect().height);
+    // folga de 2px e corte no fim evitam uma segunda página quase vazia por arredondamento
+    estilo.textContent = `@page{size:1024px ${altura + 2}px;margin:0}`
+      + `@media print{html,body{width:1024px;height:${altura}px;overflow:hidden}}`;
     return altura;
   };
 
