@@ -110,7 +110,11 @@
     const itensIcone = (itens) => lista(itens).map((i) => `<li><span class="ic">${ic(i.icone)}</span><p>${inline(i.texto)}</p></li>`).join('');
 
     const escala = (v) => (num(v) > 0 ? num(v) / 100 : 1);
-    const estilo = `--t:${escala(o.tamanho_textos)};--h:${escala(o.tamanho_titulos)};--s:${escala(o.tamanho_saudacao)}`;
+    const HEX = /^#[0-9a-f]{6}$/i;
+    const CORES = { cor_fundo: '--cream', cor_fundo_alt: '--paper', cor_cartao: '--cartao', cor_linhas: '--line', cor_principal: '--slate',
+      cor_destaque: '--rose', cor_destaque_suave: '--rose-soft', cor_positivo: '--good', cor_texto: '--ink', cor_texto_suave: '--muted', cor_texto_claro: '--claro' };
+    const cores = Object.entries(CORES).filter(([k]) => HEX.test(o[k] || '')).map(([k, v]) => `${v}:${o[k]}`).join(';');
+    const estilo = `--t:${escala(o.tamanho_textos)};--h:${escala(o.tamanho_titulos)};--s:${escala(o.tamanho_saudacao)}${cores ? ';' + cores : ''}`;
 
     return `<div class="orcamento" style="${estilo}">${sprite()}
 <div class="barra"><span>${esc(o.topo_esquerda)}</span><span>${esc(o.topo_direita)}</span></div>

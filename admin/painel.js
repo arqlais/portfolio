@@ -33,6 +33,7 @@
   const CURSIVA = 'o trecho entre *asteriscos* aparece em letra cursiva.';
   const texto = (name, label, extra = {}) => ({ type: 'text', name, label, ...extra });
   const textoLongo = (name, label, extra = {}) => ({ type: 'textarea', name, label, ...extra });
+  const cor = (name, label, padrao, hint) => ({ type: 'cor', name, label, padrao, hint });
   const titulo = (name = 'titulo', label = 'título') => texto(name, label, { hint: CURSIVA });
   const cabecalho = [texto('chamada', 'chamada (texto pequeno acima do título)'), titulo(), textoLongo('texto', 'texto')];
   const selos = {
@@ -200,6 +201,26 @@
       ] }],
     },
     {
+      arquivo: 'cores', nome: 'cores', ancora: '',
+      titulo: '<span class="script">cores</span> do site',
+      descricao: 'as cores de todo o site. toque na bolinha para escolher no quadro, ou digite o HEX ou o RGB. “original” volta à cor da sua identidade.',
+      grupos: [
+        { titulo: 'fundos e cartões', campos: [
+          { type: 'duas', campos: [cor('fundo', 'fundo principal', '#f5f2ee'), cor('fundo_2', 'fundo secundário', '#d9d3c4')] },
+          cor('cartao', 'cartões e caixas', '#ffffff'),
+        ] },
+        { titulo: 'cores da marca', campos: [
+          { type: 'duas', campos: [cor('principal', 'principal (azul)', '#4b5e6c'), cor('principal_escuro', 'principal escuro', '#3e4d59')] },
+          { type: 'duas', campos: [cor('destaque', 'destaque (rosé)', '#d1ada4'), cor('destaque_escuro', 'destaque escuro', '#ab8e86')] },
+          { type: 'duas', campos: [cor('destaque_suave', 'destaque suave', '#e1cac4'), cor('destaque_clarinho', 'destaque clarinho', '#eee0dc')] },
+        ] },
+        { titulo: 'textos e linhas', campos: [
+          { type: 'duas', campos: [cor('texto', 'textos', '#334049'), cor('texto_suave', 'textos suaves', '#86929a')] },
+          { type: 'duas', campos: [cor('texto_claro', 'textos sobre fundo escuro', '#ffffff'), cor('linhas', 'linhas e bordas', '#e0dbce')] },
+        ] },
+      ],
+    },
+    {
       arquivo: 'geral', nome: 'contato e dados', ancora: '#contato',
       titulo: 'contato e <span class="script">dados gerais</span>',
       descricao: 'WhatsApp, e-mail e Instagram valem para todos os botões e links do site.',
@@ -220,14 +241,22 @@
       ],
     },
     {
-      id: 'orc-aparencia', aba: 'orcamento', arquivo: 'orcamento', nome: 'letras e topo',
-      titulo: 'letras e <span class="script">topo</span>',
-      descricao: 'o tamanho das letras de todo o orçamento e a faixa azul do topo. use “pré-visualizar” para ver o resultado.',
+      id: 'orc-aparencia', aba: 'orcamento', arquivo: 'orcamento', nome: 'letras, cores e topo',
+      titulo: 'letras, cores <span class="script">e topo</span>',
+      descricao: 'tamanho das letras, cores de todo o orçamento e a faixa do topo.',
       grupos: [
         { titulo: 'tamanho das letras', campos: [
           { type: 'escala', name: 'tamanho_textos', label: 'textos', hint: 'todos os textos do orçamento, mantendo a proporção entre eles.' },
           { type: 'escala', name: 'tamanho_titulos', label: 'títulos em letra cursiva' },
           { type: 'escala', name: 'tamanho_saudacao', label: '“muito prazer!”' },
+        ] },
+        { titulo: 'cores do orçamento', campos: [
+          { type: 'duas', campos: [cor('cor_fundo', 'fundo', '#f4efe9'), cor('cor_fundo_alt', 'fundo das seções alternadas', '#fbf9f6')] },
+          { type: 'duas', campos: [cor('cor_cartao', 'cartões e tabelas', '#ffffff'), cor('cor_linhas', 'linhas e bordas', '#e5ddd4')] },
+          { type: 'duas', campos: [cor('cor_principal', 'principal (azul)', '#4a5d6c'), cor('cor_destaque', 'destaque (rosé)', '#c9938a')] },
+          { type: 'duas', campos: [cor('cor_destaque_suave', 'destaque suave', '#f1dcd6'), cor('cor_positivo', 'vantagens e economia (verde)', '#5e8f63')] },
+          { type: 'duas', campos: [cor('cor_texto', 'textos', '#2f3a43'), cor('cor_texto_suave', 'textos suaves', '#77828c')] },
+          cor('cor_texto_claro', 'textos sobre fundo escuro', '#ffffff'),
         ] },
         { titulo: 'faixa do topo e arquivo', campos: [
           { type: 'duas', campos: [texto('topo_esquerda', 'faixa do topo (esquerda)'), texto('topo_direita', 'faixa do topo (direita)')] },
@@ -868,6 +897,134 @@
     return wrap;
   };
 
+  // Cor: seletor próprio (sem a janela do sistema) com quadro, matiz, HEX, RGB e as cores da identidade.
+  const PALETA_IDENTIDADE = ['#4a5d6c', '#3e4d59', '#c9938a', '#d1ada4', '#ab8e86', '#f1dcd6', '#eee0dc',
+    '#f4efe9', '#fbf9f6', '#ffffff', '#2f3a43', '#77828c', '#e5ddd4', '#5e8f63'];
+  const HEX_OK = /^#[0-9a-f]{6}$/i;
+  const hexParaRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const rgbParaHex = (r, g, b) => '#' + [r, g, b].map((v) => limitar(Math.round(v), 0, 255).toString(16).padStart(2, '0')).join('');
+  const rgbParaHsv = (r, g, b) => {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = 0;
+    if (d) h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [(h * 60 + 360) % 360, max ? d / max : 0, max];
+  };
+  const hsvParaRgb = (h, s, v) => {
+    const f = (n) => { const k = (n + h / 60) % 6; return v - v * s * Math.max(0, Math.min(k, 4 - k, 1)); };
+    return [f(5) * 255, f(3) * 255, f(1) * 255];
+  };
+  let fecharSeletorAberto = null;
+  const campoCor = (campo, obj) => {
+    const wrap = el('div', 'campo campo-cor');
+    const id = `c${++contadorId}`;
+    rotular(wrap, campo, id);
+    const linha = el('div', 'cor-linha');
+    const amostra = el('button', 'cor-amostra');
+    amostra.type = 'button';
+    amostra.setAttribute('aria-label', `escolher cor: ${campo.label}`);
+    const hexInput = el('input');
+    hexInput.id = id; hexInput.type = 'text'; hexInput.maxLength = 7; hexInput.spellcheck = false;
+    const voltar = el('button', 'btn btn-ghost btn-sm', 'original');
+    voltar.type = 'button';
+    linha.append(amostra, hexInput, voltar);
+    wrap.append(linha);
+
+    const atual = () => (HEX_OK.test(obj[campo.name] || '') ? obj[campo.name] : campo.padrao);
+    let pop = null;
+    const pintar = () => {
+      const c = atual();
+      amostra.style.background = c;
+      if (document.activeElement !== hexInput) hexInput.value = c.toUpperCase();
+      voltar.hidden = c.toLowerCase() === campo.padrao.toLowerCase();
+      if (pop) pop.sincronizar();
+    };
+    const definir = (hex) => {
+      hex = hex.toLowerCase();
+      if (!HEX_OK.test(hex) || hex === atual().toLowerCase()) return;
+      obj[campo.name] = hex;
+      pintar();
+      marcar();
+    };
+    hexInput.oninput = () => {
+      let v = hexInput.value.trim();
+      if (!v.startsWith('#')) v = '#' + v;
+      if (/^#[0-9a-f]{3}$/i.test(v)) v = '#' + [...v.slice(1)].map((x) => x + x).join('');
+      if (HEX_OK.test(v)) definir(v);
+    };
+    hexInput.onblur = pintar;
+    voltar.onclick = () => { obj[campo.name] = campo.padrao; pintar(); marcar(); };
+
+    const abrir = () => {
+      if (fecharSeletorAberto) fecharSeletorAberto();
+      pop = el('div', 'cor-pop');
+      const quadro = el('div', 'cor-quadro');
+      const mira = el('span', 'cor-mira');
+      quadro.append(mira);
+      const matiz = el('div', 'cor-matiz');
+      const marca = el('span', 'cor-marca');
+      matiz.append(marca);
+      const campos = el('div', 'cor-campos');
+      const entradas = ['R', 'G', 'B'].map((n) => {
+        const l = el('label', null, n);
+        const i = el('input'); i.type = 'number'; i.min = 0; i.max = 255; i.inputMode = 'numeric';
+        l.append(i); campos.append(l); return i;
+      });
+      const hexL = el('label', 'cor-hex', 'HEX');
+      const hexI = el('input'); hexI.type = 'text'; hexI.maxLength = 7; hexI.spellcheck = false;
+      hexL.append(hexI); campos.append(hexL);
+      const paleta = el('div', 'cor-paleta');
+      [campo.padrao, ...PALETA_IDENTIDADE.filter((c) => c !== campo.padrao)].forEach((c) => {
+        const b = el('button'); b.type = 'button'; b.style.background = c; b.title = c.toUpperCase();
+        b.onclick = () => definir(c);
+        paleta.append(b);
+      });
+      const titulo = el('p', 'cor-paleta-titulo', 'cores da sua identidade');
+      const ok = el('button', 'btn btn-primary btn-sm', 'pronto');
+      ok.type = 'button';
+      pop.append(quadro, matiz, campos, titulo, paleta, ok);
+      wrap.append(pop);
+
+      let [h, sat, val] = rgbParaHsv(...hexParaRgb(atual()));
+      const aplicarHsv = () => definir(rgbParaHex(...hsvParaRgb(h, sat, val)));
+      pop.sincronizar = () => {
+        const rgb = hexParaRgb(atual());
+        const [h2, s2, v2] = rgbParaHsv(...rgb);
+        if (s2 > 0 && v2 > 0) h = h2;
+        sat = s2; val = v2;
+        quadro.style.background = `linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,hsl(${h},100%,50%))`;
+        mira.style.left = `${sat * 100}%`; mira.style.top = `${(1 - val) * 100}%`;
+        marca.style.left = `${(h / 360) * 100}%`;
+        entradas.forEach((i, k) => { if (document.activeElement !== i) i.value = rgb[k]; });
+        if (document.activeElement !== hexI) hexI.value = atual().toUpperCase();
+      };
+      const arrastar = (alvo, mover) => {
+        alvo.onpointerdown = (ev) => {
+          ev.preventDefault();
+          alvo.setPointerCapture(ev.pointerId);
+          const passo = (e) => { const r = alvo.getBoundingClientRect(); mover(limitar((e.clientX - r.left) / r.width, 0, 1), limitar((e.clientY - r.top) / r.height, 0, 1)); };
+          passo(ev);
+          alvo.onpointermove = passo;
+          alvo.onpointerup = () => { alvo.onpointermove = null; };
+        };
+      };
+      arrastar(quadro, (x, y) => { sat = x; val = 1 - y; aplicarHsv(); });
+      arrastar(matiz, (x) => { h = x * 359.9; aplicarHsv(); });
+      entradas.forEach((i) => { i.oninput = () => { if (entradas.every((e) => e.value !== '')) definir(rgbParaHex(...entradas.map((e) => Number(e.value)))); }; });
+      hexI.oninput = () => { let v = hexI.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (HEX_OK.test(v)) definir(v); };
+      const fora = (ev) => { if (!pop.contains(ev.target) && ev.target !== amostra) fechar(); };
+      const fechar = () => { pop.remove(); pop = null; document.removeEventListener('pointerdown', fora, true); fecharSeletorAberto = null; };
+      ok.onclick = fechar;
+      setTimeout(() => document.addEventListener('pointerdown', fora, true));
+      fecharSeletorAberto = fechar;
+      pop.sincronizar();
+      requestAnimationFrame(() => pop && pop.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
+    };
+    amostra.onclick = () => (pop ? fecharSeletorAberto() : abrir());
+    pintar();
+    return wrap;
+  };
+
   // Tamanho em %: controle deslizante com o valor ao lado (100% = tamanho original).
   const campoEscala = (campo, obj) => {
     const wrap = el('div', 'campo');
@@ -1015,6 +1172,7 @@
       case 'formato': return campoFormato(campo, obj);
       case 'list': return campoLista(campo, obj);
       case 'escala': return campoEscala(campo, obj);
+      case 'cor': return campoCor(campo, obj);
       default: return campoTexto(campo, obj);
     }
   };
