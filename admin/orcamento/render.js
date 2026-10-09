@@ -32,6 +32,7 @@
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
     info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
     file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="M9 13h6M9 17h6"/>',
+    minus: '<path d="M6 12h12"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
   };
 
@@ -79,7 +80,7 @@
         <div class="ponto"><span class="ic">${ic(m.ponto_icone)}</span><p><b>${esc(m.ponto_titulo)}</b>${esc(m.ponto_texto)}</p></div>
       </article>`).join('');
 
-    const celula = (txt, det, vence) => `<div class="cel${vence === 'sim' ? ' vence' : ''}">${vence === 'sim' ? ic('check') : ''}<span>${esc(txt)}${String(det || '').trim() ? `<small>${esc(det)}</small>` : ''}</span></div>`;
+    const celula = (txt, det, vence) => `<div class="cel${vence === 'sim' ? ' vence' : ''}">${vence === 'sim' ? ic('check') : ic('minus')}<span>${esc(txt)}${String(det || '').trim() ? `<small>${esc(det)}</small>` : ''}</span></div>`;
     const comparativo = lista(o.comparativo).map((c) => `
       <div class="cmp-r"><div class="crit">${ic(c.icone)}${esc(c.criterio)}</div>${celula(c.vray, c.vray_detalhe, c.vray_vantagem)}${celula(c.ia, c.ia_detalhe, c.ia_vantagem)}</div>`).join('');
 

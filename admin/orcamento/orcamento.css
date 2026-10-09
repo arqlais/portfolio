@@ -90,7 +90,9 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .crit svg{color:var(--rose)}
 .cel small{display:block;color:var(--muted);font-size:calc(13.5px * var(--t));font-weight:400;line-height:1.3}
 .cel.vence{color:var(--good);font-weight:600}
-.cel.vence svg{width:18px;height:18px}
+.cel svg{width:18px;height:18px;color:#c9c1b8}
+.cmp-r.cab > div + div{padding-left:52px}
+.cel.vence svg{color:var(--good)}
 .dica{margin-top:16px;display:flex;gap:14px;align-items:center;font-size:calc(16.5px * var(--t));color:var(--muted)}
 .dica svg{color:var(--rose);width:22px;height:22px}
 .dica strong{color:var(--slate);font-weight:600}
