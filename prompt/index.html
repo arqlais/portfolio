@@ -429,23 +429,33 @@ textarea{padding:12px 14px}
 #outSec:not([hidden]),#diffSec:not([hidden]){animation:rise .35s ease}
 @media (prefers-reduced-motion:reduce){#outSec,#diffSec{animation:none!important}}
 
-/* leitura do print: texto organizado */
-.readview{display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.6}
-.rmeta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:0;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s)}
-.rmeta dt{font-weight:600;color:var(--ink)}
-.rmeta dd{margin:0;color:var(--ink)}
-.rh{margin:6px 0 0;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--rose-deep)}
-.rh small{font-weight:500;letter-spacing:.04em;text-transform:none;color:var(--muted);font-size:12px}
-.rl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
-.rl li{padding:7px 0 7px 18px;border-bottom:1px solid var(--line);position:relative}
-.rl li:last-child{border-bottom:0}
-.rl:not(.rmat) li::before{content:"";position:absolute;left:4px;top:16px;width:5px;height:5px;border-radius:50%;background:var(--rose)}
-.rmat li{padding-left:26px}
-.rmat .sw{position:absolute;left:0;top:11px;width:16px;height:16px;border-radius:5px;border:1px solid var(--line)}
-.rmat .sw.none{background:repeating-linear-gradient(45deg,var(--paper) 0 3px,var(--line) 3px 4px)}
-.rmat b{font-weight:600}
-.cfmark{display:inline-block;margin-left:8px;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--warn);background:var(--rose-soft);border-radius:999px;padding:1px 8px;vertical-align:1px}
-@media (max-width:600px){.rmeta{grid-template-columns:minmax(0,1fr)}.rmeta dd{margin-bottom:6px}}
+/* ficha do print (editável) */
+.rform{display:flex;flex-direction:column;gap:14px}
+.rgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+@media (max-width:640px){.rgrid{grid-template-columns:minmax(0,1fr)}}
+.rform .sub{font-weight:400;color:var(--muted);letter-spacing:0}
+.rform textarea{min-height:60px;resize:vertical;overflow:hidden}
+.rmats{display:flex;flex-direction:column;gap:8px}
+.rrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 34px;gap:8px;padding:10px;border:1px solid var(--line);border-left:3px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.rrow.unsure{border-left-color:var(--warn)}
+.rrow input{background:var(--card);height:40px}
+.rrow .re{grid-row:1;grid-column:1;font-weight:600}
+.rrow .ro{grid-row:1;grid-column:2 / 4}
+.rrow .x{grid-row:1;grid-column:4;border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;height:40px;border-radius:10px}
+.rrow .x:hover{color:var(--warn);background:var(--rose-soft)}
+.rrow .rm{grid-row:2;grid-column:1 / 3}
+.rrow .rc{grid-row:2;grid-column:3 / 5}
+.rrow .rgbw{grid-row:3;grid-column:1;position:relative;display:block}
+.rrow .rgbw input{padding-left:34px;width:100%}
+.rrow .sw{position:absolute;left:10px;top:12px;width:16px;height:16px;border-radius:5px;border:1px solid var(--line)}
+.rrow .sw.none{background:repeating-linear-gradient(45deg,var(--paper) 0 3px,var(--line) 3px 4px)}
+.rrow .cf{grid-row:3;grid-column:2 / 5;display:none;justify-self:start;align-self:center;border:0;cursor:pointer}
+.rrow.unsure .cf{display:inline-block}
+@media (max-width:640px){.rrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 34px}.rrow .re{grid-column:1 / 3}.rrow .x{grid-column:3}.rrow .ro{grid-row:2;grid-column:1 / -1}.rrow .rm{grid-row:3;grid-column:1 / -1}.rrow .rc{grid-row:4;grid-column:1 / -1}.rrow .rgbw{grid-row:5;grid-column:1 / -1}.rrow .cf{grid-row:6;grid-column:1 / -1}}
+.cfmark,.rrow .cf{font:600 11px var(--body);letter-spacing:.06em;color:var(--warn);background:var(--rose-soft);border-radius:999px;padding:3px 10px}
+.rrow .cf:hover{background:var(--warn);color:#fff}
+.rrow .cf::after{content:" · ok?"}
+@media (max-width:640px){.rrow,.rrow.unsure{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 34px;grid-template-areas:"e e x" "o o o" "m m m" "c g g" "cf cf cf"}.rrow .rm{grid-column:1 / -1}.rrow .rc{grid-column:1 / 2}.rrow .rgbw{grid-column:2 / 4}}
 </style>
 </head>
 <body class="booting">
@@ -532,13 +542,13 @@ textarea{padding:12px 14px}
     <main class="steps">
       <section class="step quickonly">
         <h2><span class="n">leitura do print</span>O que a IA <em>viu</em></h2>
-        <p class="hint">Leitura organizada do print. O que a IA não teve certeza aparece com <b class="cfmark">conferir</b>. Use "levar para o passo 2" e corrija ali.</p>
+        <p class="hint">Ficha do print, editável: corrija direto aqui. É ela que vai para o prompt. Itens com <b class="cfmark">conferir</b> são palpites da IA.</p>
         <div class="readview" id="qRead"><p class="hint">Envie o print e toque em analisar. É opcional.</p></div>
       </section>
 
       <section class="step quickonly">
         <h2><span class="n">passo 2</span>Descreva o <em>projeto</em></h2>
-        <p class="hint">Material, cor, RGB, acabamento, luminárias e o que NÃO é. Pode escrever corrido.</p>
+        <p class="hint">Escreva o que a leitura não pegou ou o que quer mudar: material, cor, RGB, acabamento, luminárias e o que NÃO é. Pode escrever corrido. O que você escrever aqui vence a ficha.</p>
         <textarea id="qText" aria-label="Descrição do projeto" placeholder="piso porcelanato acetinado bege muito claro, paredes greige fosca rgb 209,202,194, teto da sala amadeirado Amendoa Natural exatamente como no print, painel da tv lambri ripas 10cm espaço 1cm marrom liso rgb 152,136,123 NAO é amadeirado, bancada quartzo branco polido, metais preto acetinado...
 luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fita de led em cima e embaixo da prateleira, spots no forro, arandela dourado acetinado em cima do sofá"></textarea>
       </section>
@@ -1041,8 +1051,8 @@ let lightStyle = 0;
 const TYPES=[["int_res","Interior residencial","INTERIOR"],["int_com","Interior comercial","INTERIOR"],["ext_res","Exterior residencial","EXTERIOR"],["ext_com","Exterior comercial","EXTERIOR"],["urb","Urbanismo","EXTERIOR"],["planta","Planta humanizada","EXTERIOR"]];
 let tipo="int_res";
 const VIEWS={
- INTERIOR:[["keep","Manter como no print"],["neutral","Neutra, céu claro sem detalhes"],["cidade","Cidade"],["mar","Mar"],["montanhas","Montanhas"],["mata","Mata pouco densa"],["mata_densa","Mata densa"],["jardim","Jardim tropical"],["jardim_res","Jardim residencial"]],
- EXTERIOR:[["keep","Manter como no print"],["neutral","Neutro, mínima interferência"],["casas","Casas"],["bairro","Bairro residencial"],["alto_padrao","Condomínio alto padrão"],["mata","Mata pouco densa"],["mata_densa","Mata densa"],["montanha","Montanha"],["cidade","Cidade com prédios"],["cidade_capital","Cidade capital"],["pracas","Praças"],["centro_comercial","Centro comercial"],["mar","Mar"]]};
+ INTERIOR:[["keep","Automático: coerente com o ambiente"],["neutral","Neutra, céu claro sem detalhes"],["cidade","Cidade"],["mar","Mar"],["montanhas","Montanhas"],["mata","Mata pouco densa"],["mata_densa","Mata densa"],["jardim","Jardim tropical"],["jardim_res","Jardim residencial"]],
+ EXTERIOR:[["keep","Automático: céu coerente com a luz"],["neutral","Neutro, mínima interferência"],["casas","Casas"],["bairro","Bairro residencial"],["alto_padrao","Condomínio alto padrão"],["mata","Mata pouco densa"],["mata_densa","Mata densa"],["montanha","Montanha"],["cidade","Cidade com prédios"],["cidade_capital","Cidade capital"],["pracas","Praças"],["centro_comercial","Centro comercial"],["mar","Mar"]]};
 const ATMO={clean:"clean, bright, airy and minimal; light neutral tones, nothing heavy",editorial:"editorial interior-magazine photograph; refined window light, calm styling, balanced composition",aconchegante:"cozy and inviting; warm tones, soft warm light, a sense of comfort, without yellow cast",sofisticado:"sophisticated restrained luxury; rich but controlled contrast, deep shadows with detail, refined highlights",ludico:"playful and vibrant; slightly enhanced color saturation while keeping every material color recognizable"};
 function renderTypes(){ $("types").innerHTML=""; TYPES.forEach(([v,n])=>{const b=document.createElement("button");b.type="button";b.textContent=n;b.setAttribute("aria-pressed",v===tipo);b.onclick=()=>setTipo(v);$("types").append(b)}); }
 function renderView(prev){ const list=VIEWS[kind]; $("view").innerHTML=list.map(([v,n])=>`<option value="${v}">${n}</option>`).join(""); $("view").value=list.some(x=>x[0]===prev)?prev:"keep"; $("viewLabel").textContent=kind==="INTERIOR"?"Vista pela janela":"Entorno (a arquitetura fica travada)"; }
@@ -1156,20 +1166,22 @@ Analise somente o que está visível e responda em português do Brasil.
 ${existing.length?`A usuária já definiu estes elementos (NÃO repita nem altere; devolva só elementos visíveis que faltam): ${existing.map(r=>r.elemento).join("; ")}.`:"Liste de 8 a 18 elementos relevantes, do maior para o menor em área visível (piso, paredes, teto/forro, marcenaria, painéis, bancadas, metais, portas/divisórias, esquadrias e vidros, estofados, tapete, mesas, cortinas/persianas, luminárias, decoração, vegetação; em exterior: muro, volumes e pinturas da fachada, painéis, esquadrias e vidros, portão e metais, cobertura, calçada e piso externo, vegetação, rua)."}
 Como ler o SketchUp:
 - Textura com veio = material natural (madeira, pedra); cor chapada = pintura, laca, laminado liso ou tecido liso. Diga qual é o mais provável pelo contexto (ex.: armário de cozinha chapado = laca ou laminado).
-- O RGB é lido numa área bem iluminada, sem sombra e sem reflexo, e descreve a cor do material, não a sombra do modelo.
-- Superfícies amarelas, brancas brilhantes ou com faixa clara em nichos, sancas, prateleiras e forros costumam indicar LED. Liste como luminária, não como material amarelo.
+- Olhe CADA superfície separadamente: cada parede visível (diga qual: parede da janela, do fundo, da esquerda, atrás da bancada…), piso, teto, bancadas, frentes de marcenaria. Compare cor, textura, desenho e paginação entre elas. Se forem o MESMO material, devolva UM item e liste todas as superfícies em "onde". Se forem diferentes, um item por superfície, com a posição em "onde".
+- RGB só quando a cor exata importa e a cor é sólida: pinturas, lacas, laminados e tecidos lisos, metais e vidros coloridos. Leia numa área bem iluminada, sem sombra e sem reflexo. Para madeira, pedra, mármore, porcelanato com desenho e outros materiais com textura, deixe "rgb" vazio e descreva tom e veio.
+- Faixas amarelas ou muito brilhantes em nichos, sancas, prateleiras, forros e espelhos são só a indicação de LED no SketchUp: liste como luminária (LED de luz neutra), nunca como material amarelo nem luz amarela.
+- Fundo: azul chapado atrás das aberturas é o céu padrão do SketchUp, provisório; não é material nem a cor do céu. Em "fundo" diga o que fica coerente com o ambiente: em interiores, exterior claro e difuso de onde vem a luz (ex.: banheiro: claridade esbranquiçada pela janela). Só descreva uma paisagem se o print tiver uma imagem de fundo específica.
 - Em "acabamento" inclua brilho (fosco, acetinado, polido), formato e paginação (placas grandes, ripas verticais, réguas no comprimento) e direção dos veios quando houver.
 - Em "cor" escreva só o nome do tom e em "rgb" o valor aproximado (ex.: "226,219,208").
 - Móveis e objetos também, um por linha, com quantidade quando houver mais de um (ex.: "Banquetas (3)"). Conte com cuidado.
 - Seja honesto: se não tiver certeza, marque "conferir": true (sem explicar a dúvida no texto).
-- Escreva CURTO, para leitura rápida: "elemento" com até 4 palavras; "material" com até 5 palavras (só o mais provável, sem listar alternativas); "acabamento" com até 6 palavras; "cor" só o nome do tom; cada luminária com até 8 palavras; "luzNatural" com uma frase curta.
+- Escreva CURTO, para leitura rápida: "elemento" com até 4 palavras; "material" com até 5 palavras (só o mais provável, sem listar alternativas); "acabamento" com até 6 palavras; "onde" com as superfícies, curto; "cor" só o nome do tom; cada luminária com até 8 palavras; "luzNatural" com uma frase curta.
 Formato JSON:
-{"ambiente":"ex.: sala de estar integrada à cozinha","luzNatural":"de onde a luz natural entra, citando a abertura","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"~3000K","materiais":[{"elemento":"Piso","material":"Porcelanato","acabamento":"Acetinado, placas grandes","cor":"Bege muito claro","rgb":"226,219,208","conferir":false}]}`;
+{"ambiente":"ex.: banheiro social","luzNatural":"janela à esquerda, luz difusa","fundo":"exterior claro e esbranquiçado pela janela","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"LED neutro ~4000K","materiais":[{"elemento":"Revestimento porcelanato","onde":"parede da pia, parede do box e piso","material":"Porcelanato marmorizado","acabamento":"Acetinado, placas grandes","cor":"Branco com veios cinza","rgb":"","conferir":false},{"elemento":"Parede do vaso","onde":"parede ao fundo","material":"Pintura","acabamento":"Fosco","cor":"Verde sálvia","rgb":"168,180,160","conferir":false}]}`;
   const apply=data=>{
     const mats=Array.isArray(data?.materiais)?data.materiais:[];
     const have=new Set(existing.map(r=>r.elemento.toLowerCase()));
     if(!existing.length) $("mat").innerHTML="";
-    let added=0; mats.forEach(m=>{const el=String(m.elemento||"").trim(); if(el&&!have.has(el.toLowerCase())){addRow({elemento:el,material:String(m.material||""),acabamento:String(m.acabamento||""),cor:String(m.cor||"")+(m.rgb?" · RGB "+m.rgb:"")});added++}});
+    let added=0; mats.forEach(m=>{const el=String(m.elemento||"").trim(); if(el&&!have.has(el.toLowerCase())){addRow({elemento:el,material:String(m.material||""),acabamento:String(m.acabamento||""),cor:String(m.cor||"")+(m.rgb?" · RGB "+m.rgb:""),nota:m.onde?"onde: "+String(m.onde):""});added++}});
     if(!$("lightDir").value && data?.luzNatural) $("lightDir").value=String(data.luzNatural);
     if(!$("lights").value.trim() && Array.isArray(data?.luminarias)) $("lights").value=data.luminarias.map(String).join("\n");
         renderRead(data,mats);
@@ -1200,40 +1212,67 @@ function updateFineSum(){
 let readText="";
 function renderRead(data,mats){
   const box=$("qRead"); box.innerHTML="";
-  const lum=Array.isArray(data?.luminarias)?data.luminarias.map(String).filter(Boolean):[];
-  const lc=v=>{ v=String(v||"").trim(); return v?v[0].toLowerCase()+v.slice(1):"" };
-  const el=(tag,cls,txt)=>{ const e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; };
-  const meta=el("dl","rmeta");
-  [["Ambiente",data?.ambiente],["Luz natural",data?.luzNatural],["Luz artificial",data?.temperatura]].forEach(([k,v])=>{ if(!v) return; meta.append(el("dt",null,k),el("dd",null,String(v))) });
-  box.append(meta);
-  if(lum.length){
-    box.append(el("h4","rh",`Luminárias (${lum.length})`));
-    const ul=el("ul","rl"); lum.forEach(x=>ul.append(el("li",null,x))); box.append(ul);
-  }
-  if(mats.length){
-    const conf=mats.filter(m=>m.conferir).length;
-    const h=el("h4","rh",`Materiais (${mats.length})`); if(conf) h.append(el("small",null,` · ${conf} para conferir`)); box.append(h);
-    const ul=el("ul","rl rmat");
-    mats.forEach(m=>{
-      const rgb=String(m.rgb||"").match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/);
-      const li=el("li"); const sw=el("span","sw"); if(rgb) sw.style.background=`rgb(${rgb[1]},${rgb[2]},${rgb[3]})`; else sw.classList.add("none");
-      li.append(sw,el("b",null,String(m.elemento||"")+": "));
-      li.append(document.createTextNode([[String(m.material||"").trim(),lc(m.acabamento)].filter(Boolean).join(", "),lc(m.cor),rgb?`RGB ${rgb[1]}, ${rgb[2]}, ${rgb[3]}`:""].filter(Boolean).join(" · ")));
-      if(m.conferir) li.append(el("span","cfmark","conferir"));
-      ul.append(li);
-    });
-    box.append(ul);
-  }
-  readText=`Ambiente: ${data?.ambiente||"—"}\nLuz natural: ${data?.luzNatural||"—"}\nLuminárias: ${lum.join("; ")||"—"}\nMateriais:\n`+mats.map(m=>`• ${m.elemento}: ${[m.material,m.acabamento,m.cor,m.rgb?"RGB "+m.rgb:""].filter(Boolean).join(", ")}${m.conferir?" (incerto)":""}`).join("\n");
-  // texto pronto para o passo 2: um item por linha, fácil de corrigir
-  const toStep2=[data?.luzNatural?`luz natural: ${data.luzNatural}`:"",lum.length?`luminárias ligadas: ${lum.join("; ")}`:"",...mats.map(m=>`${m.elemento}: ${[lc(m.material),lc(m.acabamento),lc(m.cor),m.rgb?"RGB "+String(m.rgb).replace(/\s/g,""):""].filter(Boolean).join(", ")}${m.conferir?" (conferir)":""}`)].filter(Boolean).join("\n");
-  const act=el("div","actions");
-  const go=el("button","btn small","levar para o passo 2"); go.type="button";
-  go.onclick=()=>{ const t=$("qText"); t.value=t.value.trim()?t.value.replace(/\s*$/,"")+"\n\n"+toStep2:toStep2; t.focus(); t.scrollIntoView({block:"center",behavior:"smooth"}); toast("Leitura no passo 2: corrija o que precisar e apague os (conferir)"); };
-  const cp=el("button","btn small ghost","copiar leitura"); cp.type="button";
-  cp.onclick=async()=>{ try{ await navigator.clipboard.writeText(toStep2); toast("Leitura copiada") }catch{ toast("Não foi possível copiar") } };
-  act.append(go,cp); box.append(act);
+  const f=document.createElement("div"); f.className="rform";
+  f.innerHTML=`<div class="rgrid">
+    <label class="f">Ambiente<input type="text" data-k="ambiente"></label>
+    <label class="f">Luz natural<input type="text" data-k="luzNatural"></label>
+    <label class="f">Fundo e vista das aberturas<input type="text" data-k="fundo"></label>
+    <label class="f">Luz artificial<input type="text" data-k="temperatura"></label>
+  </div>
+  <label class="f">Luminárias <span class="sub">uma por linha</span><textarea data-k="luminarias" rows="3"></textarea></label>
+  <div class="f">Materiais <span class="sub" id="rConf"></span></div>
+  <div class="rmats" id="rMats"></div>
+  <div class="actions"><button type="button" class="btn ghost small" id="rAdd">+ material</button><button type="button" class="btn ghost small" id="rCopy">copiar leitura</button></div>`;
+  box.append(f);
+  f.querySelectorAll("[data-k]").forEach(i=>{ const v=data?.[i.dataset.k]; i.value=Array.isArray(v)?v.map(String).join("\n"):String(v||""); });
+  (mats||[]).forEach(m=>addReadRow(m));
+  $("rAdd").onclick=()=>addReadRow({}).querySelector("input").focus();
+  $("rCopy").onclick=async()=>{ try{ await navigator.clipboard.writeText(readingText()); toast("Leitura copiada") }catch{ toast("Não foi possível copiar") } };
+  const ta=f.querySelector("textarea"), fit=()=>{ ta.style.height="auto"; ta.style.height=ta.scrollHeight+2+"px" }; ta.oninput=fit; requestAnimationFrame(fit);
+  updConf();
 }
+function addReadRow(m){
+  const lc=v=>{ v=String(v||"").trim(); return v?v[0].toLowerCase()+v.slice(1):"" };
+  const d=document.createElement("div"); d.className="rrow"+(m.conferir?" unsure":"");
+  d.innerHTML=`<input class="re" type="text" aria-label="Elemento" placeholder="Elemento">
+    <input class="ro" type="text" aria-label="Onde aparece" placeholder="Onde aparece (ex.: parede da pia e piso)">
+    <button class="x" type="button" aria-label="Remover material">×</button>
+    <input class="rm" type="text" aria-label="Material e acabamento" placeholder="Material e acabamento">
+    <input class="rc" type="text" aria-label="Cor" placeholder="Cor">
+    <span class="rgbw"><span class="sw"></span><input class="rg" type="text" aria-label="RGB opcional" placeholder="RGB (opcional)" inputmode="numeric"></span>
+    <button class="cf" type="button" title="Clique quando já tiver conferido">conferir</button>`;
+  const q=c=>d.querySelector(c);
+  q(".re").value=String(m.elemento||""); q(".ro").value=String(m.onde||"");
+  q(".rm").value=[String(m.material||"").trim(),lc(m.acabamento)].filter(Boolean).join(", ");
+  q(".rc").value=lc(m.cor); q(".rg").value=String(m.rgb||"").replace(/\s/g,"").replace(/,/g,", ");
+  const sw=()=>{ const r=q(".rg").value.match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/); q(".sw").style.background=r?`rgb(${r[1]},${r[2]},${r[3]})`:""; q(".sw").classList.toggle("none",!r) };
+  q(".rg").oninput=sw; sw();
+  q(".x").onclick=()=>{ d.remove(); updConf() };
+  q(".cf").onclick=()=>{ d.classList.remove("unsure"); updConf() };
+  $("rMats").append(d); updConf(); return d;
+}
+function updConf(){
+  const n=document.querySelectorAll("#rMats .rrow.unsure").length, el=$("rConf");
+  if(el) el.textContent=(n?`${n} para conferir · `:"")+"cada item: elemento e onde aparece · material e acabamento · cor · RGB (opcional)";
+}
+function getRead(){
+  const f=document.querySelector("#qRead .rform"); if(!f) return null;
+  const o={}; f.querySelectorAll("[data-k]").forEach(i=>o[i.dataset.k]=i.dataset.k==="luminarias"?i.value.split("\n").map(x=>x.trim()).filter(Boolean):i.value.trim());
+  o.materiais=[...f.querySelectorAll(".rrow")].map(d=>({elemento:d.querySelector(".re").value.trim(),onde:d.querySelector(".ro").value.trim(),material:d.querySelector(".rm").value.trim(),cor:d.querySelector(".rc").value.trim(),rgb:d.querySelector(".rg").value.trim(),conferir:d.classList.contains("unsure")})).filter(m=>m.elemento||m.material);
+  return o;
+}
+function readingText(){
+  const r=getRead(); if(!r) return "";
+  const L=[];
+  if(r.ambiente) L.push(`Ambiente: ${r.ambiente}`);
+  if(r.luzNatural) L.push(`Luz natural: ${r.luzNatural}`);
+  if(r.fundo) L.push(`Fundo e vista das aberturas: ${r.fundo}`);
+  if(r.temperatura) L.push(`Luz artificial: ${r.temperatura}`);
+  if(r.luminarias.length) L.push("Luminárias (exatamente estas, nas posições do print):\n"+r.luminarias.map(x=>"- "+x).join("\n"));
+  if(r.materiais.length) L.push("Materiais (um item com várias superfícies em 'onde' = o MESMO material em todas elas):\n"+r.materiais.map(m=>`- ${m.elemento}${m.onde?` [onde: ${m.onde}]`:""}: ${[m.material,m.cor,m.rgb?`RGB ${m.rgb.replace(/\s/g,"")}`:""].filter(Boolean).join("; ")}${m.conferir?" (palpite da IA, não conferido)":""}`).join("\n"));
+  return L.join("\n");
+}
+
 function quickMode(){ return document.body.classList.contains("quick"); }
 function curPreset(){ return lightStyle>=0?PRESETS[kind][lightStyle]:null; }
 function ledRule(quick){
@@ -1242,10 +1281,10 @@ function ledRule(quick){
   if(v==="off"||art==="off") return "LUZ ARTIFICIAL: todas as luminárias DESLIGADAS, sem nenhum brilho de LED. Só a luz do cenário.";
   if(ps?.art==="off") return `LUZ ARTIFICIAL: DESLIGADA, porque o cenário escolhido ("${ps.n}") é sem luz artificial. Nenhuma luminária acesa, nenhum brilho de LED.`;
   const which=art==="some"?"SOMENTE as luminárias listadas ficam ligadas; todas as outras ficam desligadas":"todas as luminárias existentes no print ficam ligadas";
-  if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, quentes (~2700K) como pede o cenário. Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova.`;
+  if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, quentes (~2700K) como pede o cenário. Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam onde há luz; nada de luz amarelada artificial.`;
   const t={neutral:"branco neutro, cerca de 3500K–4000K",3000:"levemente quente, cerca de 3000K",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
   const role=ps?.nat===false?"complementando a luz difusa do cenário, sem virar a fonte principal":"só complementando a luz natural, que continua dominante";
-  return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, LEVEMENTE acesas, intensidade baixa e sutil, ${role}. Fitas e perfis de LED com brilho suave e contínuo, sem faixas estouradas. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova.`;
+  return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, LEVEMENTE acesas, intensidade baixa e sutil, ${role}. Fitas e perfis de LED com brilho suave e contínuo, sem faixas estouradas. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam ONDE há luz: a luz nunca é amarela; o resultado é LED real, natural, como numa fotografia.`;
 }
 const PIECE_PRESETS=[
  ["Spot embutir múltiplo","Spot de embutir retangular múltiplo (quantidade de focos conforme o print), moldura branca fina rente ao forro, cada foco recuado dentro de uma célula quadrada branca fosca, com refletor interno direcionável. Cada foco gera um facho próprio e suave. Não é painel, plafon nem luminária de sobrepor."],
@@ -1286,7 +1325,7 @@ function piecesBrief(refStart){
 }
 function ctxView(){
   const vsel=$("view").value, vname=$("view").selectedOptions[0]?.textContent||"", atmo=$("atmo").value;
-  const v=vsel==="keep"?(kind==="INTERIOR"?"vista pela janela exatamente como no print, sem inventar paisagem":"céu e entorno exatamente como no print; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara":"entorno neutro com mínima interferência visual"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}, só nas áreas vazias além do projeto; o projeto continua 100% travado`);
+  const v=vsel==="keep"?(kind==="INTERIOR"?"fundo automático: o fundo do SketchUp é provisório. Azul chapado é o céu padrão do programa e NÃO deve ser reproduzido: pelas aberturas aparece um exterior claro, difuso e levemente estourado, coerente com a luz natural que entra (ex.: banheiro: claridade esbranquiçada). Só manter uma paisagem se o print tiver uma imagem de fundo específica. O fundo nunca é o foco nem chama atenção":"céu automático: o azul chapado do SketchUp é provisório; gerar céu real e discreto coerente com o cenário de luz e o horário. Entorno exatamente como no print; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara":"entorno neutro com mínima interferência visual"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}, só nas áreas vazias além do projeto; o projeto continua 100% travado`);
   return `${kind==="INTERIOR"?"VISTA PELA JANELA":"ENTORNO"}: ${v}\nATMOSFERA: ${atmo?ATMO[atmo]+" (só o clima fotográfico; nunca muda materiais nem cores)":"neutra"}`;
 }
 function buildQuickBrief(){
@@ -1298,15 +1337,16 @@ function buildQuickBrief(){
 3) Tudo que ela disser que NÃO é (ex.: não é amadeirado) vira regra no material e se repete nas restrições.
 4) Elementos visíveis no print que ela NÃO citou: descrever pela LEITURA DO PRINT, sempre com "exactly as shown in IMAGE 1". Nunca contradizer o texto dela.
 5) Não inventar materiais, cores ou luminárias que ela não citou e que não aparecem no print.
-6) RGB em TODOS os materiais: se ela deu RGB, copie exatamente. Se não deu, estime pelo print e escreva "approx. RGB r, g, b, sampled from IMAGE 1" (no PT: "RGB aproximado r, g, b, lido da IMAGEM 1"). O RGB dela sempre vence o estimado.
+6) RGB: copie exatamente todos os que ela deu (o RGB dela sempre vence). Cores sólidas em que a cor exata importa (pintura, laca, laminado liso, tecido liso) e que estão sem RGB: estime pelo print e escreva "approx. RGB r, g, b, sampled from IMAGE 1" (no PT: "RGB aproximado r, g, b, lido da IMAGEM 1"). Materiais com textura natural (madeira, pedra, mármore, porcelanato com desenho): não invente RGB; descreva tom, veio e desenho com "exactly matching the appearance shown in IMAGE 1".
+7) Quando um item da ficha lista várias superfícies em "onde", é o MESMO material em todas: uma única instância, mesma tonalidade, padrão e paginação; diga isso no bloco do material.
 ${ledRule(true)}
 
 TIPO DE PROJETO: ${TYPES.find(x=>x[0]===tipo)[1]} (${kind})
 ${ps?`CENÁRIO DE LUZ (referência do método; o texto dela vence se conflitar): ${ps.n} — ${ps.t}`:"CENÁRIO DE LUZ: seguir só o texto da usuária; se ela não falar de luz, manter a luz como no print."}
 ${ctxView()}
 PROPORÇÃO DE SAÍDA: ${$("ratio").value==="print"?"a mesma do print (IMAGE 1)":$("ratio").value}
-LEITURA DO PRINT (apoio, só para o que ela não especificou):
-${readText||"(não analisado; olhe a IMAGEM 1 anexada, se houver)"}
+FICHA DO PRINT (lida pela IA e conferida pela usuária; vale como especificação dela, mas o TEXTO DA USUÁRIA vence se conflitar; itens "palpite da IA, não conferido" são só apoio):
+${readingText()||"(não analisado; olhe a IMAGEM 1 anexada, se houver)"}
 
 TEXTO DA USUÁRIA (fonte principal, prioridade máxima):
 ${$("qText").value.trim()}
@@ -1320,7 +1360,7 @@ function buildBrief(){
   const r=rows(), size=$("size").value;
   const art={on:"Toda a iluminação artificial LIGADA",some:"Somente as luminárias listadas LIGADAS",off:"Iluminação artificial DESLIGADA"}[$("artOn").value];
   const vsel=$("view").value, vname=$("view").selectedOptions[0]?.textContent||"";
-  const viewTxt=vsel==="keep"?(kind==="INTERIOR"?"vista pela janela exatamente como no print, sem inventar paisagem":"céu e entorno exatamente como no print; não completar contexto; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara, sem detalhes que chamem atenção":"entorno neutro com mínima interferência visual; só o céu pode ganhar realismo"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a altura e a luz da cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}. O entorno pode ser enriquecido SOMENTE nas áreas vazias além do projeto; o projeto arquitetônico continua 100% travado`);
+  const viewTxt=vsel==="keep"?(kind==="INTERIOR"?"fundo automático: o fundo do SketchUp é provisório. Azul chapado é o céu padrão do programa e NÃO deve ser reproduzido: pelas aberturas aparece um exterior claro, difuso e levemente estourado, coerente com a luz natural que entra (ex.: banheiro: claridade esbranquiçada). Só manter uma paisagem se o print tiver uma imagem de fundo específica. O fundo nunca é o foco nem chama atenção":"céu automático: o azul chapado do SketchUp é provisório; gerar céu real e discreto coerente com o cenário de luz e o horário. Entorno exatamente como no print; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara, sem detalhes que chamem atenção":"entorno neutro com mínima interferência visual; só o céu pode ganhar realismo"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a altura e a luz da cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}. O entorno pode ser enriquecido SOMENTE nas áreas vazias além do projeto; o projeto arquitetônico continua 100% travado`);
   const atmo=$("atmo").value;
   return `TIPO DE PROJETO: ${TYPES.find(x=>x[0]===tipo)[1]} (${kind})${tipo==="planta"?" — planta humanizada vista de cima: manter escala, paredes, layout e mobiliário exatamente como no print, com sombras suaves de luz vinda do alto e texturas fotorrealistas":""}${tipo==="urb"?" — projeto urbanístico: preservar traçado, calçadas, mobiliário urbano, vegetação e volumes exatamente":""}
 ${kind==="INTERIOR"?"VISTA PELA JANELA":"ENTORNO"}: ${viewTxt}
@@ -1335,7 +1375,7 @@ MATERIAIS (elemento | material | acabamento | cor | observação):
 ${r.map(x=>`- ${x.elemento} | ${x.material} | ${x.acabamento} | ${x.cor} | ${x.nota}`).join("\n")||"(seguir o print)"}
 BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
 ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
-RGB: todo material sem RGB informado recebe um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); os informados valem exatamente.
+RGB: os informados valem exatamente. Cores sólidas sem RGB (pintura, laca, laminado liso, tecido liso) recebem um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); materiais com textura natural (madeira, pedra, mármore) não recebem RGB inventado: descrever tom e veio "exactly matching the appearance shown in IMAGE 1". Elementos com "onde:" listando várias superfícies são o MESMO material em todas.
 ${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
 DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}
 TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.8)+" caracteres para ter margem. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
@@ -1376,6 +1416,7 @@ ${DEST[$("dest").value]}
 - LIGHTING: luz predominante, direção da luz natural citando a abertura, "Preserve the exact natural-light direction established by IMAGE 1", estado da luz artificial, frase de equilíbrio natural x artificial, lista "Artificial lighting:" com um item por luminária terminando em ": ON" ou ": OFF" conforme a regra de LUZ ARTIFICIAL (inclua acabamento de luminária se informado), preservar posição/quantidade das luminárias, comportamento físico da luz, "Do not create additional light sources."
 - MATERIALS: um bloco por elemento com o nome em CAIXA ALTA seguido de dois-pontos, depois linhas curtas: material, acabamento, cor. RGB vira "Exact color: RGB r, g, b." Nomes comerciais (ex.: Amendoa Natural) ficam com o nome original; se a usuária disser "exatamente como no print", acrescente "exactly matching the appearance shown in IMAGE 1". Se várias peças usam o mesmo amadeirado, crie o bloco ALL WOODEN JOINERY com "Do not introduce different wood colors." Medidas (ripas, espaçamentos) em bullets. Quando algo NÃO é um material (ex.: NÃO é madeira, NÃO é moldura), diga explicitamente no bloco e liste o que não fazer. Termine com DECORATIVE ELEMENTS mantendo tudo no lugar.
 - CAMERA: manter exatamente ângulo, perspectiva, enquadramento; lista Preserve: camera position, height, orientation, focal perspective, field of view, proportions, composition, visible geometry; ótica realista, sem fisheye, sem distorção exagerada, sem correção de perspectiva que altere a geometria.
+- Realismo físico de TODOS os materiais, como numa fotografia: metal acetinado com brilho difuso e reflexo suave do ambiente; escovado com micro-riscos direcionais e brilho alongado no sentido da escovação; polido com reflexo nítido do ambiente real, sem cara de cromado de computador; madeira com veio e poro reais; pedra e porcelanato com profundidade e reflexo condizente com o acabamento; tecidos com trama e caimento; vidro com transparência, reflexo e leve tom físico; pinturas foscas sem brilho plástico. Nunca aparência de CGI, plástico ou material liso perfeito.
 - PHOTOREALISM: indistinguível de fotografia profissional real; lista de qualidades físicas (GI, AO, sombras de contato, reflexos, transmissão de vidro, texturas dos materiais desta cena); lista Avoid (contraste e saturação excessivos, HDR artificial, CGI, plástico, over-sharpening, bloom, DOF artificial); No stylization. No artistic interpretation. No redesign.
 - STRICT RESTRICTIONS: linhas "DO NOT ..." cobrindo geometria, adicionar/remover, móveis, decoração, cada elemento importante desta cena, inventar elementos, completar contexto oculto${kind==="EXTERIOR"?" (ajustado conforme a regra de céu/entorno)":""}, câmera, proporções, materiais definidos, materiais adicionais${/RGB/i.test(brief)?", cores RGB especificadas":""}. Repita aqui cada regra "X is NOT Y and must NOT receive Z".
 - FINAL CONSISTENCY: mesmo ambiente da IMAGE 1; IMAGE 1 é referência absoluta; a única transformação é de SketchUp para fotografia fotorrealista; Preserve everything. Improve only the photographic realism. No reinterpretation. No redesign. No geometry modification.
@@ -1466,13 +1507,13 @@ function renderProjects(){
     d.innerHTML=`<div style="min-width:0;display:flex;flex-direction:column"><span></span><small></small></div><div class="actions"><button class="btn small">Carregar</button><button class="btn ghost small" aria-label="Excluir">×</button></div>`;
     d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${p.qText?" · texto salvo":" · "+p.rows.length+" materiais"}`;
     const [lb,db]=d.querySelectorAll("button");
-    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"neutral";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
+    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);if(p.read)renderRead(p.read,p.read.materiais);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"neutral";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
     db.onclick=()=>{if(db.dataset.c){const a=loadAll();a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
     box.append(d)});
 }
 $("saveProj").onclick=()=>{
   const nome=$("projName").value.trim(); if(!nome){toast("Dê um nome ao projeto");return}
-  const p={nome,kind,tipo,quick:quickMode(),qText:$("qText").value,ledTemp:$("ledTemp").value,pieces:pieces().map(x=>({nome:x.nome,desc:x.desc})),view:$("view").value,atmo:$("atmo").value,dest:$("dest").value,ratio:$("ratio").value,rows:rows(),lightStyle,extras:EXTRAS.filter(x=>x.on).map(x=>x.id),sameMat:$("sameMat").value,lightDir:$("lightDir").value,artOn:$("artOn").value,lights:$("lights").value,notes:$("notes").value};
+  const p={nome,kind,tipo,quick:quickMode(),read:getRead(),qText:$("qText").value,ledTemp:$("ledTemp").value,pieces:pieces().map(x=>({nome:x.nome,desc:x.desc})),view:$("view").value,atmo:$("atmo").value,dest:$("dest").value,ratio:$("ratio").value,rows:rows(),lightStyle,extras:EXTRAS.filter(x=>x.on).map(x=>x.id),sameMat:$("sameMat").value,lightDir:$("lightDir").value,artOn:$("artOn").value,lights:$("lights").value,notes:$("notes").value};
   const l=loadAll().filter(x=>x.nome!==nome); l.unshift(p);
   toast(saveAll(l)?"Projeto salvo neste navegador":"Não foi possível salvar neste navegador"); renderProjects();
 };
@@ -1913,7 +1954,11 @@ COMO LER O QUE EU MANDO
 - Tudo que eu disser que NÃO é (ex.: não é amadeirado) vira regra no bloco do material e se repete nas restrições.
 - Elementos visíveis no print que eu não citei: descreva pelo print, sempre com "exactly as shown in IMAGE 1". Não invente nada que não esteja no print nem no meu texto.
 - Leitura do SketchUp: textura com veio = material natural; cor chapada = pintura, laca ou laminado; faixas amarelas ou brilhantes em nichos, sancas, prateleiras e forros = LED, não material amarelo. Conte móveis e objetos repetidos e escreva "exactly N, no more, no less".
-- RGB em todos os materiais: se eu dei, copie; se não, estime numa área iluminada do print e escreva "approx. RGB r, g, b, sampled from IMAGE 1". O RGB é a cor do material sob luz neutra: na sombra e nos reflexos muda só a luminosidade, nunca o matiz.
+- RGB: copie todos os que eu der. Em cores sólidas onde a cor importa (pintura, laca, laminado liso, tecido liso) estime pelo print ("approx. RGB r, g, b, sampled from IMAGE 1"); em madeira, pedra, mármore e porcelanato com desenho não invente RGB: descreva tom e veio. O RGB é a cor do material sob luz neutra: na sombra muda só a luminosidade, nunca o matiz.
+- Paredes e superfícies: olhe cada uma separadamente e compare. Se forem o mesmo material, trate como uma única instância (mesma tonalidade e paginação em todas); se forem diferentes, um bloco para cada, com a posição.
+- Fundo: o azul chapado do SketchUp é provisório. Em interiores, pelas aberturas aparece exterior claro e difuso coerente com a luz (banheiro: claridade esbranquiçada); só mantenha paisagem se o print tiver um fundo específico. O fundo nunca é o foco.
+- LED: faixas amarelas do SketchUp só indicam onde há luz; a luz é neutra e natural, nunca amarela. Tudo hiper-realista, como uma fotografia.
+- Todos os materiais com aparência física real: metal acetinado com brilho difuso, escovado com micro-riscos direcionais, polido com reflexo nítido do ambiente (nunca cromado de computador); madeira com veio e poro; pedra com profundidade; tecido com trama; vidro com reflexo e transparência reais. Nada de CGI ou plástico.
 
 COMANDOS QUE POSSO ESCREVER (sem eles, use o padrão)
 - Destino: "magnific" (padrão), "gemini", "chatgpt", "flux" ou "universal".
