@@ -876,11 +876,12 @@ async function shrink(f){ // até 1568px em JPEG: envio rápido e dentro dos lim
 }
 async function gemErr(res){
   let st="", msg=""; try{ const e=(await res.json()).error||{}; st=e.status||""; msg=e.message||"" }catch{}
-  if(res.status===429) return {code:"gemini_quota"};
-  if(res.status===403||/API.?KEY/i.test(msg)) return {code:"bad_key"};
-  if(res.status===404) return {code:"gemini_model"};
-  if(res.status>=500) return {code:"overloaded"};
-  return {code:"bad_request",detail:st};
+  const detail=msg||st;
+  if(res.status===429) return {code:"gemini_quota",detail};
+  if(res.status===403||/API.?KEY/i.test(msg)) return {code:"bad_key",detail};
+  if(res.status===404) return {code:"gemini_model",detail};
+  if(res.status>=500) return {code:"overloaded",detail};
+  return {code:"bad_request",detail};
 }
 async function gemModels(key){
   let res; try{ res=await fetch(GBASE+"models?pageSize=200",{headers:{"x-goog-api-key":key}}) }catch{ throw {code:"network"} }
@@ -941,7 +942,10 @@ async function gemGenerate(prompt,{images,signal,onText,json,light}={}){
   const parts=[]; for(const f of images||[]) parts.push({inline_data:await shrink(f)});
   parts.push({text:prompt});
   // sempre começa pelo modelo escolhido; se estiver sobrecarregado ou sem cota, tenta de novo e usa a reserva só desta vez
-  const order=[G.model,...rankModels(G.models).map(m=>m.id).filter(id=>id!==G.model&&!/lite/.test(id))].slice(0,3);
+  // ordem: o escolhido, depois um Flash estável (reserva confiável), depois os outros
+  const ranked=rankModels(G.models).map(m=>m.id).filter(id=>!/lite/.test(id));
+  const flash=ranked.find(id=>/flash/.test(id)&&!/preview|exp/.test(id))||ranked.find(id=>/flash/.test(id));
+  const order=[...new Set([G.model,flash,...ranked].filter(Boolean))].slice(0,5);
   let last={code:"overloaded"};
   for(let i=0;i<order.length;i++){
     const model=order[i];
@@ -954,6 +958,7 @@ async function gemGenerate(prompt,{images,signal,onText,json,light}={}){
         last=e;
         if(e.code==="bad_key"){ lockOut(); throw e }
         if(e.code==="cancelled"||e.code==="refused"||e.code==="bad_request") throw e;
+        if(e.code==="gemini_model") dropModel(model); // o Google recusa este modelo para a sua chave: some da lista
         if(e.code==="overloaded"&&tryN===0){ toast("O Gemini está sobrecarregado, tentando de novo…"); await new Promise(r=>setTimeout(r,2500)); continue; }
         break; // cota, modelo indisponível ou segunda falha: próximo modelo
       }
@@ -967,8 +972,16 @@ function showGate(msg){
   document.body.classList.add("gated"); $("gate").hidden=false; $("aiBtn").hidden=true;
   status($("gateStatus"),msg||"",false,!!msg); setTimeout(()=>$("gateKey").focus(),50);
 }
+const GOFF="lais-gemini-fora";
+function offList(){ try{ return JSON.parse(lsGet(GOFF)||"[]") }catch{ return [] } }
+function dropModel(id){
+  const off=[...new Set([...offList(),id])]; lsSet(GOFF,JSON.stringify(off));
+  if(G.models.length>1) G.models=G.models.filter(m=>m.id!==id);
+  if(G.model===id){ G.model=bestModel(G.models); if(lsGet(GMODEL)===id) lsSet(GMODEL,""); }
+}
 async function enterGemini(key,{quiet}={}){
   G.key=key; G.models=await gemModels(key);
+  const off=offList(), ok=G.models.filter(m=>!off.includes(m.id)); if(ok.length) G.models=ok;
   if(!G.models.length) throw {code:"gemini_model"};
   const saved=lsGet(GMODEL); G.model=G.models.some(m=>m.id===saved)?saved:bestModel(G.models);
   AI.mode="gemini"; imgOK=true; pieceImgMax=6;
@@ -988,7 +1001,7 @@ $("aiBtn").onclick=()=>{
   sel.value=G.model; $("aiDlg").showModal();
 };
 $("aiModel").onchange=e=>{ G.model=e.target.value; lsSet(GMODEL,G.model); toast("Modelo trocado"); };
-$("aiOut").onclick=()=>{ lsSet(GKEY,""); lsSet(GMODEL,""); $("aiDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu. A chave foi apagada deste navegador."); };
+$("aiOut").onclick=()=>{ lsSet(GKEY,""); lsSet(GMODEL,""); lsSet(GOFF,""); $("aiDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu. A chave foi apagada deste navegador."); };
 
 let manualCb=null, manualText="";
 function manual({title,prompt,attach,onReply}){
@@ -1125,12 +1138,13 @@ $("clearImg").onclick=e=>{e.stopPropagation();imgFile=null;$("preview").hidden=t
 function status(el,msg,busy,err){ el.className="status"+(err?" err":""); el.innerHTML=(busy?'<span class="dot"></span>':"")+(msg?`<span></span>`:""); if(msg) el.lastChild.textContent=msg; }
 function errMsg(e){
   const m={not_granted:"Você não autorizou o uso do Claude nesta página.",rate_limited:"Muitas solicitações agora. Tente de novo em alguns minutos.",
-    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",gemini_quota:"Acabou a cota gratuita da API do Gemini por agora, inclusive no modelo reserva. Espere um minuto (ou até amanhã, se for o limite diário).",gemini_model:"Esse modelo do Gemini não está disponível para a sua chave. Escolha outro no botão gemini.",bad_key:"A chave não foi aceita pelo Google. Confira se copiou inteira (começa com AIza).",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
+    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",gemini_quota:"Acabou a cota gratuita da API do Gemini por agora, inclusive no modelo reserva. Espere um minuto (ou até amanhã, se for o limite diário).",gemini_model:"Nenhum modelo do Gemini disponível para a sua chave aceitou o pedido. Abra o botão gemini e escolha um Flash.",bad_key:"A chave não foi aceita pelo Google. Confira se copiou inteira (começa com AIza).",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
     session_expired:"Sua sessão expirou. Entre de novo no claude.ai.",refused:"O pedido foi recusado. Revise o texto e tente de novo.",images_unavailable:"Esta visualização não permite enviar imagens.",
     network:"A conexão caiu no meio do caminho. Confira a internet e tente de novo.",server:"O servidor não respondeu. Tente de novo em instantes.",overloaded:"O Gemini está sobrecarregado agora (comum no plano grátis da API). Tentei de novo e com outro modelo; espere um minuto e clique outra vez.",
     bad_code:"Código de acesso incorreto. Digite de novo no aviso acima.",too_large:"As imagens ficaram grandes demais. Tente com menos fotos de referência.",not_configured:"O servidor ainda não tem a chave da API configurada.",
     bad_request:"O pedido não foi aceito. Tente de novo; se repetir, encurte o texto.",no_ai:"A IA não está conectada agora.",cancelled:"Interrompido."};
-  return m[e?.code]||"Não deu certo desta vez. Tente de novo.";
+  const base=m[e?.code]||"Não deu certo desta vez. Tente de novo.";
+  return e?.detail&&/^(gemini_|bad_request|overloaded)/.test(e.code)?`${base} (resposta do Google: ${String(e.detail).slice(0,180)})`:base;
 }
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2200)}
 
