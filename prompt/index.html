@@ -323,6 +323,9 @@ body.locked{overflow:hidden}
 .nrow .x:hover{color:var(--warn);background:var(--rose-soft)}
 @media (max-width:640px){.nrow{grid-template-columns:minmax(0,1fr) 34px}.nrow .d{grid-column:1 / -1;grid-row:2}}
 
+.ordrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ordrow .seg{width:auto}
+.ordrow .seg button{flex:none;padding:7px 16px}
 /* tela de entrada */
 body.booting .wrap{visibility:hidden}
 body.gated .wrap{display:none}
@@ -717,9 +720,13 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
       <section class="step">
         <h2><span class="n">passo 2 · marque um ou os dois</span>Como <em>herdar</em> dos renders</h2>
         <div class="types two" role="group" aria-label="Como herdar">
-          <button type="button" id="sOpt1" aria-pressed="true">herda a luz<small>Mesmo ensaio, mesmo minuto: só a câmera muda. O print vai primeiro.</small></button>
-          <button type="button" id="sOpt2" aria-pressed="false">copia o estilo<small>Replica luz, cores, materiais e acabamento dos renders. O print vai por último.</small></button>
+          <button type="button" id="sOpt1" aria-pressed="true">herda a luz<small>Mesmo ensaio, mesmo minuto: só a câmera muda.</small></button>
+          <button type="button" id="sOpt2" aria-pressed="false">copia o estilo<small>Replica luz, cores, materiais e acabamento dos renders.</small></button>
         </div>
+        <div class="ordrow"><span class="slabel">Ordem das imagens <small id="sOrdHint"></small></span>
+          <div class="seg" role="group" aria-label="Ordem das imagens"><button type="button" id="sFirst" aria-pressed="true">print primeiro</button><button type="button" id="sLast" aria-pressed="false">print por último</button></div>
+        </div>
+        <p class="hint">Se uma ordem não acertar, gere de novo com a outra: às vezes uma funciona melhor.</p>
       </section>
 
       <section class="step">
@@ -1612,11 +1619,11 @@ Preserve original photographic color profile.
 Only apply the requested corrections.`;
 const ORD=["primeira","segunda","terceira","quarta","quinta","sexta","sétima"];
 const MAX_REFS=4;
-function sameEnv(n,opt){
-  if(opt===3){ // herda a luz E copia os materiais: o print vai primeiro
-    const refs=ORD.slice(1,n+1), r=refs.length>1?refs.slice(0,-1).join(", ")+" e "+refs.at(-1):refs[0];
-    return `A primeira imagem (print do SketchUp) deve parecer uma NOVA FOTOGRAFIA do MESMO ambiente já fotografado anteriormente (${r} imagem).
-Use a primeira imagem como base absoluta de geometria, arquitetura, layout, enquadramento e câmera. NÃO altere absolutamente nada do projeto.
+function sameEnv(n,opt,first=opt!==2){ // first: print vai primeiro; senão, por último (os dois funcionam com as três opções)
+  const pk=first?ORD[0]:ORD[n], refs=first?ORD.slice(1,n+1):ORD.slice(0,n), r=refs.length>1?refs.slice(0,-1).join(", ")+" e "+refs.at(-1):refs[0];
+  if(opt===3){ // herda a luz E copia os materiais
+    return `A ${pk} imagem (print do SketchUp) deve parecer uma NOVA FOTOGRAFIA do MESMO ambiente já fotografado anteriormente (${r} imagem).
+Use a ${pk} imagem como base absoluta de geometria, arquitetura, layout, enquadramento e câmera. NÃO altere absolutamente nada do projeto.
 Considere que todas as imagens pertencem ao mesmo ensaio fotográfico profissional de arquitetura, capturado no mesmo minuto e sob as mesmas condições naturais de iluminação.
 A iluminação NÃO deve ser recalculada nem reinterpretada. Ela deve ser herdada do ambiente original.
 • Mesma direção de luz
@@ -1635,8 +1642,7 @@ Nada mais muda.
 Transformar o print em fotografia mantendo continuidade temporal absoluta e os mesmos materiais.`;
   }
   if(opt===1){
-    const refs=ORD.slice(1,n+1); const r=refs.length>1?refs.slice(0,-1).join(", ")+" e "+refs.at(-1):refs[0];
-    return `A primeira imagem (print do sketch) deve parecer uma NOVA FOTOGRAFIA do MESMO ambiente já fotografado anteriormente (${r} imagem).
+    return `A ${pk} imagem (print do sketch) deve parecer uma NOVA FOTOGRAFIA do MESMO ambiente já fotografado anteriormente (${r} imagem).
 Considere que todas as imagens pertencem ao mesmo ensaio fotográfico profissional de arquitetura, capturado no mesmo minuto e sob as mesmas condições naturais de iluminação.
 A iluminação NÃO deve ser recalculada nem reinterpretada. Ela deve ser herdada do ambiente original.
 • Mesma direção de luz
@@ -1652,7 +1658,7 @@ A leitura fotográfica deve permanecer idêntica.
 Apenas o ponto de vista da câmera muda.
 Nada mais muda.
 Transformar o print em fotografia mantendo continuidade temporal absoluta.`;}
-  const sk=ORD[n]; const refs=ORD.slice(0,n); const r=refs.length>1?refs.slice(0,-1).join(", ")+" e "+refs.at(-1):refs[0];
+  const sk=pk;
   return `Use a ${sk} imagem (print do SketchUp) como base absoluta de geometria, arquitetura, layout, enquadramento e câmera. NÃO altere absolutamente nada do projeto.
 Use a ${r} imagem como referência visual e fotográfica obrigatória.
 Replique exatamente o mesmo estilo de render da ${r} imagem: iluminação, exposição, balanço de branco, materiais, cores, contraste, temperatura de cor, realismo dos materiais, nível de detalhe, microtexturas, acabamento e atmosfera.
@@ -1662,13 +1668,13 @@ Iluminação natural difusa, suave e equilibrada, sem sombras duras, sem estoura
 Câmera de fotografia de interiores, lente equivalente 24–28mm, linhas verticais perfeitamente retas, composição idêntica ao Sketch.
 Resultado final deve ser indistinguível de fotografia profissional, coerente com a ${r} imagem, sem qualquer aparência de IA ou render genérico.`;
 }
-function sameNew(txt,n,opt){ // materiais que só aparecem na cena nova
+function sameNew(txt,n,opt,first=opt!==2){ // materiais que só aparecem na cena nova
   const items=String(txt||"").split("\n").map(x=>x.trim()).filter(Boolean); if(!items.length) return "";
-  const sk=opt!==2?"primeira":ORD[n];
+  const sk=first?"primeira":ORD[n];
   return `\n\nELEMENTOS NOVOS NESTA CENA (aparecem só na ${sk} imagem, o print; não existem nas imagens de referência):\n${items.map(i=>"• "+i).join("\n")}\nPara esses elementos: geometria, posição e quantidade exatamente como na ${sk} imagem; material, cor e acabamento exatamente como descrito acima (RGB, quando informado, é a cor exata). Eles recebem a mesma luz, exposição, balanço de branco e nível de realismo das referências, como se tivessem sido fotografados no mesmo ensaio. Todos os outros materiais continuam herdados das referências, sem nenhuma alteração.`;
 }
-function sameRules(n,opt){ // regras fixas que o texto do PDF não cobre
-  const pk=opt!==2?"primeira":ORD[n];
+function sameRules(n,opt,first=opt!==2){ // regras fixas que o texto do PDF não cobre
+  const pk=first?"primeira":ORD[n];
   return `\n\nREGRAS FIXAS DA NOVA CENA (valem acima de tudo):
 • Geometria: a ${pk} imagem (print do SketchUp) é a verdade absoluta. A foto final se sobrepõe ao print linha por linha: mesmas bordas, alinhamentos, proporções, quantidades e posições. Nada adicionado (nem plantas, toalhas, objetos, espelhos ou luminárias que não estejam no print), nada removido, nada movido. As imagens de referência servem SÓ para luz e materiais: nunca copie objetos, móveis, layout ou geometria delas.
 • Esta é OUTRA vista do ambiente: janelas, nichos, bancos, prateleiras, objetos e luminárias que aparecem nas referências mas NÃO aparecem no print não estão nesta vista e NÃO podem aparecer. Paredes lisas no print continuam lisas.
@@ -1676,8 +1682,8 @@ function sameRules(n,opt){ // regras fixas que o texto do PDF não cobre
 • Luz artificial: faixas amarelas no print só indicam onde há LED. A luz é branca neutra-quente, cerca de 3500K, natural como numa foto, com a mesma intensidade das referências; nada amarelado nem alaranjado.
 • Acabamentos: reflexos conforme o acabamento (polido com brilho alto e reflexos nítidos), rejunte fino e alinhado de uma parede para a outra, metais com aparência real.`;
 }
-function sameRulesEN(n,opt){
-  const pk=opt!==2?"first":ORD_EN[n];
+function sameRulesEN(n,opt,first=opt!==2){
+  const pk=first?"first":ORD_EN[n];
   return `\n\nFIXED RULES FOR THE NEW SCENE (they override everything):
 • Geometry: the ${pk} image (SketchUp screenshot) is the absolute truth. The final photo must overlay the screenshot line by line: same edges, alignments, proportions, quantities and positions. Nothing added (no plants, towels, objects, mirrors or light fixtures that are not in the screenshot), nothing removed, nothing moved. The reference images are ONLY for light and materials: never copy objects, furniture, layout or geometry from them.
 • This is ANOTHER view of the space: windows, niches, benches, shelves, objects and light fixtures that appear in the references but NOT in the screenshot are not in this view and must NOT appear. Plain walls in the screenshot stay plain.
@@ -1685,7 +1691,7 @@ function sameRulesEN(n,opt){
 • Artificial light: yellow strips in the screenshot only mark where LEDs are. The light is neutral-warm white, about 3500K, natural like a photograph, with the same intensity as the references; nothing yellowish or orange.
 • Finishes: reflections according to the finish (polished = high gloss with sharp reflections), thin grout aligned from one wall to the next, metals with a real look.`;
 }
-function sameEnvImgs(n,opt){ return opt!==2?`Envie: 1º o print novo, depois ${n} render(s) prontos do ambiente`:`Envie: ${n} render(s) prontos do ambiente, por último o print novo`; }
+function sameEnvImgs(n,opt,first=opt!==2){ return first?`Envie: 1º o print novo, depois ${n} render(s) prontos do ambiente`:`Envie: ${n} render(s) prontos do ambiente, por último o print novo`; }
 function anim(dir){
   if(dir==="frente") return `Plano de acompanhamento cinematográfico para frente.
 A câmera avança lentamente pelo espaço, como se estivesse caminhando naturalmente para dentro do projeto.
@@ -2137,10 +2143,10 @@ function renderLib(){
     const setImg=t=>{im.hidden=!t; im.textContent=t||""};
     if(x.same){
       op.hidden=false;
-      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option><option value="4">4 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option><option value="3">Os dois · luz e materiais</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
-      const [sn,so]=op.querySelectorAll("select"), nw=op.querySelector("textarea");
-      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value)+sameNew(nw.value,+sn.value,+so.value)+sameRules(+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
-      sn.onchange=upd; so.onchange=upd; nw.oninput=upd; upd();
+      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option><option value="4">4 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option><option value="3">Os dois · luz e materiais</option></select><select id="sp_${k}" aria-label="Ordem"><option value="auto">Ordem do método</option><option value="first">Print primeiro</option><option value="last">Print por último</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
+      const [sn,so,sp]=op.querySelectorAll("select"), nw=op.querySelector("textarea"), fst=()=>sp.value==="auto"?+so.value!==2:sp.value==="first";
+      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value,fst())+sameNew(nw.value,+sn.value,+so.value,fst())+sameRules(+sn.value,+so.value,fst());setImg(sameEnvImgs(+sn.value,+so.value,fst()))};
+      sn.onchange=upd; so.onchange=upd; sp.onchange=upd; nw.oninput=upd; upd();
     } else if(x.anim){
       op.hidden=false;
       op.innerHTML=`<select id="ad_${k}" aria-label="Direção"><option value="frente">Frontal</option><option value="direita">Diagonal para a direita</option><option value="esquerda">Diagonal para a esquerda</option></select>`;
@@ -2167,10 +2173,11 @@ function renderLib(){
 /* ---------- mesmo ambiente: nova cena do mesmo projeto ---------- */
 const ORD_EN=["first","second","third","fourth","fifth","sixth","seventh"];
 function listEN(a){ return a.length>1?a.slice(0,-1).join(", ")+" and "+a.at(-1):a[0]; }
-function sameEnvEN(n,opt){
-  if(opt===3){ const r=listEN(ORD_EN.slice(1,n+1));
-    return `The first image (SketchUp screenshot) must look like a NEW PHOTOGRAPH of the SAME space already photographed before (${r} image${n>1?"s":""}).
-Use the first image as the absolute base for geometry, architecture, layout, framing and camera. Do NOT change anything in the project.
+function sameEnvEN(n,opt,first=opt!==2){
+  const pk=first?ORD_EN[0]:ORD_EN[n], r=listEN(first?ORD_EN.slice(1,n+1):ORD_EN.slice(0,n));
+  if(opt===3){
+    return `The ${pk} image (SketchUp screenshot) must look like a NEW PHOTOGRAPH of the SAME space already photographed before (${r} image${n>1?"s":""}).
+Use the ${pk} image as the absolute base for geometry, architecture, layout, framing and camera. Do NOT change anything in the project.
 Treat all images as part of the same professional architectural photo shoot, captured in the same minute under the same natural lighting conditions.
 The lighting must NOT be recalculated or reinterpreted. It must be inherited from the original space.
 • Same light direction
@@ -2187,8 +2194,8 @@ The photographic reading must remain identical.
 Only the camera viewpoint changes.
 Nothing else changes.
 Turn the screenshot into a photograph with absolute temporal continuity and the same materials.`; }
-  if(opt===1){ const r=listEN(ORD_EN.slice(1,n+1));
-    return `The first image (SketchUp screenshot) must look like a NEW PHOTOGRAPH of the SAME space already photographed before (${r} image${n>1?"s":""}).
+  if(opt===1){
+    return `The ${pk} image (SketchUp screenshot) must look like a NEW PHOTOGRAPH of the SAME space already photographed before (${r} image${n>1?"s":""}).
 Treat all images as part of the same professional architectural photo shoot, captured in the same minute under the same natural lighting conditions.
 The lighting must NOT be recalculated or reinterpreted. It must be inherited from the original space.
 • Same light direction
@@ -2204,7 +2211,7 @@ The photographic reading must remain identical.
 Only the camera viewpoint changes.
 Nothing else changes.
 Turn the screenshot into a photograph with absolute temporal continuity.`; }
-  const sk=ORD_EN[n], r=listEN(ORD_EN.slice(0,n));
+  const sk=pk;
   return `Use the ${sk} image (SketchUp screenshot) as the absolute base for geometry, architecture, layout, framing and camera. Do NOT change anything in the project.
 Use the ${r} image${n>1?"s":""} as the mandatory visual and photographic reference.
 Replicate exactly the same render style as the ${r} image${n>1?"s":""}: lighting, exposure, white balance, materials, colors, contrast, color temperature, material realism, level of detail, microtextures, finish and atmosphere.
@@ -2214,12 +2221,13 @@ Soft, diffuse and balanced natural lighting, no hard shadows, no blown-out white
 Interior photography camera, 24–28mm equivalent lens, perfectly straight vertical lines, composition identical to the SketchUp screenshot.
 The final result must be indistinguishable from professional photography, consistent with the ${r} image${n>1?"s":""}, with no AI or generic render look.`;
 }
-function sameNewEN(txt,n,opt){
+function sameNewEN(txt,n,opt,first=opt!==2){
   const items=String(txt||"").split("\n").map(x=>x.trim()).filter(Boolean); if(!items.length) return "";
-  const sk=opt!==2?"first":ORD_EN[n];
+  const sk=first?"first":ORD_EN[n];
   return `\n\nNEW ELEMENTS IN THIS SCENE (they appear only in the ${sk} image, the screenshot; they do not exist in the reference images):\n${items.map(i=>"• "+i).join("\n")}\nFor these elements: geometry, position and quantity exactly as in the ${sk} image; material, color and finish exactly as described above (RGB, when given, is the exact color). They receive the same light, exposure, white balance and level of realism as the references, as if photographed in the same shoot. All other materials stay inherited from the references, with no change.`;
 }
-const same={refs:[],print:null,opt:1};
+const same={refs:[],print:null,opt:1,order:null}; // order: null = padrão do PDF
+function sameFirst(){ return same.order?same.order==="first":same.opt!==2; }
 function okImg(f){ return !!f&&/^image\/(jpeg|png|webp)$/.test(f.type) }
 function fileUrl(f){ return f._u||(f._u=URL.createObjectURL(f)) }
 function dropZone(el,onFiles){
@@ -2238,7 +2246,7 @@ function sameOrder(){
   const P={f:same.print,t:"print do novo ângulo",d:"base de geometria, câmera e enquadramento"};
   const R=same.refs.map((f,i)=>({f,t:same.refs.length>1?`render pronto ${i+1}`:"render pronto",d:"referência de luz, cor e materiais"}));
   if(!R.length) R.push({f:null,t:"render pronto",d:""});
-  return same.opt!==2?[P,...R]:[...R,P];
+  return sameFirst()?[P,...R]:[...R,P];
 }
 function renderSame(){
   const box=$("sRefs"); box.innerHTML="";
@@ -2257,6 +2265,8 @@ function renderSame(){
   $("sPrev").hidden=!same.print; $("sDropEmpty").hidden=!!same.print; if(same.print) $("sPrev").src=fileUrl(same.print);
   $("sUsePrint").hidden=!imgFile||same.print===imgFile;
   $("sOpt1").setAttribute("aria-pressed",same.opt!==2); $("sOpt2").setAttribute("aria-pressed",same.opt!==1);
+  $("sFirst").setAttribute("aria-pressed",sameFirst()); $("sLast").setAttribute("aria-pressed",!sameFirst());
+  $("sOrdHint").textContent=same.order?"escolha sua":"padrão do método para esta opção";
   const ol=$("sOrder"); ol.innerHTML="";
   sameOrder().forEach((it,i)=>{
     const li=document.createElement("li"); if(!it.f) li.className="missing";
@@ -2281,8 +2291,9 @@ function sameBuild(){
   const n=same.refs.length;
   $("sOut").hidden=!n; $("sNeed").hidden=!!n; if(!n) return;
   const items=newItems().join("\n"), notes=$("sNotes").value.trim();
-  const pt=sameEnv(n,same.opt)+sameNew(items,n,same.opt)+sameRules(n,same.opt)+(notes?`\n\nOBSERVAÇÕES DESTA CENA (têm prioridade sobre o resto):\n${notes}`:"");
-  const en=sameEnvEN(n,same.opt)+sameNewEN(items,n,same.opt)+sameRulesEN(n,same.opt)+(notes?`\n\nNOTES FOR THIS SCENE (they override everything else):\n${notes}`:"");
+  const f=sameFirst();
+  const pt=sameEnv(n,same.opt,f)+sameNew(items,n,same.opt,f)+sameRules(n,same.opt,f)+(notes?`\n\nOBSERVAÇÕES DESTA CENA (têm prioridade sobre o resto):\n${notes}`:"");
+  const en=sameEnvEN(n,same.opt,f)+sameNewEN(items,n,same.opt,f)+sameRulesEN(n,same.opt,f)+(notes?`\n\nNOTES FOR THIS SCENE (they override everything else):\n${notes}`:"");
   $("sPt").textContent=pt; $("sEn").textContent=en;
   $("scPt").textContent=pt.length.toLocaleString("pt-BR")+" caracteres"; $("scEn").textContent=en.length.toLocaleString("pt-BR")+" caracteres";
 }
@@ -2298,6 +2309,7 @@ function toggleSame(which){ // dá para marcar um, outro ou os dois (nunca nenhu
   if(!L&&!M){ toast("Marque pelo menos uma opção"); return }
   same.opt=L&&M?3:L?1:2; renderSame();
 }
+$("sFirst").onclick=()=>{ same.order="first"; renderSame() }; $("sLast").onclick=()=>{ same.order="last"; renderSame() };
 $("sOpt1").onclick=()=>toggleSame("L"); $("sOpt2").onclick=()=>toggleSame("M");
 $("sAdd").onclick=()=>addNew().focus();
 $("sNew").addEventListener("input",sameBuild); $("sNotes").addEventListener("input",sameBuild);
