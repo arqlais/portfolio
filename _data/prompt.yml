@@ -1,0 +1,4 @@
+# Ferramenta Prompt de Render (www.lais3d.com.br/prompt/)
+# Endereço do servidor da IA na Vercel, ex.: https://prompt-lais.vercel.app/api/claude
+# Vazio = a página funciona, mas a análise do print e a geração ficam desligadas.
+api_url: ""
