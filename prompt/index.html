@@ -338,6 +338,21 @@ body.gated .wrap{display:none}
 .aibtn .dotok{width:7px;height:7px;border-radius:50%;background:var(--ok)}
 .manual .f select{background:var(--paper)}
 
+/* conta-gotas */
+.pk{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}
+.pk:hover{background:var(--rose-soft);color:var(--ink)}
+.pk svg{width:16px;height:16px}
+.rrow .rgbw input{padding-right:40px}
+.pkw{position:relative;display:block;min-width:0}
+.pkw input{padding-right:40px}
+.manual.pick{width:fit-content;max-width:96vw}
+.pickbar{max-width:1100px}
+#pickCv{display:block;max-width:100%;border-radius:10px;cursor:crosshair;touch-action:none;background:var(--sand)}
+.pickbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px}
+.pickSw{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);flex:none}
+.pickbar b{font-family:var(--mono);font-weight:500;font-size:14px;min-width:150px}
+.pickbar .hint{flex:1 1 260px}
+
 /* janela do modo gratuito */
 .manual{width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 32px);border:1px solid var(--line);border-radius:20px;padding:24px;background:var(--card);color:var(--ink);box-shadow:0 24px 60px rgba(43,52,58,.22)}
 .manual::backdrop{background:rgba(30,38,44,.45)}
@@ -549,6 +564,7 @@ textarea{padding:12px 14px}
       <section class="step quickonly">
         <h2><span class="n">passo 2</span>Descreva o <em>projeto</em></h2>
         <p class="hint">Escreva o que a leitura não pegou ou o que quer mudar: material, cor, RGB, acabamento, luminárias e o que NÃO é. Pode escrever corrido. O que você escrever aqui vence a ficha.</p>
+        <div class="actions qtools"><button class="btn ghost small" id="qPick" type="button">conta-gotas · inserir RGB do print</button></div>
         <textarea id="qText" aria-label="Descrição do projeto" placeholder="piso porcelanato acetinado bege muito claro, paredes greige fosca rgb 209,202,194, teto da sala amadeirado Amendoa Natural exatamente como no print, painel da tv lambri ripas 10cm espaço 1cm marrom liso rgb 152,136,123 NAO é amadeirado, bancada quartzo branco polido, metais preto acetinado...
 luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fita de led em cima e embaixo da prateleira, spots no forro, arandela dourado acetinado em cima do sofá"></textarea>
       </section>
@@ -823,6 +839,11 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
   </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
+<dialog id="pickDlg" class="manual pick" aria-labelledby="pickTitle">
+  <form method="dialog" class="mhd"><h2 id="pickTitle"><span class="n">conta-gotas</span>clique na cor, direto no print</h2><button class="x" aria-label="Fechar">×</button></form>
+  <canvas id="pickCv"></canvas>
+  <div class="pickbar"><span class="pickSw" id="pickSw"></span><b id="pickVal"></b><span class="hint">Clique numa área bem iluminada, sem sombra nem reflexo. A cor é a média de 5×5 pixels.</span></div>
+</dialog>
 <dialog id="manual" class="manual" aria-labelledby="mTitle">
   <form method="dialog" class="mhd">
     <h2><span class="n">modo gratuito</span><span id="mTitle"></span></h2>
@@ -1010,6 +1031,36 @@ $("aiBtn").onclick=()=>{
 $("aiModel").onchange=e=>{ G.model=e.target.value; lsSet(GMODEL,G.model); toast("Modelo trocado"); };
 $("aiOut").onclick=()=>{ lsSet(GKEY,""); lsSet(GMODEL,""); lsSet(GOFF,""); $("aiDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu. A chave foi apagada deste navegador."); };
 
+/* conta-gotas: pega o RGB direto do print enviado no passo 1 */
+let pickCb=null, pickSrc=null;
+async function pickColor(cb){
+  if(!imgFile){
+    if(window.EyeDropper){ try{ const h=(await new EyeDropper().open()).sRGBHex; cb([1,3,5].map(i=>parseInt(h.slice(i,i+2),16))); }catch{} return }
+    toast("Envie o print no passo 1 para usar o conta-gotas"); return;
+  }
+  pickCb=cb;
+  if(pickSrc?.file!==imgFile){
+    const url=await readURL(imgFile), im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=url});
+    const c=document.createElement("canvas"); c.width=im.naturalWidth; c.height=im.naturalHeight; c.getContext("2d",{willReadFrequently:true}).drawImage(im,0,0);
+    pickSrc={file:imgFile,canvas:c,img:im};
+  }
+  const v=$("pickCv"), s=Math.min(Math.min(innerWidth*.92,1100)/pickSrc.canvas.width,innerHeight*.68/pickSrc.canvas.height,1);
+  v.width=Math.round(pickSrc.canvas.width*s); v.height=Math.round(pickSrc.canvas.height*s); v.getContext("2d").drawImage(pickSrc.img,0,0,v.width,v.height);
+  setPick(null); $("pickDlg").showModal();
+}
+function sampleAt(e){
+  const v=$("pickCv"), r=v.getBoundingClientRect(), W=pickSrc.canvas.width, H=pickSrc.canvas.height;
+  const x=Math.floor((e.clientX-r.left)/r.width*W), y=Math.floor((e.clientY-r.top)/r.height*H);
+  const x0=Math.max(0,x-2), y0=Math.max(0,y-2), w=Math.min(W,x+3)-x0, h=Math.min(H,y+3)-y0; if(w<=0||h<=0) return null;
+  const d=pickSrc.canvas.getContext("2d").getImageData(x0,y0,w,h).data; const a=[0,0,0]; let n=0;
+  for(let i=0;i<d.length;i+=4){ a[0]+=d[i]; a[1]+=d[i+1]; a[2]+=d[i+2]; n++ }
+  return a.map(t=>Math.round(t/n));
+}
+function setPick(c){ $("pickSw").style.background=c?`rgb(${c})`:"transparent"; $("pickVal").textContent=c?`RGB ${c.join(", ")}`:"passe o mouse ou toque no print"; }
+$("pickCv").addEventListener("pointermove",e=>{ if(pickSrc) setPick(sampleAt(e)) });
+$("pickCv").addEventListener("click",e=>{ const c=pickSrc&&sampleAt(e); if(!c) return; $("pickDlg").close(); pickCb?.(c); toast(`Cor capturada: RGB ${c.join(", ")}`); });
+$("qPick").onclick=()=>{ const t=$("qText"), a=t.selectionStart??t.value.length, b=t.selectionEnd??a;
+  pickColor(c=>{ const ins=`RGB ${c.join(",")}`; t.value=t.value.slice(0,a)+(a&&!/\s$/.test(t.value.slice(0,a))?" ":"")+ins+t.value.slice(b); t.focus(); }); };
 let manualCb=null, manualText="";
 function manual({title,prompt,attach,onReply}){
   manualText=prompt; manualCb=onReply;
@@ -1082,12 +1133,13 @@ function addRow(r={}){
   d.innerHTML=`<label class="elem"><input type="text" id="e_${uid}" aria-label="Elemento" placeholder="Elemento"></label>
   <input type="text" id="m_${uid}" aria-label="Material" placeholder="Material">
   <input type="text" id="a_${uid}" aria-label="Acabamento" placeholder="Acabamento">
-  <input type="text" id="c_${uid}" aria-label="Cor ou RGB" placeholder="Cor / RGB">
+  <span class="pkw"><input type="text" id="c_${uid}" aria-label="Cor ou RGB" placeholder="Cor / RGB"><button class="pk" type="button" title="Conta-gotas: pegar a cor no print" aria-label="Pegar a cor no print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg></button></span>
   <button class="x" title="Remover" aria-label="Remover">×</button>
   <input type="text" class="note" id="n_${uid}" aria-label="Observação" placeholder="Observação (opcional): ex. NÃO é madeira">`;
   const ins=d.querySelectorAll("input");
   ins[0].value=r.elemento||""; ins[1].value=r.material||""; ins[2].value=r.acabamento||""; ins[3].value=r.cor||""; ins[4].value=r.nota||"";
   d.querySelector(".x").onclick=()=>d.remove();
+  d.querySelector(".pk").onclick=()=>pickColor(c=>{ const i=ins[3], v=i.value.replace(/\s*·?\s*RGB[\s\d,]*$/i,"").trim(); i.value=(v?v+" · ":"")+"RGB "+c.join(","); clearExample(); });
   $("mat").append(d);
 }
 function rows(){
@@ -1240,7 +1292,7 @@ function addReadRow(m){
     <button class="x" type="button" aria-label="Remover material">×</button>
     <input class="rm" type="text" aria-label="Material e acabamento" placeholder="Material e acabamento">
     <input class="rc" type="text" aria-label="Cor" placeholder="Cor">
-    <span class="rgbw"><span class="sw"></span><input class="rg" type="text" aria-label="RGB opcional" placeholder="RGB (opcional)" inputmode="numeric"></span>
+    <span class="rgbw"><span class="sw"></span><input class="rg" type="text" aria-label="RGB opcional" placeholder="RGB (opcional)" inputmode="numeric"><button class="pk" type="button" title="Conta-gotas: pegar a cor no print" aria-label="Pegar a cor no print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg></button></span>
     <button class="cf" type="button" title="Clique quando já tiver conferido">conferir</button>`;
   const q=c=>d.querySelector(c);
   q(".re").value=String(m.elemento||""); q(".ro").value=String(m.onde||"");
@@ -1248,6 +1300,7 @@ function addReadRow(m){
   q(".rc").value=lc(m.cor); q(".rg").value=String(m.rgb||"").replace(/\s/g,"").replace(/,/g,", ");
   const sw=()=>{ const r=q(".rg").value.match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/); q(".sw").style.background=r?`rgb(${r[1]},${r[2]},${r[3]})`:""; q(".sw").classList.toggle("none",!r) };
   q(".rg").oninput=sw; sw();
+  q(".pk").onclick=()=>pickColor(c=>{ q(".rg").value=c.join(", "); sw(); });
   q(".x").onclick=()=>{ d.remove(); updConf() };
   q(".cf").onclick=()=>{ d.classList.remove("unsure"); updConf() };
   $("rMats").append(d); updConf(); return d;
