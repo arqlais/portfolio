@@ -630,9 +630,10 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
             <div class="f quickonly">Cenário de luz
               <div class="chips" id="qChips"></div>
             </div>
-            <label class="f">Luzes artificiais (padrão: levemente ligadas, branco quente equilibrado)
+            <label class="f">Luzes artificiais (padrão: ligadas, ~3500K)
               <select id="ledTemp">
-                <option value="3000" selected>Ligadas suaves · branco quente equilibrado (~3000K)</option>
+                <option value="3500" selected>Ligadas · branco neutro-quente (~3500K)</option>
+                <option value="3000">Ligadas · branco quente (~3000K)</option>
                 <option value="neutral">Ligadas suaves · neutra (~3500–4000K)</option>
                 <option value="2700">Ligadas suaves · bem quente (~2700K)</option>
                 <option value="cool">Ligadas suaves · branca fria (~4500K)</option>
@@ -1338,7 +1339,7 @@ function ledRule(quick){
   if(ps?.art==="off") return `LUZ ARTIFICIAL: DESLIGADA, porque o cenário escolhido ("${ps.n}") é sem luz artificial. Nenhuma luminária acesa, nenhum brilho de LED.`;
   const which=art==="some"?"SOMENTE as luminárias listadas ficam ligadas; todas as outras ficam desligadas":"todas as luminárias existentes no print ficam ligadas";
   if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, quentes (~2700K) como pede o cenário. Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam onde há luz; nada de luz amarelada artificial.`;
-  const t={neutral:"branco neutro, cerca de 3500K–4000K",3000:"branco quente suave e equilibrado, cerca de 3000K (luz de LED real, aconchegante, sem amarelar)",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
+  const t={neutral:"branco neutro, cerca de 3500K–4000K",3500:"branco neutro-quente, cerca de 3500K (luz de LED real, natural, nem amarelada nem fria)",3000:"branco quente, cerca de 3000K (aconchegante, sem amarelar)",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
   const role=ps?.nat===false?"complementando a luz difusa do cenário, sem virar a fonte principal":"só complementando a luz natural, que continua dominante";
   return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, acesas com intensidade média, claramente visíveis e aconchegantes, desenhando a superfície onde batem, ${role}. Fitas e perfis de LED com brilho contínuo e um degradê visível na superfície (e refletido nas superfícies polidas), sem faixas estouradas. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam ONDE há luz: a luz nunca é amarela; o resultado é LED real, natural, como numa fotografia.`;
 }
@@ -1571,7 +1572,7 @@ function renderProjects(){
     d.innerHTML=`<div style="min-width:0;display:flex;flex-direction:column"><span></span><small></small></div><div class="actions"><button class="btn small">Carregar</button><button class="btn ghost small" aria-label="Excluir">×</button></div>`;
     d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${p.qText?" · texto salvo":" · "+p.rows.length+" materiais"}`;
     const [lb,db]=d.querySelectorAll("button");
-    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);if(p.read)renderRead(p.read,p.read.materiais);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3000";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
+    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);if(p.read)renderRead(p.read,p.read.materiais);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3500";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
     db.onclick=()=>{if(db.dataset.c){const a=loadAll();a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
     box.append(d)});
 }
@@ -1665,6 +1666,20 @@ function sameNew(txt,n,opt){ // materiais que só aparecem na cena nova
   const items=String(txt||"").split("\n").map(x=>x.trim()).filter(Boolean); if(!items.length) return "";
   const sk=opt!==2?"primeira":ORD[n];
   return `\n\nELEMENTOS NOVOS NESTA CENA (aparecem só na ${sk} imagem, o print; não existem nas imagens de referência):\n${items.map(i=>"• "+i).join("\n")}\nPara esses elementos: geometria, posição e quantidade exatamente como na ${sk} imagem; material, cor e acabamento exatamente como descrito acima (RGB, quando informado, é a cor exata). Eles recebem a mesma luz, exposição, balanço de branco e nível de realismo das referências, como se tivessem sido fotografados no mesmo ensaio. Todos os outros materiais continuam herdados das referências, sem nenhuma alteração.`;
+}
+function sameRules(n,opt){ // regras fixas que o texto do PDF não cobre
+  const pk=opt!==2?"primeira":ORD[n];
+  return `\n\nREGRAS FIXAS DA NOVA CENA (valem acima de tudo):
+• Geometria: a ${pk} imagem (print do SketchUp) é a verdade absoluta. A foto final se sobrepõe ao print linha por linha: mesmas bordas, alinhamentos, proporções, quantidades e posições. Nada adicionado (nem plantas, toalhas, objetos, espelhos ou luminárias que não estejam no print), nada removido, nada movido. As imagens de referência servem SÓ para luz e materiais: nunca copie objetos, móveis, layout ou geometria delas.
+• Luz artificial: faixas amarelas no print só indicam onde há LED. A luz é branca neutra-quente, cerca de 3500K, natural como numa foto, com a mesma intensidade das referências; nada amarelado nem alaranjado.
+• Acabamentos: reflexos conforme o acabamento (polido com brilho alto e reflexos nítidos), rejunte fino e alinhado de uma parede para a outra, metais com aparência real.`;
+}
+function sameRulesEN(n,opt){
+  const pk=opt!==2?"first":ORD_EN[n];
+  return `\n\nFIXED RULES FOR THE NEW SCENE (they override everything):
+• Geometry: the ${pk} image (SketchUp screenshot) is the absolute truth. The final photo must overlay the screenshot line by line: same edges, alignments, proportions, quantities and positions. Nothing added (no plants, towels, objects, mirrors or light fixtures that are not in the screenshot), nothing removed, nothing moved. The reference images are ONLY for light and materials: never copy objects, furniture, layout or geometry from them.
+• Artificial light: yellow strips in the screenshot only mark where LEDs are. The light is neutral-warm white, about 3500K, natural like a photograph, with the same intensity as the references; nothing yellowish or orange.
+• Finishes: reflections according to the finish (polished = high gloss with sharp reflections), thin grout aligned from one wall to the next, metals with a real look.`;
 }
 function sameEnvImgs(n,opt){ return opt!==2?`Envie: 1º o print novo, depois ${n} render(s) prontos do ambiente`:`Envie: ${n} render(s) prontos do ambiente, por último o print novo`; }
 function anim(dir){
@@ -2052,7 +2067,7 @@ COMO LER O QUE EU MANDO
 COMANDOS QUE POSSO ESCREVER (sem eles, use o padrão)
 - Destino: "magnific" (padrão), "gemini", "chatgpt", "flux" ou "universal".
 - Cenário de luz: o nome de um dos cenários abaixo. Sem cenário, siga meu texto; se eu não falar de luz, mantenha a luz do print.
-- Luzes artificiais: padrão = todas as existentes no print levemente acesas, branco quente equilibrado (~3000K, LED real, sem amarelar), só complementando a luz natural; posso pedir "neutra 4000K", "2700K", "fria 4500K" ou "desligadas".
+- Luzes artificiais: padrão = todas as existentes no print acesas, branco neutro-quente (~3500K, LED real, nem amarelado nem frio), só complementando a luz natural; posso pedir "3000K", "neutra 4000K", "2700K", "fria 4500K" ou "desligadas".
 - Equilíbrio de cor: balanço de branco natural e equilibrado; luz do dia ~5000–5500K; madeiras, bege e greige mantêm o calor real; nada frio, azulado, acinzentado ou amarelado. Se o cenário for sem luz artificial, ficam desligadas. Na blue hour, ficam quentes (~2700K) e são a luz principal. Nunca adicione luminárias.
 - Vista pela janela / entorno: padrão = exatamente como no print; posso pedir neutra, cidade, mar, montanhas, mata, jardim etc. (o projeto continua travado).
 - Tamanho: padrão = até 10.000 caracteres por idioma; posso pedir "6000", "curto" (1.500, ideal para Flux) ou "completo".
@@ -2120,7 +2135,7 @@ function renderLib(){
       op.hidden=false;
       op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option><option value="4">4 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option><option value="3">Os dois · luz e materiais</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
       const [sn,so]=op.querySelectorAll("select"), nw=op.querySelector("textarea");
-      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value)+sameNew(nw.value,+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
+      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value)+sameNew(nw.value,+sn.value,+so.value)+sameRules(+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
       sn.onchange=upd; so.onchange=upd; nw.oninput=upd; upd();
     } else if(x.anim){
       op.hidden=false;
@@ -2262,8 +2277,8 @@ function sameBuild(){
   const n=same.refs.length;
   $("sOut").hidden=!n; $("sNeed").hidden=!!n; if(!n) return;
   const items=newItems().join("\n"), notes=$("sNotes").value.trim();
-  const pt=sameEnv(n,same.opt)+sameNew(items,n,same.opt)+(notes?`\n\nOBSERVAÇÕES DESTA CENA (têm prioridade sobre o resto):\n${notes}`:"");
-  const en=sameEnvEN(n,same.opt)+sameNewEN(items,n,same.opt)+(notes?`\n\nNOTES FOR THIS SCENE (they override everything else):\n${notes}`:"");
+  const pt=sameEnv(n,same.opt)+sameNew(items,n,same.opt)+sameRules(n,same.opt)+(notes?`\n\nOBSERVAÇÕES DESTA CENA (têm prioridade sobre o resto):\n${notes}`:"");
+  const en=sameEnvEN(n,same.opt)+sameNewEN(items,n,same.opt)+sameRulesEN(n,same.opt)+(notes?`\n\nNOTES FOR THIS SCENE (they override everything else):\n${notes}`:"");
   $("sPt").textContent=pt; $("sEn").textContent=en;
   $("scPt").textContent=pt.length.toLocaleString("pt-BR")+" caracteres"; $("scEn").textContent=en.length.toLocaleString("pt-BR")+" caracteres";
 }
