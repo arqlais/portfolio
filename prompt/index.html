@@ -6,7 +6,6 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="lais-api" content="{{ site.data.prompt.api_url | escape }}">
 <link rel="canonical" href="https://www.lais3d.com.br/prompt/">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Prompt de Render · laís</title>
@@ -180,9 +179,6 @@ pre.prompt{margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-hei
 .proj span{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .proj small{color:var(--muted);font-size:11px}
 .banner{background:var(--rose-soft);border-radius:var(--r-s);padding:12px 16px;font-size:13px;margin-bottom:18px}
-.codebox{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-.codebox form{display:flex;gap:8px;flex:1 1 280px;max-width:420px}
-.codebox input{background:var(--card)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:13px;font-weight:500;z-index:20}
 
 .preset{font-size:12.5px;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:10px 12px;white-space:pre-line;max-height:150px;overflow:auto}
@@ -290,6 +286,25 @@ body.locked{overflow:hidden}
 .diffs .sev.alta{background:var(--warn)}
 .diffs .sev.baixa{background:var(--ok)}
 .diffs b{font-weight:600}
+
+/* janela do modo gratuito */
+.manual{width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 32px);border:1px solid var(--line);border-radius:20px;padding:24px;background:var(--card);color:var(--ink);box-shadow:0 24px 60px rgba(43,52,58,.22)}
+.manual::backdrop{background:rgba(30,38,44,.45)}
+.manual .mhd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.manual h2{margin:0;font-family:var(--body);font-weight:700;font-size:21px;letter-spacing:-.025em;text-transform:lowercase;line-height:1.2}
+.manual h2 .n{display:flex;margin-bottom:8px;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--rose-deep)}
+.manual .x{border:0;background:transparent;color:var(--muted);font-size:24px;cursor:pointer;width:40px;height:40px;border-radius:10px;line-height:1}
+.manual .x:hover{background:var(--rose-soft);color:var(--ink)}
+.msteps{margin:0 0 16px;padding:0;list-style:none;counter-reset:m;display:flex;flex-direction:column;gap:14px}
+.msteps li{counter-increment:m;display:flex;flex-direction:column;gap:10px;padding:14px 14px 14px 52px;position:relative;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.msteps li::before{content:counter(m);position:absolute;left:14px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:12px;font-weight:600}
+.msteps li > div:first-child{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.msteps .btn{align-self:flex-start}
+.msteps .mtxt{margin:0}
+.msteps .chip{text-decoration:none}
+.msteps textarea{min-height:120px;background:var(--card)}
+.msteps pre.prompt{max-height:220px;background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.msteps .fold{border:0;padding:0}
 
 /* band + footer */
 .band{background:var(--rose-soft);border-radius:var(--r);padding:22px 24px;margin-block:28px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
@@ -408,11 +423,7 @@ textarea{padding:12px 14px}
     </div>
   </section>
 
-  <div id="noAI" class="banner" hidden>A IA não está conectada agora, então a leitura do print, a geração do prompt e a busca de diferenças ficam desligadas. Você ainda pode preencher, salvar projetos, copiar os prompts prontos e comparar imagens.</div>
-  <div id="codeBox" class="banner codebox" hidden>
-    <span>Digite o código de acesso do estúdio para usar a IA neste navegador.</span>
-    <form id="codeForm"><input type="password" id="codeIn" autocomplete="current-password" aria-label="Código de acesso" placeholder="código de acesso"><button class="btn small" type="submit">entrar</button></form>
-  </div>
+  <div id="noAI" class="banner" hidden><b>Modo gratuito.</b> A página monta o pedido completo; você cola num chat de IA gratuito (Claude, Gemini ou ChatGPT) junto com o print e cola a resposta de volta aqui. Nada é pago.</div>
 
   <div id="viewGen">
   <div class="modebar">
@@ -663,71 +674,61 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
   </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
+<dialog id="manual" class="manual" aria-labelledby="mTitle">
+  <form method="dialog" class="mhd">
+    <h2><span class="n">modo gratuito</span><span id="mTitle"></span></h2>
+    <button class="x" aria-label="Fechar">×</button>
+  </form>
+  <ol class="msteps">
+    <li><div><b>Copie o pedido</b><span class="count" id="mLen"></span></div><button class="btn small" id="mCopy" type="button">copiar pedido</button>
+      <details class="fold" id="mSee"><summary>ver o pedido</summary><pre class="prompt" id="mPre"></pre></details></li>
+    <li><p class="mtxt"><b>Abra um chat de IA gratuito</b>, cole o pedido e <span id="mAttach"></span>.</p>
+      <div class="chips"><a class="chip" href="https://claude.ai/new" target="_blank" rel="noopener">Claude ↗</a><a class="chip" href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini ↗</a><a class="chip" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT ↗</a></div></li>
+    <li><div><b>Cole a resposta inteira aqui</b></div><textarea id="mReply" aria-label="Resposta do chat" placeholder="cole aqui a resposta do chat"></textarea></li>
+  </ol>
+  <div class="actions"><button class="btn" id="mUse" type="button">usar resposta</button><div class="status" id="mStatus"></div></div>
+</dialog>
 
 <script>
 const $ = id => document.getElementById(id);
 let sample = null, imgOK = false, imgFile = null, kind = "INTERIOR", genCtl = null;
 
-/* ---------- conexão com a IA: claude.ai (artifact) ou o servidor do site ---------- */
-// endereço do servidor da IA: o site do portfólio informa pela meta "lais-api"; no próprio servidor é /api/claude
-const API_URL=document.querySelector('meta[name="lais-api"]')?.content.trim()||"/api/claude";
-const AI={mode:null,needsCode:false};
-const CODE_KEY="lais-render-codigo";
-function aiCode(){ try{return localStorage.getItem(CODE_KEY)||""}catch{return""} }
+/* ---------- IA ----------
+   no claude.ai (artifact) a IA roda direto pela assinatura; no site, modo gratuito: a página monta o pedido,
+   você cola num chat de IA gratuito junto com as imagens e traz a resposta de volta. Nada é pago. */
+const AI={mode:null};
 function readURL(f){return new Promise((r,j)=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.onerror=j;fr.readAsDataURL(f)})}
-async function shrink(f){ // reduz para no máximo 1568px em JPEG: envio rápido e dentro do limite do servidor
-  const im=await new Promise(async(r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=await readURL(f)});
-  const s=Math.min(1,1568/Math.max(im.naturalWidth,im.naturalHeight)), c=document.createElement("canvas");
-  c.width=Math.max(1,Math.round(im.naturalWidth*s)); c.height=Math.max(1,Math.round(im.naturalHeight*s));
-  const g=c.getContext("2d"); g.fillStyle="#fff"; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height);
-  return {media_type:"image/jpeg",data:c.toDataURL("image/jpeg",.86).split(",")[1]};
-}
-async function aiText(prompt,{images,signal,onText,effort="medium",maxTokens=32000}={}){
-  if(AI.mode==="claude"){ const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
-  if(AI.mode!=="api") throw {code:"no_ai"};
-  const imgs=images?.length?await Promise.all(images.map(shrink)):[];
-  let res, text="", stop="";
-  try{ res=await fetch(API_URL,{method:"POST",signal,headers:{"content-type":"application/json","x-access-code":aiCode()},body:JSON.stringify({prompt,images:imgs,effort,maxTokens})}); }
-  catch(e){ throw {code:signal?.aborted?"cancelled":"network"} }
-  if(!res.ok){ let c=res.status===413?"too_large":"server"; try{c=(await res.json()).error||c}catch{} if(c==="bad_code"){AI.needsCode=true;showCode()} throw {code:c} }
-  const rd=res.body.getReader(), dec=new TextDecoder(); let buf="";
-  try{
-    for(;;){
-      const {value,done}=await rd.read(); if(done) break;
-      buf+=dec.decode(value,{stream:true}); let i;
-      while((i=buf.indexOf("\n"))>=0){
-        const line=buf.slice(0,i).trim(); buf=buf.slice(i+1); if(!line) continue;
-        const m=JSON.parse(line);
-        if(m.t){ text+=m.t; onText?.({text}) } else if(m.stop) stop=m.stop; else if(m.error) throw {code:m.error};
-      }
-    }
-  }catch(e){ throw {code:signal?.aborted?"cancelled":(e?.code||"network"),text} }
-  if(!stop) throw {code:"network",text};
-  if(stop==="refusal") throw {code:"refused",text};
-  return {text,truncated:stop==="max_tokens"};
-}
-async function aiJSON(prompt,opts={}){
-  if(AI.mode==="claude"){ const o={modelTier:"default",cache:false}; if(opts.images) o.images=opts.images; return await sample.json(prompt,o); }
-  const {text}=await aiText(prompt+"\n\nResponda apenas com o JSON, sem nenhum texto antes ou depois e sem blocos de código.",opts);
+function parseJSON(text){
   const a=text.indexOf("{"), b=text.lastIndexOf("}"); if(a<0||b<a) throw {code:"invalid_json"};
   try{ return JSON.parse(text.slice(a,b+1)) }catch{ throw {code:"invalid_json"} }
 }
-function showCode(){ $("codeBox").hidden=!(AI.mode==="api"&&AI.needsCode); }
+const JSON_TAIL="\n\nResponda apenas com o JSON, sem nenhum texto antes ou depois e sem blocos de código.";
+async function aiText(prompt,{images,signal,onText}={}){ const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
+async function aiJSON(prompt,{images}={}){ const o={modelTier:"default",cache:false}; if(images) o.images=images; return await sample.json(prompt,o); }
 async function connectAI(){
   try{ sample=await window.claude?.use("sample") }catch{ sample=null }
-  if(sample){
-    AI.mode="claude"; const lim=await sample.limits().catch(()=>null);
-    imgOK=!!lim?.images; pieceImgMax=lim?.images?.maxCount||1;
-  }else{
-    try{ const r=await fetch(API_URL,{headers:{"x-access-code":aiCode()},cache:"no-store"});
-      const j=r.ok?await r.json():null;
-      if(j?.ok){ AI.mode="api"; AI.needsCode=j.needsCode&&!j.codeOK; imgOK=true; pieceImgMax=j.maxImages||5; }
-    }catch{}
-  }
-  $("noAI").hidden=!!AI.mode; showCode();
-  $("analyze").hidden=!(AI.mode&&imgOK); $("gen").disabled=!AI.mode;
+  if(sample){ AI.mode="claude"; const lim=await sample.limits().catch(()=>null); imgOK=!!lim?.images; pieceImgMax=lim?.images?.maxCount||1; }
+  else{ imgOK=true; pieceImgMax=6; } // modo gratuito: você anexa as imagens no chat
+  $("noAI").hidden=!!AI.mode; $("analyze").hidden=!imgOK; $("gen").disabled=false;
   updateAnalyze(); try{renderCmp()}catch{}
 }
+let manualCb=null, manualText="";
+function manual({title,prompt,attach,onReply}){
+  manualText=prompt; manualCb=onReply;
+  $("mTitle").textContent=title; $("mAttach").textContent=attach; $("mPre").textContent=prompt; $("mSee").open=false;
+  $("mLen").textContent=prompt.length.toLocaleString("pt-BR")+" caracteres";
+  $("mReply").value=""; status($("mStatus"),""); $("manual").showModal();
+}
+$("mCopy").onclick=async()=>{
+  try{ await navigator.clipboard.writeText(manualText); toast("Pedido copiado. Agora cole no chat") }
+  catch{ $("mSee").open=true; const s=getSelection(),r=document.createRange(); r.selectNodeContents($("mPre")); s.removeAllRanges(); s.addRange(r); toast("Texto selecionado, use Ctrl+C") }
+};
+$("mUse").onclick=()=>{
+  const t=$("mReply").value.trim();
+  if(!t){ status($("mStatus"),"Cole aqui a resposta do chat.",false,true); return }
+  try{ manualCb?.(t); $("manual").close(); }catch(e){ status($("mStatus"),errMsg(e),false,true) }
+};
+
 const PRESETS = {
 INTERIOR: [
  {n:"Natural predominante + artificial", t:"Luz natural predominante entrando pelas aberturas existentes, suave e realista. Toda a iluminação artificial existente ligada, quente e visível sem dominar a luz natural. Mistura equilibrada de luz natural e artificial, fisicamente plausível."},
@@ -831,7 +832,7 @@ function setImage(f){
   r.readAsDataURL(f);
 }
 function clearExample(){ if(exampleActive){ exampleActive=false; $("mat").innerHTML=""; } }
-function updateAnalyze(){ $("analyze").disabled=!(imgFile&&AI.mode&&imgOK); $("analyze").textContent=(!document.body.classList.contains("quick")&&!exampleActive&&rows().length)?"Analisar e completar elementos":"Analisar print"; }
+function updateAnalyze(){ $("analyze").disabled=AI.mode?!(imgFile&&imgOK):false; $("analyze").textContent=(!document.body.classList.contains("quick")&&!exampleActive&&rows().length)?"Analisar e completar elementos":"Analisar print"; }
 const drop=$("drop");
 drop.onclick=()=>$("file").click();
 drop.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("file").click()}};
@@ -846,7 +847,7 @@ $("clearImg").onclick=e=>{e.stopPropagation();imgFile=null;$("preview").hidden=t
 function status(el,msg,busy,err){ el.className="status"+(err?" err":""); el.innerHTML=(busy?'<span class="dot"></span>':"")+(msg?`<span></span>`:""); if(msg) el.lastChild.textContent=msg; }
 function errMsg(e){
   const m={not_granted:"Você não autorizou o uso do Claude nesta página.",rate_limited:"Muitas solicitações agora. Tente de novo em alguns minutos.",
-    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A leitura veio num formato inesperado. Clique em analisar de novo.",
+    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
     session_expired:"Sua sessão expirou. Entre de novo no claude.ai.",refused:"O pedido foi recusado. Revise o texto e tente de novo.",images_unavailable:"Esta visualização não permite enviar imagens.",
     network:"A conexão caiu no meio do caminho. Confira a internet e tente de novo.",server:"O servidor não respondeu. Tente de novo em instantes.",overloaded:"A IA está sobrecarregada agora. Tente de novo em um minuto.",
     bad_code:"Código de acesso incorreto. Digite de novo no aviso acima.",too_large:"As imagens ficaram grandes demais. Tente com menos fotos de referência.",not_configured:"O servidor ainda não tem a chave da API configurada.",
@@ -874,8 +875,7 @@ Como ler o SketchUp:
 - Seja honesto: se não tiver certeza, escreva "provável" e marque "conferir": true.
 Formato JSON:
 {"ambiente":"ex.: sala de estar integrada à cozinha","luzNatural":"de onde a luz natural entra, citando a abertura","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"~3000K","materiais":[{"elemento":"Piso","material":"Porcelanato","acabamento":"Acetinado, placas grandes","cor":"Bege muito claro","rgb":"226,219,208","conferir":false}]}`;
-  try{
-    const data=await aiJSON(prompt,{images:[imgFile],effort:"medium"});
+  const apply=data=>{
     const mats=Array.isArray(data?.materiais)?data.materiais:[];
     const have=new Set(existing.map(r=>r.elemento.toLowerCase()));
     if(!existing.length) $("mat").innerHTML="";
@@ -884,7 +884,14 @@ Formato JSON:
     if(!$("lights").value.trim() && Array.isArray(data?.luminarias)) $("lights").value=data.luminarias.map(String).join("\n");
         renderRead(data,mats);
     status($("aStatus"),`${data?.ambiente?String(data.ambiente)+" · ":""}${added} elemento(s) identificados.`);
-  }catch(e){ status($("aStatus"),errMsg(e),false,true); if(e?.code==="not_granted"||e?.code==="images_unavailable") $("analyze").hidden=true; }
+  };
+  if(!AI.mode){
+    $("analyze").disabled=false; status($("aStatus"),"");
+    manual({title:"ler o print",prompt:prompt+JSON_TAIL,attach:"anexe o print do SketchUp",onReply:t=>apply(parseJSON(t))});
+    return;
+  }
+  try{ apply(await aiJSON(prompt,{images:[imgFile]})); }
+  catch(e){ status($("aStatus"),errMsg(e),false,true); if(e?.code==="not_granted"||e?.code==="images_unavailable") $("analyze").hidden=true; }
   updateAnalyze();
 };
 
@@ -1005,7 +1012,7 @@ ${readText||"(não analisado; olhe a IMAGEM 1 anexada, se houver)"}
 
 TEXTO DA USUÁRIA (fonte principal, prioridade máxima):
 ${$("qText").value.trim()}
-${piecesBrief(imgFile&&imgOK?2:1)}
+${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
 
 BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
 ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
@@ -1031,7 +1038,7 @@ ${r.map(x=>`- ${x.elemento} | ${x.material} | ${x.acabamento} | ${x.cor} | ${x.n
 BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
 ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
 RGB: todo material sem RGB informado recebe um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); os informados valem exatamente.
-${piecesBrief(imgFile&&imgOK?2:1)}
+${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
 DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}
 TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.8)+" caracteres para ter margem. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
 }
@@ -1092,11 +1099,22 @@ function showPrompts(text){
   [["cEn",en],["cPt",pt]].forEach(([id,t])=>{$(id).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(id).classList.toggle("over",t.length>lim)});
 }
 $("gen").onclick=async()=>{
-  if(!AI.mode){toast("A IA não está conectada agora");return}
   const quick=quickMode();
   if(quick && !$("qText").value.trim()){toast("Escreva os materiais e a iluminação no passo 2");return}
   if(!quick && exampleActive){toast("Analise um print ou edite os materiais de exemplo primeiro");return}
   if(!quick && !rows().length && !$("notes").value.trim()){toast("Preencha os materiais ou os detalhes extras");return}
+  if(!AI.mode){
+    const withPics=pieces().filter(p=>p.img).length;
+    const prompt=MASTER(quick?buildQuickBrief():buildBrief())+"\n\nA IMAGEM 1 (print do SketchUp) está anexada nesta conversa."+(withPics?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":"");
+    manual({title:"gerar o prompt",prompt,attach:"anexe o print do SketchUp"+(withPics?` e depois as ${withPics} foto(s) das peças, na ordem da lista`:""),onReply:t=>{
+      if(!t.includes("===PT===")||!t.includes("===EN===")) throw {code:"manual_format"};
+      $("outSec").hidden=false; showPrompts(t);
+      const lim=$("size").value==="full"?0:+$("size").value, over=lim&&($("pPt").textContent.length>lim||$("pEn").textContent.length>lim);
+      status($("gStatus"),over?`Passou de ${lim.toLocaleString("pt-BR")} caracteres. No mesmo chat, peça: "encurte cada prompt para no máximo ${Math.round(lim*.85).toLocaleString("pt-BR")} caracteres, mantendo todos os materiais, RGB, medidas e regras de NÃO, no mesmo formato" e cole a nova resposta.`:"Pronto. Copie e cole na sua IA de imagem.",false,!!over);
+      $("outSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+    }});
+    return;
+  }
   genCtl=new AbortController(); $("gen").disabled=true; $("stop").hidden=false;
   $("outSec").hidden=false; $("pEn").textContent=""; $("pPt").textContent="";
   status($("gStatus"),"Montando os prompts… isso leva cerca de um minuto",true);
@@ -1167,12 +1185,6 @@ $("addPiece").onclick=()=>addPiece();
 renderTypes(); renderView("keep"); renderChips(); renderExtras(); setRows(EXAMPLE); renderProjects();
 document.querySelectorAll(".mrow").forEach(d=>d.style.opacity=".7");
 $("mat").addEventListener("input",()=>{ if(exampleActive){exampleActive=false;document.querySelectorAll(".mrow").forEach(d=>d.style.opacity="")} });
-$("codeForm").onsubmit=async e=>{
-  e.preventDefault(); const c=$("codeIn").value.trim(); if(!c) return;
-  try{localStorage.setItem(CODE_KEY,c)}catch{}
-  await connectAI();
-  if(AI.needsCode){ toast("Código incorreto"); try{localStorage.removeItem(CODE_KEY)}catch{} } else { $("codeIn").value=""; toast("IA conectada"); }
-};
 $("analyze").hidden=true; $("gen").disabled=true;
 connectAI();
 $("mat").addEventListener("input",updateAnalyze);
@@ -1626,7 +1638,7 @@ function renderCmp(){
   }
   ["cmpDrag","fsDrag"].forEach(id=>$(id).setAttribute("aria-pressed",drag)); ["cmpSide","fsSide"].forEach(id=>$(id).setAttribute("aria-pressed",!drag));
   $("cmpSwap").disabled=!has; $("cmpFull").disabled=!has; $("cmpSave").disabled=!has;
-  $("cmpDiff").disabled=!(has&&AI.mode&&imgOK);
+  $("cmpDiff").disabled=!(has&&imgOK);
   if(!has&&isFs()) closeFs();
   setX(cmp.x);
 }
@@ -1704,8 +1716,7 @@ Depois escreva um prompt de correção para enviar ao gerador junto com as duas 
 Formato JSON:
 {"resumo":"uma frase","diferencas":[{"elemento":"...","problema":"...","gravidade":"alta|media|baixa"}],"correcaoPT":"...","correcaoEN":"..."}
 Se não houver diferença relevante, devolva "diferencas":[] e as correções vazias.`;
-  try{
-    const r=await aiJSON(prompt,{images:[cmp.a,cmp.b],effort:"high"});
+  const showDiff=r=>{
     const list=Array.isArray(r?.diferencas)?r.diferencas:[];
     $("diffSec").hidden=false; $("diffSum").textContent=String(r?.resumo||"");
     $("diffList").innerHTML="";
@@ -1717,7 +1728,13 @@ Se não houver diferença relevante, devolva "diferencas":[] e as correções va
     $("dcPt").textContent=$("dPt").textContent.length.toLocaleString("pt-BR")+" caracteres"; $("dcEn").textContent=$("dEn").textContent.length.toLocaleString("pt-BR")+" caracteres";
     status($("cStatus"),list.length?`${list.length} diferença(s) encontrada(s).`:"Tudo certo.");
     $("diffSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
-  }catch(e){ status($("cStatus"),errMsg(e),false,true) }
+  };
+  if(!AI.mode){
+    $("cmpDiff").disabled=false; status($("cStatus"),"");
+    manual({title:"encontrar diferenças",prompt:prompt+JSON_TAIL,attach:"anexe 1º o print do SketchUp e 2º o render",onReply:t=>showDiff(parseJSON(t))});
+    return;
+  }
+  try{ showDiff(await aiJSON(prompt,{images:[cmp.a,cmp.b]})) }catch(e){ status($("cStatus"),errMsg(e),false,true) }
   renderCmp();
 };
 async function copyWithLock(id){ const t=$(id).textContent.trim(); if(!t) return; const full=t+"\n\n"+LOCK;
