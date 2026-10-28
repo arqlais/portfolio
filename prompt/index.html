@@ -429,26 +429,23 @@ textarea{padding:12px 14px}
 #outSec:not([hidden]),#diffSec:not([hidden]){animation:rise .35s ease}
 @media (prefers-reduced-motion:reduce){#outSec,#diffSec{animation:none!important}}
 
-/* leitura do print organizada */
-.readview{display:flex;flex-direction:column;gap:16px}
-.rhead{display:flex;flex-direction:column;gap:8px}
-.rhead b{font-size:15px;font-weight:600}
-.rtags{display:flex;flex-wrap:wrap;gap:6px}
-.rtag{font-size:12px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-.rtag i{font-style:normal;color:var(--muted)}
-.rgroup{display:flex;flex-direction:column;gap:8px}
-.rlabel{font-size:11px;font-weight:600;letter-spacing:.12em;color:var(--rose-deep)}
-.rlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.ritem{display:grid;grid-template-columns:22px minmax(0,1.2fr) minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;background:var(--card);border-top:1px solid var(--line);font-size:13px}
-.ritem:first-child{border-top:0}
-.ritem.unsure{background:var(--rose-soft)}
-.ritem .sw{width:22px;height:22px;border-radius:6px;border:1px solid var(--line)}
-.ritem .sw.none{background:repeating-linear-gradient(45deg,var(--paper) 0 4px,var(--line) 4px 5px)}
-.ritem .rtxt{display:flex;flex-direction:column;min-width:0}
-.ritem .rtxt b{font-weight:600}
-.ritem .rtxt span,.ritem .rcor{color:var(--muted);font-size:12.5px}
-.ritem.unsure .rtxt b::after{content:" · conferir";color:var(--rose-deep);font-weight:500}
-@media (max-width:600px){.ritem{grid-template-columns:22px minmax(0,1fr) auto}.ritem .rcor{grid-column:2 / 3;grid-row:2}}
+/* leitura do print: texto organizado */
+.readview{display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.6}
+.rmeta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:0;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s)}
+.rmeta dt{font-weight:600;color:var(--ink)}
+.rmeta dd{margin:0;color:var(--ink)}
+.rh{margin:6px 0 0;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--rose-deep)}
+.rh small{font-weight:500;letter-spacing:.04em;text-transform:none;color:var(--muted);font-size:12px}
+.rl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.rl li{padding:7px 0 7px 18px;border-bottom:1px solid var(--line);position:relative}
+.rl li:last-child{border-bottom:0}
+.rl:not(.rmat) li::before{content:"";position:absolute;left:4px;top:16px;width:5px;height:5px;border-radius:50%;background:var(--rose)}
+.rmat li{padding-left:26px}
+.rmat .sw{position:absolute;left:0;top:11px;width:16px;height:16px;border-radius:5px;border:1px solid var(--line)}
+.rmat .sw.none{background:repeating-linear-gradient(45deg,var(--paper) 0 3px,var(--line) 3px 4px)}
+.rmat b{font-weight:600}
+.cfmark{display:inline-block;margin-left:8px;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--warn);background:var(--rose-soft);border-radius:999px;padding:1px 8px;vertical-align:1px}
+@media (max-width:600px){.rmeta{grid-template-columns:minmax(0,1fr)}.rmeta dd{margin-bottom:6px}}
 </style>
 </head>
 <body class="booting">
@@ -535,7 +532,7 @@ textarea{padding:12px 14px}
     <main class="steps">
       <section class="step quickonly">
         <h2><span class="n">leitura do print</span>O que a IA <em>viu</em></h2>
-        <p class="hint">Itens em rosé: a IA não teve certeza. Toque em corrigir pra escrever no passo 2.</p>
+        <p class="hint">Leitura organizada do print. O que a IA não teve certeza aparece com <b class="cfmark">conferir</b>. Use "levar para o passo 2" e corrija ali.</p>
         <div class="readview" id="qRead"><p class="hint">Envie o print e toque em analisar. É opcional.</p></div>
       </section>
 
@@ -1164,7 +1161,8 @@ Como ler o SketchUp:
 - Em "acabamento" inclua brilho (fosco, acetinado, polido), formato e paginação (placas grandes, ripas verticais, réguas no comprimento) e direção dos veios quando houver.
 - Em "cor" escreva só o nome do tom e em "rgb" o valor aproximado (ex.: "226,219,208").
 - Móveis e objetos também, um por linha, com quantidade quando houver mais de um (ex.: "Banquetas (3)"). Conte com cuidado.
-- Seja honesto: se não tiver certeza, escreva "provável" e marque "conferir": true.
+- Seja honesto: se não tiver certeza, marque "conferir": true (sem explicar a dúvida no texto).
+- Escreva CURTO, para leitura rápida: "elemento" com até 4 palavras; "material" com até 5 palavras (só o mais provável, sem listar alternativas); "acabamento" com até 6 palavras; "cor" só o nome do tom; cada luminária com até 8 palavras; "luzNatural" com uma frase curta.
 Formato JSON:
 {"ambiente":"ex.: sala de estar integrada à cozinha","luzNatural":"de onde a luz natural entra, citando a abertura","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"~3000K","materiais":[{"elemento":"Piso","material":"Porcelanato","acabamento":"Acetinado, placas grandes","cor":"Bege muito claro","rgb":"226,219,208","conferir":false}]}`;
   const apply=data=>{
@@ -1202,31 +1200,39 @@ function updateFineSum(){
 let readText="";
 function renderRead(data,mats){
   const box=$("qRead"); box.innerHTML="";
-  const conf=mats.filter(m=>m.conferir).length;
-  const head=document.createElement("div"); head.className="rhead";
-  head.innerHTML='<b></b><div class="rtags"></div>';
-  head.querySelector("b").textContent=String(data?.ambiente||"ambiente");
-  const tags=head.querySelector(".rtags");
-  const tag=(k,v)=>{ if(!v) return; const t=document.createElement("span"); t.className="rtag"; t.innerHTML="<i></i> <span></span>"; t.querySelector("i").textContent=k; t.querySelector("span").textContent=v; tags.append(t); };
-  tag("luz natural",String(data?.luzNatural||"")); tag("temperatura",String(data?.temperatura||""));
-  if(conf) tag("conferir",conf+" item(ns)");
-  box.append(head);
   const lum=Array.isArray(data?.luminarias)?data.luminarias.map(String).filter(Boolean):[];
-  if(lum.length){ const l=document.createElement("div"); l.className="rgroup"; l.innerHTML='<span class="rlabel">luminárias</span><div class="chips"></div>'; lum.forEach(x=>{const c=document.createElement("span");c.className="chip static";c.textContent=x;l.querySelector(".chips").append(c)}); box.append(l); }
-  const g=document.createElement("div"); g.className="rgroup"; g.innerHTML='<span class="rlabel">materiais</span><div class="rlist"></div>'; box.append(g);
-  const list=g.querySelector(".rlist");
-  mats.forEach(m=>{
-    const r=document.createElement("div"); r.className="ritem"+(m.conferir?" unsure":"");
-    const rgb=String(m.rgb||"").match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/);
-    r.innerHTML='<span class="sw"></span><div class="rtxt"><b></b><span></span></div><span class="rcor"></span><button class="btn ghost small" type="button">corrigir</button>';
-    if(rgb) r.querySelector(".sw").style.background=`rgb(${rgb[1]},${rgb[2]},${rgb[3]})`; else r.querySelector(".sw").classList.add("none");
-    r.querySelector("b").textContent=String(m.elemento||"");
-    r.querySelector(".rtxt span").textContent=[m.material,m.acabamento].filter(Boolean).map(String).join(" · ");
-    r.querySelector(".rcor").textContent=[m.cor,rgb?`RGB ${rgb[1]}, ${rgb[2]}, ${rgb[3]}`:""].filter(Boolean).map(String).join(" · ");
-    r.querySelector("button").onclick=()=>{ const t=$("qText"); t.value=(t.value.trim()?t.value.replace(/\s*$/,"")+"\n":"")+String(m.elemento||"")+": "; t.focus(); t.setSelectionRange(t.value.length,t.value.length); };
-    list.append(r);
-  });
+  const lc=v=>{ v=String(v||"").trim(); return v?v[0].toLowerCase()+v.slice(1):"" };
+  const el=(tag,cls,txt)=>{ const e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; };
+  const meta=el("dl","rmeta");
+  [["Ambiente",data?.ambiente],["Luz natural",data?.luzNatural],["Luz artificial",data?.temperatura]].forEach(([k,v])=>{ if(!v) return; meta.append(el("dt",null,k),el("dd",null,String(v))) });
+  box.append(meta);
+  if(lum.length){
+    box.append(el("h4","rh",`Luminárias (${lum.length})`));
+    const ul=el("ul","rl"); lum.forEach(x=>ul.append(el("li",null,x))); box.append(ul);
+  }
+  if(mats.length){
+    const conf=mats.filter(m=>m.conferir).length;
+    const h=el("h4","rh",`Materiais (${mats.length})`); if(conf) h.append(el("small",null,` · ${conf} para conferir`)); box.append(h);
+    const ul=el("ul","rl rmat");
+    mats.forEach(m=>{
+      const rgb=String(m.rgb||"").match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/);
+      const li=el("li"); const sw=el("span","sw"); if(rgb) sw.style.background=`rgb(${rgb[1]},${rgb[2]},${rgb[3]})`; else sw.classList.add("none");
+      li.append(sw,el("b",null,String(m.elemento||"")+": "));
+      li.append(document.createTextNode([[String(m.material||"").trim(),lc(m.acabamento)].filter(Boolean).join(", "),lc(m.cor),rgb?`RGB ${rgb[1]}, ${rgb[2]}, ${rgb[3]}`:""].filter(Boolean).join(" · ")));
+      if(m.conferir) li.append(el("span","cfmark","conferir"));
+      ul.append(li);
+    });
+    box.append(ul);
+  }
   readText=`Ambiente: ${data?.ambiente||"—"}\nLuz natural: ${data?.luzNatural||"—"}\nLuminárias: ${lum.join("; ")||"—"}\nMateriais:\n`+mats.map(m=>`• ${m.elemento}: ${[m.material,m.acabamento,m.cor,m.rgb?"RGB "+m.rgb:""].filter(Boolean).join(", ")}${m.conferir?" (incerto)":""}`).join("\n");
+  // texto pronto para o passo 2: um item por linha, fácil de corrigir
+  const toStep2=[data?.luzNatural?`luz natural: ${data.luzNatural}`:"",lum.length?`luminárias ligadas: ${lum.join("; ")}`:"",...mats.map(m=>`${m.elemento}: ${[lc(m.material),lc(m.acabamento),lc(m.cor),m.rgb?"RGB "+String(m.rgb).replace(/\s/g,""):""].filter(Boolean).join(", ")}${m.conferir?" (conferir)":""}`)].filter(Boolean).join("\n");
+  const act=el("div","actions");
+  const go=el("button","btn small","levar para o passo 2"); go.type="button";
+  go.onclick=()=>{ const t=$("qText"); t.value=t.value.trim()?t.value.replace(/\s*$/,"")+"\n\n"+toStep2:toStep2; t.focus(); t.scrollIntoView({block:"center",behavior:"smooth"}); toast("Leitura no passo 2: corrija o que precisar e apague os (conferir)"); };
+  const cp=el("button","btn small ghost","copiar leitura"); cp.type="button";
+  cp.onclick=async()=>{ try{ await navigator.clipboard.writeText(toStep2); toast("Leitura copiada") }catch{ toast("Não foi possível copiar") } };
+  act.append(go,cp); box.append(act);
 }
 function quickMode(){ return document.body.classList.contains("quick"); }
 function curPreset(){ return lightStyle>=0?PRESETS[kind][lightStyle]:null; }
