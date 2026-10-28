@@ -6,7 +6,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<link rel="canonical" href="https://www.lais3d.com.br/prompt/">
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Prompt de Render · laís</title>
 <meta name="description" content="Do print do SketchUp à fotografia: prompts travados em português e inglês para renderização com IA, ajustes de pós e comparação antes e depois. Ferramenta do estúdio lais3d.">
@@ -111,7 +111,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 /* inputs */
 .f{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.02em;min-width:0}
-input[type=text],select,textarea{width:100%;font:400 14px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+input[type=text],input[type=password],select,textarea{width:100%;font:400 14px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 textarea{resize:vertical;min-height:84px;line-height:1.55}
 input:focus,select:focus,textarea:focus,button:focus-visible,.drop:focus-visible,.stage:focus-visible,.ph:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
 .row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -287,6 +287,21 @@ body.locked{overflow:hidden}
 .diffs .sev.baixa{background:var(--ok)}
 .diffs b{font-weight:600}
 
+/* tela de entrada */
+body.booting .wrap{visibility:hidden}
+body.gated .wrap{display:none}
+.gate{min-height:100dvh;display:grid;place-items:center;padding:24px 0}
+.gatebox{width:min(460px,100%);background:var(--card);border:1px solid var(--line);border-radius:22px;padding:32px 28px;display:flex;flex-direction:column;gap:14px}
+.gatebox .mark span{color:var(--rose)}
+.gatebox h1{margin:0;font-family:var(--body);font-weight:700;font-size:34px;letter-spacing:-.025em;line-height:1.05}
+.gatebox form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.gatebox .fold{border-top:1px solid var(--line)}
+.gsteps{margin:10px 0 6px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.gsteps a,.gatebox a{color:var(--ink)}
+.aibtn{border:1px solid var(--line);background:var(--card);color:var(--ink);font:500 13px var(--body);padding:7px 14px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.aibtn .dotok{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.manual .f select{background:var(--paper)}
+
 /* janela do modo gratuito */
 .manual{width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 32px);border:1px solid var(--line);border-radius:20px;padding:24px;background:var(--card);color:var(--ink);box-shadow:0 24px 60px rgba(43,52,58,.22)}
 .manual::backdrop{background:rgba(30,38,44,.45)}
@@ -355,7 +370,7 @@ h1 em,h2 em,h3 em{font-size:1.15em;line-height:1}
 .steps,.board{gap:20px}
 .step,.side,.card{padding:24px;border-radius:20px}
 .step{gap:16px}
-input[type=text],select{height:44px;padding:0 14px}
+input[type=text],input[type=password],select{height:44px;padding:0 14px}
 textarea{padding:12px 14px}
 .btn{min-height:44px;padding:0 22px}
 .btn.small{min-height:34px;padding:0 14px}
@@ -400,8 +415,30 @@ textarea{padding:12px 14px}
 @media (max-width:600px){.ritem{grid-template-columns:22px minmax(0,1fr) auto}.ritem .rcor{grid-column:2 / 3;grid-row:2}}
 </style>
 </head>
-<body>
+<body class="booting">
 
+<div id="gate" class="gate" hidden>
+  <div class="gatebox">
+    <div class="mark">laís<span>.</span></div>
+    <span class="kicker">acesso restrito · ferramenta do estúdio</span>
+    <h1>prompt de <em>render</em></h1>
+    <p class="hint">Para entrar, cole a sua chave gratuita do Gemini. Ela fica salva só neste navegador e não vai para o site.</p>
+    <form id="gateForm"><input type="password" id="gateKey" aria-label="Chave do Gemini" placeholder="chave do Gemini (começa com AIza…)" autocomplete="off" spellcheck="false"><button class="btn" type="submit">entrar</button></form>
+    <div class="status" id="gateStatus"></div>
+    <details class="fold"><summary>como pegar a chave grátis</summary>
+      <ol class="gsteps"><li>Entre em <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> com a sua conta Google.</li><li>Clique em <b>Create API key</b> (criar chave) e copie.</li><li>Cole aqui e clique em entrar. É de graça e não pede cartão.</li></ol>
+      <p class="hint">No plano gratuito o Google pode usar o que você envia para melhorar os produtos dele.</p>
+    </details>
+  </div>
+</div>
+<dialog id="aiDlg" class="manual" aria-labelledby="aiTitle">
+  <form method="dialog" class="mhd"><h2 id="aiTitle"><span class="n">inteligência artificial</span>gemini</h2><button class="x" aria-label="Fechar">×</button></form>
+  <div class="msteps" style="gap:12px">
+    <label class="f">Modelo<select id="aiModel"></select></label>
+    <p class="hint">Flash: rápido e com mais usos grátis por dia. Pro: mais caprichado, mas com menos usos grátis.</p>
+  </div>
+  <div class="actions"><button class="btn ghost" id="aiOut" type="button">sair e apagar a chave</button></div>
+</dialog>
 <div class="wrap">
   <header>
     <div class="brand"><a class="mark" href="https://www.lais3d.com.br/" aria-label="laís · portfólio">laís<span>.</span></a><small>prompt de render</small></div>
@@ -410,6 +447,7 @@ textarea{padding:12px 14px}
       <button role="tab" id="tabLib" aria-selected="false">ajustes e pós</button>
       <button role="tab" id="tabCmp" aria-selected="false">comparar</button>
       <a href="https://www.lais3d.com.br/">portfólio ↗</a>
+      <button type="button" id="aiBtn" class="aibtn" hidden title="Configurar o Gemini"><span class="dotok"></span>gemini</button>
     </nav>
   </header>
 
@@ -703,15 +741,110 @@ function parseJSON(text){
   try{ return JSON.parse(text.slice(a,b+1)) }catch{ throw {code:"invalid_json"} }
 }
 const JSON_TAIL="\n\nResponda apenas com o JSON, sem nenhum texto antes ou depois e sem blocos de código.";
-async function aiText(prompt,{images,signal,onText}={}){ const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
-async function aiJSON(prompt,{images}={}){ const o={modelTier:"default",cache:false}; if(images) o.images=images; return await sample.json(prompt,o); }
-async function connectAI(){
+async function aiText(prompt,{images,signal,onText}={}){ if(AI.mode==="gemini") return await gemGenerate(prompt,{images,signal,onText}); const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
+async function aiJSON(prompt,{images}={}){ if(AI.mode==="gemini"){ const {text}=await gemGenerate(prompt+JSON_TAIL,{images,json:true}); return parseJSON(text) } const o={modelTier:"default",cache:false}; if(images) o.images=images; return await sample.json(prompt,o); }
+async function connectAI(){ try{ await connectAI0() }finally{ document.body.classList.remove("booting") } }
+async function connectAI0(){
   try{ sample=await window.claude?.use("sample") }catch{ sample=null }
   if(sample){ AI.mode="claude"; const lim=await sample.limits().catch(()=>null); imgOK=!!lim?.images; pieceImgMax=lim?.images?.maxCount||1; }
-  else{ imgOK=true; pieceImgMax=6; } // modo gratuito: você anexa as imagens no chat
+  else{
+    imgOK=true; pieceImgMax=6;
+    const k=lsGet(GKEY);
+    if(!k){ showGate(); return }
+    try{ await enterGemini(k,{quiet:true}); return }
+    catch(e){ if(e.code==="bad_key"){ lockOut(); return } } // sem internet ou Google fora do ar: entra no modo copiar e colar
+    document.body.classList.remove("gated"); $("gate").hidden=true;
+  }
   $("noAI").hidden=!!AI.mode; $("analyze").hidden=!imgOK; $("gen").disabled=false;
   updateAnalyze(); try{renderCmp()}catch{}
 }
+/* ---------- Gemini (chave gratuita do Google AI Studio, salva só neste navegador) ---------- */
+const GBASE="https://generativelanguage.googleapis.com/v1beta/", GKEY="lais-gemini-chave", GMODEL="lais-gemini-modelo";
+const G={key:"",model:"",models:[]};
+function lsGet(k){ try{return localStorage.getItem(k)||""}catch{return""} }
+function lsSet(k,v){ try{ v?localStorage.setItem(k,v):localStorage.removeItem(k) }catch{} }
+async function shrink(f){ // até 1568px em JPEG: envio rápido e dentro dos limites da API
+  const url=await readURL(f), im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=url});
+  const s=Math.min(1,1568/Math.max(im.naturalWidth,im.naturalHeight)), c=document.createElement("canvas");
+  c.width=Math.max(1,Math.round(im.naturalWidth*s)); c.height=Math.max(1,Math.round(im.naturalHeight*s));
+  const g=c.getContext("2d"); g.fillStyle="#fff"; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height);
+  return {mime_type:"image/jpeg",data:c.toDataURL("image/jpeg",.86).split(",")[1]};
+}
+async function gemErr(res){
+  let st="", msg=""; try{ const e=(await res.json()).error||{}; st=e.status||""; msg=e.message||"" }catch{}
+  if(res.status===429) return {code:"gemini_quota"};
+  if(res.status===403||/API.?KEY/i.test(msg)) return {code:"bad_key"};
+  if(res.status===404) return {code:"gemini_model"};
+  if(res.status>=500) return {code:"overloaded"};
+  return {code:"bad_request",detail:st};
+}
+async function gemModels(key){
+  let res; try{ res=await fetch(GBASE+"models?pageSize=200",{headers:{"x-goog-api-key":key}}) }catch{ throw {code:"network"} }
+  if(!res.ok) throw await gemErr(res);
+  const j=await res.json();
+  return (j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes("generateContent")&&/^models\/gemini-/.test(m.name)&&!/image|tts|audio|live|embed|robotics|computer|native/i.test(m.name))
+    .map(m=>({id:m.name.replace("models/",""),label:m.displayName||m.name.replace("models/","")}));
+}
+function bestModel(list){ // prefere o Flash mais novo: bom no método e com mais usos grátis por dia
+  const sc=id=>{ const v=parseFloat((id.match(/gemini-(\d+(?:\.\d+)?)/)||[])[1]||0); return v*10+(/flash/.test(id)&&!/lite/.test(id)?3:/pro/.test(id)?2:0)-(/lite/.test(id)?4:0)-(/exp/.test(id)?2:0)-(/preview/.test(id)?1:0)-(/latest/.test(id)?.5:0); };
+  return [...list].sort((a,b)=>sc(b.id)-sc(a.id))[0]?.id||"";
+}
+async function gemGenerate(prompt,{images,signal,onText,json}={}){
+  const parts=[]; for(const f of images||[]) parts.push({inline_data:await shrink(f)});
+  parts.push({text:prompt});
+  const body={contents:[{role:"user",parts}],generationConfig:{maxOutputTokens:json?16384:32768}};
+  if(json) body.generationConfig.responseMimeType="application/json";
+  let res;
+  try{ res=await fetch(`${GBASE}models/${encodeURIComponent(G.model)}:streamGenerateContent?alt=sse`,{method:"POST",signal,headers:{"content-type":"application/json","x-goog-api-key":G.key},body:JSON.stringify(body)}) }
+  catch{ throw {code:signal?.aborted?"cancelled":"network"} }
+  if(!res.ok){ const e=await gemErr(res); if(e.code==="bad_key") lockOut(); throw e; }
+  const rd=res.body.getReader(), dec=new TextDecoder(); let buf="", text="", finish="", blocked="";
+  try{
+    for(;;){
+      const {value,done}=await rd.read(); if(done) break;
+      buf+=dec.decode(value,{stream:true}); let i;
+      while((i=buf.indexOf("\n"))>=0){
+        const line=buf.slice(0,i).trim(); buf=buf.slice(i+1);
+        if(!line.startsWith("data:")) continue;
+        const m=JSON.parse(line.slice(5)); const c=m.candidates?.[0];
+        if(m.promptFeedback?.blockReason) blocked=m.promptFeedback.blockReason;
+        const t=(c?.content?.parts||[]).filter(p=>!p.thought).map(p=>p.text||"").join("");
+        if(t){ text+=t; onText?.({text}) }
+        if(c?.finishReason) finish=c.finishReason;
+      }
+    }
+  }catch(e){ throw {code:signal?.aborted?"cancelled":"network",text} }
+  if(blocked||/SAFETY|PROHIBITED|BLOCKLIST|RECITATION/.test(finish)) throw {code:"refused",text};
+  return {text,truncated:finish==="MAX_TOKENS"};
+}
+function lockOut(){ lsSet(GKEY,""); G.key=""; AI.mode=null; showGate("A chave não foi aceita pelo Google. Confira e cole de novo."); }
+function showGate(msg){
+  document.body.classList.add("gated"); $("gate").hidden=false; $("aiBtn").hidden=true;
+  status($("gateStatus"),msg||"",false,!!msg); setTimeout(()=>$("gateKey").focus(),50);
+}
+async function enterGemini(key,{quiet}={}){
+  G.key=key; G.models=await gemModels(key);
+  if(!G.models.length) throw {code:"gemini_model"};
+  const saved=lsGet(GMODEL); G.model=G.models.some(m=>m.id===saved)?saved:bestModel(G.models);
+  AI.mode="gemini"; imgOK=true; pieceImgMax=6;
+  document.body.classList.remove("gated"); $("gate").hidden=true; $("aiBtn").hidden=false; $("noAI").hidden=true;
+  $("analyze").hidden=false; $("gen").disabled=false; updateAnalyze(); try{renderCmp()}catch{}
+  if(!quiet) toast("Gemini conectado");
+}
+$("gateForm").onsubmit=async e=>{
+  e.preventDefault(); const k=$("gateKey").value.trim(); if(!k) return;
+  status($("gateStatus"),"Conferindo a chave…",true);
+  try{ await enterGemini(k); lsSet(GKEY,k); $("gateKey").value=""; status($("gateStatus"),""); }
+  catch(err){ status($("gateStatus"),errMsg(err),false,true) }
+};
+$("aiBtn").onclick=()=>{
+  const sel=$("aiModel"); sel.innerHTML="";
+  G.models.forEach(m=>{ const o=document.createElement("option"); o.value=m.id; o.textContent=`${m.label} · ${m.id}`; sel.append(o) });
+  sel.value=G.model; $("aiDlg").showModal();
+};
+$("aiModel").onchange=e=>{ G.model=e.target.value; lsSet(GMODEL,G.model); toast("Modelo trocado"); };
+$("aiOut").onclick=()=>{ lsSet(GKEY,""); lsSet(GMODEL,""); $("aiDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu. A chave foi apagada deste navegador."); };
+
 let manualCb=null, manualText="";
 function manual({title,prompt,attach,onReply}){
   manualText=prompt; manualCb=onReply;
@@ -847,7 +980,7 @@ $("clearImg").onclick=e=>{e.stopPropagation();imgFile=null;$("preview").hidden=t
 function status(el,msg,busy,err){ el.className="status"+(err?" err":""); el.innerHTML=(busy?'<span class="dot"></span>':"")+(msg?`<span></span>`:""); if(msg) el.lastChild.textContent=msg; }
 function errMsg(e){
   const m={not_granted:"Você não autorizou o uso do Claude nesta página.",rate_limited:"Muitas solicitações agora. Tente de novo em alguns minutos.",
-    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
+    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",gemini_quota:"Acabou a cota gratuita do Gemini por agora. Espere um minuto (ou até amanhã, se for o limite diário) ou troque para o modelo Flash no botão gemini.",gemini_model:"Esse modelo do Gemini não está disponível para a sua chave. Escolha outro no botão gemini.",bad_key:"A chave não foi aceita pelo Google. Confira se copiou inteira (começa com AIza).",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
     session_expired:"Sua sessão expirou. Entre de novo no claude.ai.",refused:"O pedido foi recusado. Revise o texto e tente de novo.",images_unavailable:"Esta visualização não permite enviar imagens.",
     network:"A conexão caiu no meio do caminho. Confira a internet e tente de novo.",server:"O servidor não respondeu. Tente de novo em instantes.",overloaded:"A IA está sobrecarregada agora. Tente de novo em um minuto.",
     bad_code:"Código de acesso incorreto. Digite de novo no aviso acima.",too_large:"As imagens ficaram grandes demais. Tente com menos fotos de referência.",not_configured:"O servidor ainda não tem a chave da API configurada.",
