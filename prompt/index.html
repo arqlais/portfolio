@@ -1671,6 +1671,8 @@ function sameRules(n,opt){ // regras fixas que o texto do PDF não cobre
   const pk=opt!==2?"primeira":ORD[n];
   return `\n\nREGRAS FIXAS DA NOVA CENA (valem acima de tudo):
 • Geometria: a ${pk} imagem (print do SketchUp) é a verdade absoluta. A foto final se sobrepõe ao print linha por linha: mesmas bordas, alinhamentos, proporções, quantidades e posições. Nada adicionado (nem plantas, toalhas, objetos, espelhos ou luminárias que não estejam no print), nada removido, nada movido. As imagens de referência servem SÓ para luz e materiais: nunca copie objetos, móveis, layout ou geometria delas.
+• Esta é OUTRA vista do ambiente: janelas, nichos, bancos, prateleiras, objetos e luminárias que aparecem nas referências mas NÃO aparecem no print não estão nesta vista e NÃO podem aparecer. Paredes lisas no print continuam lisas.
+• Superfícies e peças que não aparecem nas referências seguem exatamente a cor e o material do print (ex.: marcenaria ripada cinza-claro continua cinza-claro, não vira madeira). Só herde das referências os materiais que aparecem nelas.
 • Luz artificial: faixas amarelas no print só indicam onde há LED. A luz é branca neutra-quente, cerca de 3500K, natural como numa foto, com a mesma intensidade das referências; nada amarelado nem alaranjado.
 • Acabamentos: reflexos conforme o acabamento (polido com brilho alto e reflexos nítidos), rejunte fino e alinhado de uma parede para a outra, metais com aparência real.`;
 }
@@ -1678,6 +1680,8 @@ function sameRulesEN(n,opt){
   const pk=opt!==2?"first":ORD_EN[n];
   return `\n\nFIXED RULES FOR THE NEW SCENE (they override everything):
 • Geometry: the ${pk} image (SketchUp screenshot) is the absolute truth. The final photo must overlay the screenshot line by line: same edges, alignments, proportions, quantities and positions. Nothing added (no plants, towels, objects, mirrors or light fixtures that are not in the screenshot), nothing removed, nothing moved. The reference images are ONLY for light and materials: never copy objects, furniture, layout or geometry from them.
+• This is ANOTHER view of the space: windows, niches, benches, shelves, objects and light fixtures that appear in the references but NOT in the screenshot are not in this view and must NOT appear. Plain walls in the screenshot stay plain.
+• Surfaces and pieces that do not appear in the references follow exactly the color and material of the screenshot (e.g. light-grey fluted cabinetry stays light grey, it does not become wood). Only inherit from the references the materials that are visible in them.
 • Artificial light: yellow strips in the screenshot only mark where LEDs are. The light is neutral-warm white, about 3500K, natural like a photograph, with the same intensity as the references; nothing yellowish or orange.
 • Finishes: reflections according to the finish (polished = high gloss with sharp reflections), thin grout aligned from one wall to the next, metals with a real look.`;
 }
