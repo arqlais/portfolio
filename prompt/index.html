@@ -1,0 +1,1842 @@
+---
+# Gerado automaticamente a partir de github.com/arqlais/prompt (scripts/publicar_portfolio.py).
+# Edite lá e publique de novo; mudanças feitas direto aqui se perdem.
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="canonical" href="https://www.lais3d.com.br/prompt/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prompt de Render · laís</title>
+<meta name="description" content="Do print do SketchUp à fotografia: prompts travados em português e inglês para renderização com IA, ajustes de pós e comparação antes e depois. Ferramenta do estúdio lais3d.">
+<meta name="theme-color" content="#F5F2EE">
+<meta property="og:title" content="Prompt de Render · laís">
+<meta property="og:description" content="Do print do SketchUp à fotografia, com prompts travados para IA de imagem.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234B5E6C'/%3E%3Ctext x='14' y='45' font-family='Arial' font-weight='700' font-size='38' fill='%23F5F2EE'%3El%3C/text%3E%3Ccircle cx='40' cy='41' r='5' fill='%23D1ADA4'/%3E%3C/svg%3E">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: identidade lais3d — fundo off-white, cards brancos arredondados, kickers minúsculos com ·, faixa rosé, painel petróleo escuro com itálico serifado */
+@font-face{font-family:"The Seasons";font-weight:300;font-style:normal;font-display:swap;src:url({{ '/assets/fonts/TheSeasonsLt.woff2' | relative_url }}) format("woff2")}
+@font-face{font-family:"The Seasons";font-weight:300;font-style:italic;font-display:swap;src:url({{ '/assets/fonts/TheSeasonsLtIt.woff2' | relative_url }}) format("woff2")}
+@font-face{font-family:"The Seasons";font-weight:400;font-style:italic;font-display:swap;src:url({{ '/assets/fonts/TheSeasonsIt.woff2' | relative_url }}) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:400;font-style:normal;font-display:swap;src:url({{ '/assets/fonts/Poppins-Regular.woff2' | relative_url }}) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:500;font-style:normal;font-display:swap;src:url({{ '/assets/fonts/Poppins-Medium.woff2' | relative_url }}) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:600;font-style:normal;font-display:swap;src:url({{ '/assets/fonts/Poppins-SemiBold.woff2' | relative_url }}) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:700;font-style:normal;font-display:swap;src:url({{ '/assets/fonts/Poppins-Bold.woff2' | relative_url }}) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:800;font-style:normal;font-display:swap;src:url({{ '/assets/fonts/Poppins-ExtraBold.woff2' | relative_url }}) format("woff2")}
+:root{
+  /* mesmas cores do portfólio (portfolio/_data/cores.yml) */
+  --paper:#F5F2EE; --card:#FFFFFF; --ink:#334049; --muted:#6F7B83; --line:#E0DBCE;
+  --rose:#D1ADA4; --rose-deep:#A0817A; --rose-soft:#EEE0DC; --sand:#E7E1D6; --petrol:#3E4D59; --on-dark:#F5F2EE; --dark-line:rgba(245,242,238,.18);
+  --ok:#3D7A5C; --warn:#A5582C;
+  --display:"The Seasons","Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:22px; --r-s:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#151B20; --card:#1C242B; --ink:#ECE6E0; --muted:#A4A9AD; --line:#2A343B;
+  --rose:#CDAAA1; --rose-deep:#D2B1A8; --rose-soft:#3A2C2A; --sand:#3A332B; --petrol:#0D1C25; --on-dark:#F2ECE6; --dark-line:rgba(242,236,230,.14);
+  --ok:#7CC39E; --warn:#E3A07A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#151B20; --card:#1C242B; --ink:#ECE6E0; --muted:#A4A9AD; --line:#2A343B;
+  --rose:#CDAAA1; --rose-deep:#D2B1A8; --rose-soft:#3A2C2A; --sand:#3A332B; --petrol:#0D1C25; --on-dark:#F2ECE6; --dark-line:rgba(242,236,230,.14);
+  --ok:#7CC39E; --warn:#E3A07A; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:90px}
+[hidden]:not([hidden=until-found i]){display:none!important}
+img{max-width:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:1200px;margin:0 auto}
+#viewLib,#viewCmp{padding-top:28px}
+em{font-family:var(--display);font-style:italic;font-weight:300}
+
+/* nav */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:16px;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.brand{display:flex;align-items:baseline;gap:12px}
+.mark{font-family:var(--display);font-size:32px;font-weight:400;letter-spacing:-.01em;line-height:1}
+.mark span{color:var(--rose)}
+.brand small{font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;color:var(--muted);font:500 13px var(--body);padding:8px 14px;border-radius:999px;cursor:pointer;text-transform:lowercase}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.tabs a{color:var(--muted);font:500 13px var(--body);padding:8px 14px;text-decoration:none;border-radius:999px}
+.tabs a:hover{color:var(--ink)}
+.brand a{color:inherit;text-decoration:none}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:end;padding-block:44px 28px}
+@media (max-width:820px){.hero{grid-template-columns:minmax(0,1fr);padding-block:28px 20px}}
+.kicker{font-size:11.5px;letter-spacing:.16em;color:var(--rose-deep);font-weight:500;text-transform:lowercase}
+.hero h1{font-family:var(--display);font-weight:300;font-size:clamp(40px,6.4vw,74px);line-height:.98;margin:10px 0 0;letter-spacing:-.015em;text-wrap:balance}
+.hero h1 em{color:var(--rose-deep)}
+.hero p{margin:0;color:var(--muted);max-width:46ch}
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.flow span{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:12px;color:var(--ink)}
+
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+.board{position:sticky;top:96px;display:flex;flex-direction:column;gap:16px}
+@media (max-width:880px){.board{position:static}}
+.steps{display:flex;flex-direction:column;gap:18px;min-width:0}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.step h2{font-family:var(--display);font-size:28px;font-weight:300;margin:0;display:flex;flex-direction:column;gap:6px;line-height:1.05;text-wrap:balance}
+.step h2 .n{font-family:var(--body);font-size:11px;font-weight:500;letter-spacing:.14em;color:var(--rose-deep);text-transform:lowercase}
+.hint{color:var(--muted);font-size:13px;margin:0;max-width:65ch}
+
+/* dark panel (gerar) */
+.step.dark{background:var(--petrol);border-color:var(--petrol);color:var(--on-dark)}
+.step.dark h2 .n{color:var(--rose)}
+.step.dark h2 em{color:var(--rose)}
+.step.dark .hint,.step.dark .f,.step.dark .sumline,.step.dark .status{color:color-mix(in srgb,var(--on-dark) 72%,transparent)}
+.step.dark select,.step.dark input[type=text],.step.dark textarea{background:rgba(255,255,255,.07);border-color:var(--dark-line);color:var(--on-dark)}
+.step.dark select option{color:#1F2A33;background:#fff}
+.step.dark .btn{background:var(--rose);color:#1F2A33}
+.step.dark .btn.ghost{background:transparent;color:var(--on-dark);border-color:var(--dark-line)}
+.step.dark .fold{border-top-color:var(--dark-line)}
+.step.dark .chip{background:transparent;color:var(--on-dark);border-color:var(--dark-line)}
+.step.dark .chip[aria-pressed="true"]{background:var(--rose);color:#1F2A33;border-color:var(--rose)}
+.step.dark .check{background:rgba(255,255,255,.05);border-color:var(--dark-line);color:var(--on-dark)}
+.step.dark .check small{color:color-mix(in srgb,var(--on-dark) 65%,transparent)}
+
+/* inputs */
+.f{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.02em;min-width:0}
+input[type=text],select,textarea{width:100%;font:400 14px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+textarea{resize:vertical;min-height:84px;line-height:1.55}
+input:focus,select:focus,textarea:focus,button:focus-visible,.drop:focus-visible,.stage:focus-visible,.ph:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:540px){.row2{grid-template-columns:minmax(0,1fr)}}
+
+/* buttons, chips */
+.btn{border:1px solid transparent;border-radius:999px;font:500 14px var(--body);padding:12px 22px;cursor:pointer;background:var(--ink);color:var(--paper);display:inline-flex;align-items:center;gap:8px;justify-content:center;text-transform:lowercase}
+.btn.rose{background:var(--rose);color:#1F2A33}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{padding:7px 14px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font:500 12px var(--body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--rose-soft);border-color:var(--rose);color:var(--ink)}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;color:var(--muted);font:500 12.5px var(--body);padding:8px 14px;border-radius:999px;cursor:pointer;text-transform:lowercase}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.types button{border:1px solid var(--line);background:var(--paper);color:var(--ink);font:500 12px var(--body);padding:11px 6px;border-radius:var(--r-s);cursor:pointer;line-height:1.25;text-transform:lowercase}
+.types button[aria-pressed="true"]{background:var(--rose-soft);border-color:var(--rose)}
+@media (max-width:380px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* drop */
+.drop{border:1.5px dashed var(--line);border-radius:var(--r-s);background:var(--paper);min-height:210px;display:grid;place-items:center;text-align:center;padding:16px;cursor:pointer;position:relative;overflow:hidden}
+.drop.over{border-color:var(--rose);background:var(--rose-soft)}
+.drop img{max-width:100%;max-height:420px;border-radius:10px;display:block}
+.drop p{margin:6px 0 0;color:var(--muted);font-size:12.5px}
+.drop strong{font-family:var(--display);font-size:24px;font-weight:300}
+
+/* materials table */
+.mat{display:flex;flex-direction:column;gap:10px}
+.mrow,.mhead{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.2fr) 34px;gap:8px}
+.mrow{align-items:start;padding:10px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.mrow input{background:var(--card)}
+.mrow .note{grid-column:1 / -2}
+.mrow .elem input{font-weight:600}
+.mrow .x{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;width:34px;height:44px;line-height:1;border-radius:10px}
+.mrow .x:hover,.piece .x:hover{color:var(--warn);background:var(--rose-soft)}
+.mhead{padding:0 11px;font-size:11px;letter-spacing:.1em;text-transform:lowercase;color:var(--muted)}
+@media (max-width:640px){.mhead{display:none}.mrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 34px}.mrow .elem{grid-column:1 / -2}.mrow .x{grid-row:1;grid-column:3}.mrow .note{grid-column:1 / -1}}
+
+/* status */
+.status{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.status:empty{display:none}
+.status.err{color:var(--warn)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--rose);animation:p 1.1s infinite ease-in-out;flex:none}
+@keyframes p{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+
+/* output */
+.out{display:flex;flex-direction:column;gap:14px}
+.pbox{border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper);overflow:hidden;min-width:0}
+.pbar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+.pbar b{font-size:12px;letter-spacing:.12em;text-transform:lowercase;font-weight:500}
+.count{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.count.over{color:var(--warn)}
+pre.prompt{margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.65;white-space:pre-wrap;word-break:break-word;max-height:520px;overflow:auto}
+
+/* side */
+.side{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:10px}
+.side h3{margin:0;font-family:var(--display);font-size:22px;font-weight:300}
+.projects{display:flex;flex-direction:column;gap:8px}
+.proj{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.proj span{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.proj small{color:var(--muted);font-size:11px}
+.banner{background:var(--rose-soft);border-radius:var(--r-s);padding:12px 16px;font-size:13px;margin-bottom:18px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:13px;font-weight:500;z-index:20}
+
+.preset{font-size:12.5px;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:10px 12px;white-space:pre-line;max-height:150px;overflow:auto}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.checks{grid-template-columns:minmax(0,1fr)}}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper);cursor:pointer;font-size:13px}
+.check input{margin-top:3px;accent-color:var(--rose)}
+.check small{display:block;color:var(--muted);font-size:11.5px;line-height:1.4}
+
+.modebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.modebar .seg{min-width:min(100%,360px)}
+.readbox{font-size:13.5px;line-height:1.7;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:14px 16px;white-space:pre-line;max-height:300px;overflow:auto}
+body.quick .detail{display:none!important}
+body:not(.quick) .quickonly{display:none!important}
+textarea#qText{min-height:250px;font-size:14px;background:var(--paper)}
+
+.fold{border-top:1px solid var(--line);padding-top:12px}
+.fold summary{cursor:pointer;font-weight:500;font-size:13px;list-style:none;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;text-transform:lowercase}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary::before{content:"+";color:var(--rose);font-weight:600;width:12px}
+.fold[open] summary::before{content:"–"}
+.finebody{margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.sumline{font-weight:400;color:var(--muted);font-size:12px;text-transform:none}
+.genrow{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.genrow .f{flex:1 1 220px}
+
+.pieces{display:flex;flex-direction:column;gap:10px}
+.piece{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.piece .ph{width:84px;height:84px;border:1.5px dashed var(--line);border-radius:10px;display:grid;place-items:center;text-align:center;font-size:11px;color:var(--muted);cursor:pointer;overflow:hidden;background:var(--card);padding:4px}
+.piece .ph img{width:100%;height:100%;object-fit:cover;border-radius:7px}
+.piece .pb{display:flex;flex-direction:column;gap:6px;min-width:0}
+.piece .pb input{font-weight:600;background:var(--card)}
+.piece .pb textarea{min-height:64px;font-size:13px;background:var(--card)}
+.piece .x{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.piece .send{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.piece .send input{accent-color:var(--rose);font-weight:400}
+@media (max-width:480px){.piece{grid-template-columns:64px minmax(0,1fr) auto}.piece .ph{width:64px;height:64px}}
+
+/* library */
+.libhead{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card .cat{font-size:11px;letter-spacing:.14em;text-transform:lowercase;color:var(--rose-deep);font-weight:500}
+.card h3{margin:0;font-family:var(--display);font-size:24px;font-weight:300;line-height:1.1;text-wrap:balance}
+.card p.when{margin:0;font-size:12.5px;color:var(--muted)}
+.card textarea{font-family:var(--mono);font-size:12px;min-height:170px}
+.card .imgs{font-size:12px;background:var(--sand);color:var(--ink);border-radius:10px;padding:6px 10px}
+.card .opts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.card .opts select{width:auto}
+.lock{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.lock input{accent-color:var(--rose)}
+
+/* compare */
+.cmpgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:24px;align-items:start}
+@media (max-width:880px){.cmpgrid{grid-template-columns:minmax(0,1fr)}}
+.cmpbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cmpbar .seg{width:auto}
+.cmpbar .seg button{flex:none;padding:7px 18px}
+.iconbtn{display:inline-flex;align-items:center;gap:6px}
+.iconbtn svg{width:15px;height:15px;flex:none}
+.cmpview{position:relative;display:flex;flex-direction:column;gap:10px;min-width:0}
+.stage{--ar:4/3;position:relative;border-radius:var(--r-s);overflow:hidden;background:var(--sand);aspect-ratio:var(--ar);width:100%;max-width:100%;user-select:none;-webkit-user-select:none;touch-action:pan-y;cursor:ew-resize;outline-offset:2px}
+.stage.isempty{cursor:pointer;border:1.5px dashed var(--line);background:var(--paper)}
+.stage.over{border-color:var(--rose);background:var(--rose-soft)}
+.stage img,.sbs img{-webkit-user-drag:none;user-select:none;pointer-events:none}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;max-width:none}
+.stage .top{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+.stage .handle{position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;background:#fff;transform:translateX(-1px);pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+.stage .knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:#fff;color:#1F2A33;display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.22);transition:transform .15s}
+.stage .knob svg{width:22px;height:22px}
+.stage.drag .knob{transform:translate(-50%,-50%) scale(1.08)}
+.stage .tag{position:absolute;top:12px;background:rgba(31,42,51,.72);color:#F7F3EE;font-size:11px;letter-spacing:.12em;padding:4px 10px;border-radius:999px;text-transform:lowercase;pointer-events:none}
+.stage .tag.l{left:12px}.stage .tag.r{right:12px}
+.stage .empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--muted);font-size:13px}
+.stage .empty strong{display:block;margin-bottom:4px}
+.sbs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.sbs{grid-template-columns:minmax(0,1fr)}}
+.sbs figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.sbs img{width:100%;border-radius:var(--r-s);display:block;background:var(--sand);object-fit:contain}
+.sbs figcaption{font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:lowercase}
+.fsbar{display:none}
+/* tela cheia: API nativa ou, no iPhone, sobreposição fixa */
+.cmpview.fs{position:fixed;inset:0;z-index:30;background:#0E1418;padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));gap:12px}
+.cmpview.fs .fsbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#F2ECE6}
+.cmpview.fs .fsbar .seg{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.cmpview.fs .fsbar .seg button{color:#C9C2BB;flex:none;padding:7px 18px}
+.cmpview.fs .fsbar .seg button[aria-pressed="true"]{background:#F2ECE6;color:#1F2A33}
+.cmpview.fs .fsbar .btn.ghost{color:#F2ECE6;border-color:rgba(255,255,255,.2)}
+.cmpview.fs .stage{touch-action:none;flex:none;width:min(100%,calc((100dvh - 110px) * var(--arn,1.333)));margin:auto;border-radius:10px;background:#1A2228}
+.cmpview.fs .sbs{flex:1;min-height:0;align-items:center}
+.cmpview.fs .sbs figure{height:100%;justify-content:center}
+.cmpview.fs .sbs img{max-height:calc(100dvh - 140px);background:transparent}
+.cmpview.fs .sbs figcaption{color:#A4A9AD}
+body.locked{overflow:hidden}
+.slots{display:flex;flex-direction:column;gap:10px}
+.slot{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.slot .th{width:56px;height:56px;border-radius:10px;background:var(--sand);overflow:hidden;flex:none}
+.slot .th img{width:100%;height:100%;object-fit:cover}
+.slot .info{flex:1;min-width:0;display:flex;flex-direction:column}
+.slot .info b{font-weight:500;font-size:13px}
+.slot .info small{color:var(--muted);font-size:11.5px}
+.diffs{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.diffs li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;padding:10px 12px;border-radius:var(--r-s);background:var(--paper);border:1px solid var(--line);font-size:13px}
+.diffs .sev{width:8px;height:8px;border-radius:50%;margin-top:7px;background:var(--rose)}
+.diffs .sev.alta{background:var(--warn)}
+.diffs .sev.baixa{background:var(--ok)}
+.diffs b{font-weight:600}
+
+/* janela do modo gratuito */
+.manual{width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 32px);border:1px solid var(--line);border-radius:20px;padding:24px;background:var(--card);color:var(--ink);box-shadow:0 24px 60px rgba(43,52,58,.22)}
+.manual::backdrop{background:rgba(30,38,44,.45)}
+.manual .mhd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.manual h2{margin:0;font-family:var(--body);font-weight:700;font-size:21px;letter-spacing:-.025em;text-transform:lowercase;line-height:1.2}
+.manual h2 .n{display:flex;margin-bottom:8px;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--rose-deep)}
+.manual .x{border:0;background:transparent;color:var(--muted);font-size:24px;cursor:pointer;width:40px;height:40px;border-radius:10px;line-height:1}
+.manual .x:hover{background:var(--rose-soft);color:var(--ink)}
+.msteps{margin:0 0 16px;padding:0;list-style:none;counter-reset:m;display:flex;flex-direction:column;gap:14px}
+.msteps li{counter-increment:m;display:flex;flex-direction:column;gap:10px;padding:14px 14px 14px 52px;position:relative;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.msteps li::before{content:counter(m);position:absolute;left:14px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:12px;font-weight:600}
+.msteps li > div:first-child{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.msteps .btn{align-self:flex-start}
+.msteps .mtxt{margin:0}
+.msteps .chip{text-decoration:none}
+.msteps textarea{min-height:120px;background:var(--card)}
+.msteps pre.prompt{max-height:220px;background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.msteps .fold{border:0;padding:0}
+
+/* band + footer */
+.band{background:var(--rose-soft);border-radius:var(--r);padding:22px 24px;margin-block:28px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.band{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.band div{display:flex;flex-direction:column;gap:4px}
+.band b{font-family:var(--display);font-size:30px;font-weight:300;line-height:1}
+.band span{font-size:12px;color:var(--muted)}
+footer{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding-top:28px;margin-top:28px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+footer .mark{font-size:24px;color:var(--ink)}
+footer a{color:var(--ink)}
+
+
+/* tipografia do lais3d: títulos Poppins bold minúsculo + acento The Seasons itálico rosé; kicker com traço */
+.kicker,.step h2 .n,.card .cat{font-family:var(--body);font-weight:600;font-size:12px;letter-spacing:.14em;color:var(--rose-deep);text-transform:lowercase;display:inline-flex;align-items:center;gap:12px}
+.kicker::before,.step h2 .n::before,.card .cat::before{content:"";width:30px;height:1.5px;background:currentColor;flex:none}
+.hero h1,.step h2,.card h3,.side h3,.drop strong,.stage .empty strong{font-family:var(--body);font-weight:700;letter-spacing:-.025em;text-transform:lowercase;color:var(--ink)}
+.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.02}
+.step h2{font-size:clamp(24px,2.6vw,30px);line-height:1.1}
+.card h3,.side h3{font-size:20px;line-height:1.2}
+.drop strong,.stage .empty strong{font-size:20px}
+h1 em,h2 em,h3 em{font-family:var(--display);font-style:italic;font-weight:300;letter-spacing:0;color:var(--rose-deep);font-size:1.12em;text-transform:none}
+.step.dark h2{color:var(--on-dark)}
+.step.dark h2 em{color:var(--rose)}
+.mark{font-family:var(--body);font-weight:700;letter-spacing:-.03em;font-size:28px}
+footer .mark{font-size:22px}
+.band b{font-family:var(--body);font-weight:700;letter-spacing:-.02em;font-size:26px;color:var(--ink)}
+.tabs button,.btn,.seg button,.types button,.chip{font-weight:500}
+
+/* ajuste: título numa linha só (kicker em cima), escala de tipo menor e proporcional */
+.step h2{display:block;font-size:21px;line-height:1.2}
+.step h2 .n{display:flex;margin-bottom:8px;font-size:11px}
+.hero h1{font-size:clamp(30px,4.2vw,46px);line-height:1.08}
+.hero{padding-block:32px 22px}
+.card h3,.side h3{font-size:17px}
+.drop strong,.stage .empty strong{font-size:16px}
+.band b{font-size:21px}
+.mark{font-size:24px}
+footer .mark{font-size:20px}
+.kicker,.card .cat{font-size:11px}
+h1 em,h2 em,h3 em{font-size:1.15em;line-height:1}
+
+/* organização: alinhamento, alturas iguais, espaçamentos consistentes */
+.step h2 .n::before,.card .cat::before{display:none}
+.modebar{justify-content:flex-end;margin-bottom:16px}
+.modebar .seg{min-width:0;width:auto}
+.modebar .seg button{flex:none;padding:7px 18px}
+.grid{gap:20px}
+.steps,.board{gap:20px}
+.step,.side,.card{padding:24px;border-radius:20px}
+.step{gap:16px}
+input[type=text],select{height:44px;padding:0 14px}
+textarea{padding:12px 14px}
+.btn{min-height:44px;padding:0 22px}
+.btn.small{min-height:34px;padding:0 14px}
+.genrow{align-items:flex-end}
+.genrow .actions{flex:none}
+.side > .actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.side > .actions .btn.small{min-height:44px}
+.proj .actions{flex-wrap:nowrap;gap:6px}
+.types{gap:8px}
+.types button{min-height:52px;display:grid;place-items:center;padding:6px 8px}
+.libgrid{align-items:stretch}
+.card{gap:12px}
+.card textarea{flex:1}
+.card .actions{margin-top:auto}
+.chip.static{cursor:default}
+.btn,.chip,.types button,.tabs button,.seg button{transition:background-color .15s,color .15s,border-color .15s}
+.card,.step{transition:border-color .2s}
+.card:hover{border-color:var(--rose)}
+@keyframes rise{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+#outSec:not([hidden]),#diffSec:not([hidden]){animation:rise .35s ease}
+@media (prefers-reduced-motion:reduce){#outSec,#diffSec{animation:none!important}}
+
+/* leitura do print organizada */
+.readview{display:flex;flex-direction:column;gap:16px}
+.rhead{display:flex;flex-direction:column;gap:8px}
+.rhead b{font-size:15px;font-weight:600}
+.rtags{display:flex;flex-wrap:wrap;gap:6px}
+.rtag{font-size:12px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.rtag i{font-style:normal;color:var(--muted)}
+.rgroup{display:flex;flex-direction:column;gap:8px}
+.rlabel{font-size:11px;font-weight:600;letter-spacing:.12em;color:var(--rose-deep)}
+.rlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ritem{display:grid;grid-template-columns:22px minmax(0,1.2fr) minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;background:var(--card);border-top:1px solid var(--line);font-size:13px}
+.ritem:first-child{border-top:0}
+.ritem.unsure{background:var(--rose-soft)}
+.ritem .sw{width:22px;height:22px;border-radius:6px;border:1px solid var(--line)}
+.ritem .sw.none{background:repeating-linear-gradient(45deg,var(--paper) 0 4px,var(--line) 4px 5px)}
+.ritem .rtxt{display:flex;flex-direction:column;min-width:0}
+.ritem .rtxt b{font-weight:600}
+.ritem .rtxt span,.ritem .rcor{color:var(--muted);font-size:12.5px}
+.ritem.unsure .rtxt b::after{content:" · conferir";color:var(--rose-deep);font-weight:500}
+@media (max-width:600px){.ritem{grid-template-columns:22px minmax(0,1fr) auto}.ritem .rcor{grid-column:2 / 3;grid-row:2}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><a class="mark" href="https://www.lais3d.com.br/" aria-label="laís · portfólio">laís<span>.</span></a><small>prompt de render</small></div>
+    <nav class="tabs" role="tablist" aria-label="Seções">
+      <button role="tab" id="tabGen" aria-selected="true">gerar</button>
+      <button role="tab" id="tabLib" aria-selected="false">ajustes e pós</button>
+      <button role="tab" id="tabCmp" aria-selected="false">comparar</button>
+      <a href="https://www.lais3d.com.br/">portfólio ↗</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="hero">
+    <div>
+      <span class="kicker">renderização com ia · ferramenta do estúdio</span>
+      <h1>do print à <em>fotografia</em></h1>
+    </div>
+    <div>
+      <p>Você manda o print, escreve do seu jeito e recebe o prompt travado, em português e inglês, pronto pra qualquer IA de imagem.</p>
+    </div>
+  </section>
+
+  <div id="noAI" class="banner" hidden><b>Modo gratuito.</b> A página monta o pedido completo; você cola num chat de IA gratuito (Claude, Gemini ou ChatGPT) junto com o print e cola a resposta de volta aqui. Nada é pago.</div>
+
+  <div id="viewGen">
+  <div class="modebar">
+    <div class="seg" role="group" aria-label="Modo">
+      <button id="mQuick" aria-pressed="true">rápido</button>
+      <button id="mDetail" aria-pressed="false">detalhado</button>
+    </div>
+  </div>
+  <div class="grid">
+    <aside class="board">
+      <section class="step">
+        <h2><span class="n">passo 1</span>Print do <em>SketchUp</em></h2>
+        <div class="types" role="group" aria-label="Tipo de projeto" id="types"></div>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Enviar print">
+          <div id="dropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher · também dá pra colar com Ctrl+V</p></div>
+          <img id="preview" alt="Print enviado" hidden>
+        </div>
+        <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+        <div class="actions">
+          <button class="btn rose" id="analyze" disabled>Analisar print</button>
+          <button class="btn ghost small" id="clearImg" hidden>Trocar print</button>
+        </div>
+        <div class="status" id="aStatus"></div>
+      </section>
+
+      <section class="side">
+        <h3>Projetos salvos</h3>
+        <p class="hint">Para outro ângulo, carregue e troque só o print.</p>
+        <div class="actions"><input type="text" id="projName" placeholder="Ex.: Apto Moema · sala"><button class="btn small" id="saveProj">Salvar</button></div>
+        <div class="projects" id="projList"></div>
+      </section>
+    </aside>
+
+    <main class="steps">
+      <section class="step quickonly">
+        <h2><span class="n">leitura do print</span>O que a IA <em>viu</em></h2>
+        <p class="hint">Itens em rosé: a IA não teve certeza. Toque em corrigir pra escrever no passo 2.</p>
+        <div class="readview" id="qRead"><p class="hint">Envie o print e toque em analisar. É opcional.</p></div>
+      </section>
+
+      <section class="step quickonly">
+        <h2><span class="n">passo 2</span>Descreva o <em>projeto</em></h2>
+        <p class="hint">Material, cor, RGB, acabamento, luminárias e o que NÃO é. Pode escrever corrido.</p>
+        <textarea id="qText" aria-label="Descrição do projeto" placeholder="piso porcelanato acetinado bege muito claro, paredes greige fosca rgb 209,202,194, teto da sala amadeirado Amendoa Natural exatamente como no print, painel da tv lambri ripas 10cm espaço 1cm marrom liso rgb 152,136,123 NAO é amadeirado, bancada quartzo branco polido, metais preto acetinado...
+luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fita de led em cima e embaixo da prateleira, spots no forro, arandela dourado acetinado em cima do sofá"></textarea>
+      </section>
+
+      <section class="step detail">
+        <h2><span class="n">passo 2</span>Materiais</h2>
+        <p class="hint">Corrija o que a análise preencheu.</p>
+        <div class="mhead"><span>Elemento</span><span>Material</span><span>Acabamento</span><span>Cor / RGB</span><span></span></div>
+        <div class="mat" id="mat"></div>
+        <div class="actions"><button class="btn ghost small" id="addRow">+ Adicionar elemento</button></div>
+      </section>
+
+      <section class="step detail">
+        <h2><span class="n">passo 3</span>Iluminação</h2>
+        <div class="f">Cenário de luz
+          <div class="chips" id="lightChips"></div>
+        </div>
+        <div class="preset" id="presetText"></div>
+        <div class="row2">
+          <label class="f">De onde vem a luz natural<input type="text" id="lightDir" placeholder="Ex.: ao fundo, através da varanda"></label>
+          <label class="f">Luz artificial
+            <select id="artOn"><option value="on">Toda ligada</option><option value="some">Só as listadas abaixo</option><option value="off">Desligada</option></select>
+          </label>
+        </div>
+        <label class="f">Luminárias (uma por linha)
+          <textarea id="lights" placeholder="fita de LED acima e abaixo da prateleira&#10;spots no forro amadeirado&#10;arandela de leitura acima do sofá, dourado acetinado"></textarea>
+        </label>
+        <label class="f">Observações (têm prioridade sobre o resto)
+          <textarea id="notes" rows="3" placeholder="Ex.: deixa elementos decorativos exatamente como no print"></textarea>
+        </label>
+      </section>
+
+      <section class="step">
+        <h2><span class="n">opcional</span>Peças <em>específicas</em></h2>
+        <p class="hint">Peças que a IA costuma errar. Descreva e, se quiser, anexe uma foto.</p>
+        <div class="chips" id="pieceChips"></div>
+        <div class="pieces" id="pieces"></div>
+        <div class="actions"><button class="btn ghost small" id="addPiece" type="button">+ Peça em branco</button></div>
+      </section>
+
+      <section class="step dark">
+        <h2><span class="n"><span class="quickonly">passo 3</span><span class="detail">passo 4</span></span>Gerar o <em>prompt</em></h2>
+        <div class="genrow">
+          <label class="f">Onde vai usar
+            <select id="dest">
+              <option value="magnific" selected>Magnific · Nano Banana</option>
+              <option value="gemini">Gemini / Google AI Studio</option>
+              <option value="gpt">ChatGPT (imagem)</option>
+              <option value="flux">Flux Kontext / Krea / Leonardo</option>
+              <option value="universal">Outra IA (universal)</option>
+            </select>
+          </label>
+          <div class="actions">
+            <button class="btn" id="gen">Gerar prompt</button>
+            <button class="btn ghost" id="stop" hidden>Parar</button>
+          </div>
+        </div>
+        <div class="status" id="gStatus"></div>
+
+        <details class="fold" id="fine">
+          <summary>Ajustes finos <span id="fineSum" class="sumline"></span></summary>
+          <div class="finebody">
+            <div class="f quickonly">Cenário de luz
+              <div class="chips" id="qChips"></div>
+            </div>
+            <label class="f">Luzes artificiais (padrão: levemente ligadas e neutras)
+              <select id="ledTemp">
+                <option value="neutral" selected>Ligadas suaves · neutra (~3500–4000K)</option>
+                <option value="3000">Ligadas suaves · quente (~3000K)</option>
+                <option value="2700">Ligadas suaves · bem quente (~2700K)</option>
+                <option value="cool">Ligadas suaves · branca fria (~4500K)</option>
+                <option value="off">Desligadas</option>
+              </select>
+            </label>
+            <div class="row2">
+              <label class="f" id="viewWrap"><span id="viewLabel">Vista pela janela</span>
+                <select id="view"></select>
+              </label>
+              <label class="f">Atmosfera
+                <select id="atmo">
+                  <option value="">Neutra</option>
+                  <option value="clean">Clean · claro e minimalista</option>
+                  <option value="editorial">Editorial · foto de revista</option>
+                  <option value="aconchegante">Aconchegante · tons quentes</option>
+                  <option value="sofisticado">Sofisticado · luxo contido</option>
+                  <option value="ludico">Lúdico · cores mais vivas</option>
+                </select>
+              </label>
+            </div>
+            <div class="row2">
+              <label class="f">Proporção
+                <select id="ratio"><option value="print" selected>Igual ao print</option><option value="4:5">4:5 · feed</option><option value="1:1">1:1 · quadrado</option><option value="16:9">16:9 · paisagem</option><option value="4:3">4:3 · clássico</option><option value="9:16">9:16 · story</option></select>
+              </label>
+              <label class="f">Tamanho do prompt
+                <select id="size"><option value="full">Completo</option><option value="10000" selected>Até 10.000 caracteres</option><option value="6000">Enxuto, até 6.000</option><option value="1500">Curto, até 1.500 (Flux)</option></select>
+              </label>
+            </div>
+            <div class="f">Blocos extras do método</div>
+            <div class="checks" id="extras"></div>
+            <label class="f" id="sameMatWrap" hidden>Qual revestimento se repete em várias superfícies?
+              <input type="text" id="sameMat" placeholder="Ex.: piso igual à parede da janela, Lombarda Viva Avorio Portobello acetinado">
+            </label>
+          </div>
+        </details>
+      </section>
+
+      <section class="step out" id="outSec" hidden>
+        <h2><span class="n">resultado · português primeiro</span>Copie e cole na sua <em>IA</em></h2>
+        <div class="pbox">
+          <div class="pbar"><b>Português</b><span class="count" id="cPt">0</span><button class="btn small" id="copyPt">Copiar</button></div>
+          <pre class="prompt" id="pPt"></pre>
+        </div>
+        <div class="pbox">
+          <div class="pbar"><b>Inglês</b><span class="count" id="cEn">0</span><button class="btn small ghost" id="copyEn">Copiar</button></div>
+          <pre class="prompt" id="pEn"></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+  </div>
+
+  <div id="viewLib" hidden>
+    <div class="libhead">
+      <p class="hint">Prompts prontos: ajuste o texto no card, copie e cole na sua IA. O primeiro card monta um Gem do Gemini com todo o método.</p>
+      <div class="chips" id="libCats"></div>
+    </div>
+    <div class="libgrid" id="libGrid"></div>
+  </div>
+
+  <div id="viewCmp" hidden>
+    <div class="cmpgrid">
+      <section class="step">
+        <h2><span class="n">comparar · antes e depois</span>Print × <em>render final</em></h2>
+        <div class="cmpbar">
+          <div class="seg" role="group" aria-label="Modo de comparação">
+            <button id="cmpDrag" type="button" aria-pressed="true">arrastar</button>
+            <button id="cmpSide" type="button" aria-pressed="false">lado a lado</button>
+          </div>
+          <div class="actions">
+            <button class="btn ghost small iconbtn" id="cmpSwap" type="button" disabled title="Inverter as imagens"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>inverter</button>
+            <button class="btn ghost small iconbtn" id="cmpFull" type="button" disabled title="Tela cheia (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>tela cheia</button>
+          </div>
+        </div>
+        <div class="cmpview" id="cmpView">
+          <div class="fsbar">
+            <div class="seg" role="group" aria-label="Modo de comparação em tela cheia">
+              <button id="fsDrag" type="button" aria-pressed="true">arrastar</button>
+              <button id="fsSide" type="button" aria-pressed="false">lado a lado</button>
+            </div>
+            <button class="btn ghost small" id="fsClose" type="button">fechar · esc</button>
+          </div>
+          <div class="stage isempty" id="stage" tabindex="0" role="slider" aria-label="Comparação: arraste ou use as setas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <div class="empty" id="stageEmpty"><div><strong>Solte as duas imagens aqui</strong>a primeira vira o print, a segunda o render · ou toque para escolher</div></div>
+            <img id="cmpImgB" alt="Render final" draggable="false" hidden>
+            <div class="top" id="cmpTop" hidden><img id="cmpImgA" alt="Print do SketchUp" draggable="false"></div>
+            <div class="handle" id="cmpHandle" hidden><span class="knob"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 7-5 5 5 5M15 7l5 5-5 5"/></svg></span></div>
+            <span class="tag l" id="tagL" hidden>sketchup</span><span class="tag r" id="tagR" hidden>render ia</span>
+          </div>
+          <div class="sbs" id="sbs" hidden>
+            <figure><img id="sbsA" alt="Print do SketchUp" draggable="false"><figcaption id="capA">sketchup</figcaption></figure>
+            <figure><img id="sbsB" alt="Render final" draggable="false"><figcaption id="capB">render ia</figcaption></figure>
+          </div>
+        </div>
+        <p class="hint">Arraste na imagem, clique em qualquer ponto ou use as setas do teclado. F abre a tela cheia.</p>
+      </section>
+
+      <aside class="board">
+        <section class="step">
+          <h2><span class="n">imagens</span>Anexar</h2>
+          <div class="slots">
+            <div class="slot" id="slotA"><div class="th" id="thA"></div><div class="info"><b>Print do SketchUp</b><small id="infA">nenhum · pode soltar aqui</small></div><button class="btn ghost small" id="pickA" type="button">escolher</button></div>
+            <button class="btn ghost small" id="usePrint" type="button" hidden>usar o print do passo 1</button>
+            <div class="slot" id="slotB"><div class="th" id="thB"></div><div class="info"><b>Imagem final</b><small id="infB">nenhuma · pode soltar aqui</small></div><button class="btn ghost small" id="pickB" type="button">escolher</button></div>
+            <input type="file" id="fileA" accept="image/jpeg,image/png,image/webp" hidden>
+            <input type="file" id="fileB" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+          <div class="actions">
+            <button class="btn" id="cmpDiff" disabled type="button">encontrar diferenças</button>
+            <button class="btn ghost" id="cmpSave" disabled type="button">baixar comparação</button>
+          </div>
+          <div class="status" id="cStatus"></div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="step" id="diffSec" hidden style="margin-top:20px">
+      <h2><span class="n">o que mudou</span>Diferenças e <em>correção</em></h2>
+      <p class="hint" id="diffSum"></p>
+      <ul class="diffs" id="diffList"></ul>
+      <p class="hint">Envie 1º o print, 2º o render. A trava de cor vai junto.</p>
+      <div class="pbox">
+        <div class="pbar"><b>português</b><span class="count" id="dcPt"></span><button class="btn small" id="dCopyPt" type="button">copiar</button></div>
+        <pre class="prompt" id="dPt"></pre>
+      </div>
+      <div class="pbox">
+        <div class="pbar"><b>inglês</b><span class="count" id="dcEn"></span><button class="btn small ghost" id="dCopyEn" type="button">copiar</button></div>
+        <pre class="prompt" id="dEn"></pre>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <span class="mark">laís<span style="color:var(--rose)">.</span></span>
+    <span>renderização · modelagem · detalhamento · <a href="https://www.lais3d.com.br/" target="_blank" rel="noopener">lais3d.com.br</a></span>
+  </footer>
+</div>
+<div class="toast" id="toast" hidden></div>
+<dialog id="manual" class="manual" aria-labelledby="mTitle">
+  <form method="dialog" class="mhd">
+    <h2><span class="n">modo gratuito</span><span id="mTitle"></span></h2>
+    <button class="x" aria-label="Fechar">×</button>
+  </form>
+  <ol class="msteps">
+    <li><div><b>Copie o pedido</b><span class="count" id="mLen"></span></div><button class="btn small" id="mCopy" type="button">copiar pedido</button>
+      <details class="fold" id="mSee"><summary>ver o pedido</summary><pre class="prompt" id="mPre"></pre></details></li>
+    <li><p class="mtxt"><b>Abra um chat de IA gratuito</b>, cole o pedido e <span id="mAttach"></span>.</p>
+      <div class="chips"><a class="chip" href="https://claude.ai/new" target="_blank" rel="noopener">Claude ↗</a><a class="chip" href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini ↗</a><a class="chip" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT ↗</a></div></li>
+    <li><div><b>Cole a resposta inteira aqui</b></div><textarea id="mReply" aria-label="Resposta do chat" placeholder="cole aqui a resposta do chat"></textarea></li>
+  </ol>
+  <div class="actions"><button class="btn" id="mUse" type="button">usar resposta</button><div class="status" id="mStatus"></div></div>
+</dialog>
+
+<script>
+const $ = id => document.getElementById(id);
+let sample = null, imgOK = false, imgFile = null, kind = "INTERIOR", genCtl = null;
+
+/* ---------- IA ----------
+   no claude.ai (artifact) a IA roda direto pela assinatura; no site, modo gratuito: a página monta o pedido,
+   você cola num chat de IA gratuito junto com as imagens e traz a resposta de volta. Nada é pago. */
+const AI={mode:null};
+function readURL(f){return new Promise((r,j)=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.onerror=j;fr.readAsDataURL(f)})}
+function parseJSON(text){
+  const a=text.indexOf("{"), b=text.lastIndexOf("}"); if(a<0||b<a) throw {code:"invalid_json"};
+  try{ return JSON.parse(text.slice(a,b+1)) }catch{ throw {code:"invalid_json"} }
+}
+const JSON_TAIL="\n\nResponda apenas com o JSON, sem nenhum texto antes ou depois e sem blocos de código.";
+async function aiText(prompt,{images,signal,onText}={}){ const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
+async function aiJSON(prompt,{images}={}){ const o={modelTier:"default",cache:false}; if(images) o.images=images; return await sample.json(prompt,o); }
+async function connectAI(){
+  try{ sample=await window.claude?.use("sample") }catch{ sample=null }
+  if(sample){ AI.mode="claude"; const lim=await sample.limits().catch(()=>null); imgOK=!!lim?.images; pieceImgMax=lim?.images?.maxCount||1; }
+  else{ imgOK=true; pieceImgMax=6; } // modo gratuito: você anexa as imagens no chat
+  $("noAI").hidden=!!AI.mode; $("analyze").hidden=!imgOK; $("gen").disabled=false;
+  updateAnalyze(); try{renderCmp()}catch{}
+}
+let manualCb=null, manualText="";
+function manual({title,prompt,attach,onReply}){
+  manualText=prompt; manualCb=onReply;
+  $("mTitle").textContent=title; $("mAttach").textContent=attach; $("mPre").textContent=prompt; $("mSee").open=false;
+  $("mLen").textContent=prompt.length.toLocaleString("pt-BR")+" caracteres";
+  $("mReply").value=""; status($("mStatus"),""); $("manual").showModal();
+}
+$("mCopy").onclick=async()=>{
+  try{ await navigator.clipboard.writeText(manualText); toast("Pedido copiado. Agora cole no chat") }
+  catch{ $("mSee").open=true; const s=getSelection(),r=document.createRange(); r.selectNodeContents($("mPre")); s.removeAllRanges(); s.addRange(r); toast("Texto selecionado, use Ctrl+C") }
+};
+$("mUse").onclick=()=>{
+  const t=$("mReply").value.trim();
+  if(!t){ status($("mStatus"),"Cole aqui a resposta do chat.",false,true); return }
+  try{ manualCb?.(t); $("manual").close(); }catch(e){ status($("mStatus"),errMsg(e),false,true) }
+};
+
+const PRESETS = {
+INTERIOR: [
+ {n:"Natural predominante + artificial", t:"Luz natural predominante entrando pelas aberturas existentes, suave e realista. Toda a iluminação artificial existente ligada, quente e visível sem dominar a luz natural. Mistura equilibrada de luz natural e artificial, fisicamente plausível."},
+ {n:"Cortina translúcida + luz artificial", t:"Luz natural principal entrando pela janela lateral, filtrada pela cortina translúcida, suave, difusa e natural. Temperatura da luz natural entre 5000K e 5400K, balanço neutro. Ligar obrigatoriamente todas as luzes artificiais já existentes no modelo, sem adicionar nenhuma nova. Luz artificial de intensidade baixa porém visível, contribuindo para profundidade e atmosfera. Equilibrar exposição interior/exterior: evitar janela estourada, evitar interior escuro, sombras suaves e naturais."},
+ {n:"Cortina translúcida, muita luz", t:"Luz natural de abertura lateral filtrada por cortina translúcida. Luz suave e difusa, sem sol direto. Sombras muito macias e espalhadas. Contraste baixo a médio. Exposição levemente elevada sem estourar brancos. Brancos neutros, sem dominante verde ou magenta. Temperatura entre 4800K e 5200K. Atmosfera clara, leve e arejada. Bounce light natural preenchendo as áreas opostas à janela. Sem hotspots, sem iluminação dramática, sem HDR exagerado."},
+ {n:"Cortina translúcida, sem luz artificial",art:"off", t:"Iluminação natural diurna entrando abundantemente pelas aberturas, suave e difusa, filtrada por cortina branca translúcida (sheer curtain), sem sol direto. Sombras muito macias e alongadas, sem bordas duras. Bounce light realista. Exposição equilibrada, janela sem áreas estouradas, contraste moderado, aparência editorial. White balance neutro, sem tonalidade amarela. Nada de HDR, nada de luz artificial ligada. GI realista; reflexos, refrações e sombras coerentes com a fonte de luz."},
+ {n:"Persiana, luz abundante", t:"Luz natural lateral vinda de janela real, filtrada pela persiana, com suavização natural, direção lateral clara e sombras extremamente suaves. Exterior levemente superexposto simulando céu claro, interior corretamente exposto, high dynamic range natural. Contraste suave, bounce neutro, sem luz artificial dominante. Simular câmera full-frame, lente 35mm, ISO baixo, balanço de branco neutro (~5200K), curva tonal natural, microcontraste realista."},
+ {n:"Persiana + sol, sombra marcada", t:"Luz solar direta atravessando persianas horizontais ou elementos vazados, criando padrões lineares de luz e sombra bem definidos sobre paredes, piso e mobiliário. Sombras com bordas relativamente marcadas, porém fisicamente realistas. Contraste médio-alto com detalhes preservados nas luzes e nas sombras. Temperatura levemente quente (4300K–4800K), balanço neutro sem verde ou magenta. Luz principal lateral criando volumetria. Leve rebatimento natural nas sombras."},
+ {n:"Fim de tarde quente", t:"Fotografia de final de tarde com luz natural dominante entrando pelas aberturas existentes, direção coerente com elas. Luz suave levemente quente, 4800K–5600K, sem feixes de sol duros. Gradiente suave no piso e nas paredes. Exterior levemente mais claro que o interior, nenhuma área estourada, HDR natural equilibrado. Rebote quente vindo da madeira e do piso, sem sombras pretas fechadas. Luz artificial existente apenas como complemento sutil (2700K–3000K), sem tornar a cena noturna. Preservar o calor natural da cena; não recalibrar o balanço de branco; não alterar horário nem direção da luz."},
+ {n:"Sem luz natural",nat:false,art:"off", t:"Iluminação indireta neutra, suave e difusa. Ambiente extremamente claro, sombras muito macias e alongadas, sem bordas duras. Bounce light realista. Exposição equilibrada, contraste moderado, aparência editorial. White balance neutro, sem tonalidade amarela. Nada de HDR, nada de luz artificial ligada. GI realista."},
+ {n:"Sem luz natural, luz atrás da câmera",nat:false, t:"Iluminação suave com direção frontal predominante, como fotografia profissional de interiores. Leve gradiente: área próxima à câmera um pouco mais iluminada, queda suave em direção ao fundo. Modelagem lateral extremamente sutil só para separar planos. Sombras suaves com gradiente sob os objetos. Rebatimento suave no teto e superfícies claras. Neutralizar dominantes quentes, brancos verdadeiramente neutros, ~5400K. Não representar nenhuma abertura física nem reflexos de fontes de luz."},
+ {n:"Banheiro, luz lavada", t:"Luz do dia difusa e filtrada vinda da abertura, suave e homogênea, sem contraste agressivo. Sombras suaves com bordas levemente difusas. Soft bounce das superfícies claras. Temperatura neutra levemente quente (4800K–5200K). Brancos absolutamente neutros, sem verde ou magenta. Sem estouro na janela. Atmosfera natural, elegante e silenciosa. Sem luz dramática, sem pôr do sol, sem blue hour, sem luz artificial dominante."},
+],
+EXTERIOR: [
+ {n:"Fim de tarde, céu limpo", t:"Iluminação de fim de tarde, céu limpo, posição do sol fixa exatamente como na IMAGEM 1. Luz quente e baixa, sombras suaves e alongadas coerentes com o sol. Entorno neutro com mínima interferência visual."},
+ {n:"Dia ensolarado", t:"Luz do dia com sol, céu azul limpo com poucas nuvens, posição do sol fixa exatamente como na IMAGEM 1. Sombras definidas porém fisicamente realistas, balanço de branco neutro (~5500K), sem dominante. Entorno neutro com mínima interferência visual."},
+ {n:"Dia nublado", t:"Céu encoberto claro, luz difusa e homogênea, sombras muito suaves, contraste baixo a médio, cores fiéis, balanço neutro (~6000K). Entorno neutro com mínima interferência visual."},
+ {n:"Golden hour", t:"Golden hour: sol baixo no horizonte com luz quente (3800K–4500K), sombras longas e suaves, céu com gradiente quente. Posição do sol coerente com a IMAGEM 1. Nenhuma área estourada. Entorno neutro com mínima interferência visual."},
+ {n:"Blue hour",night:true, t:"Blue hour / início da noite: céu azul profundo e frio, luz ambiente suave. Iluminação artificial existente da fachada ligada em 2700K criando contraste quente com o céu frio. Interior visível pelas janelas levemente aceso se existir no modelo. Sem adicionar luminárias."},
+]};
+let lightStyle = 0;
+const TYPES=[["int_res","Interior residencial","INTERIOR"],["int_com","Interior comercial","INTERIOR"],["ext_res","Exterior residencial","EXTERIOR"],["ext_com","Exterior comercial","EXTERIOR"],["urb","Urbanismo","EXTERIOR"],["planta","Planta humanizada","EXTERIOR"]];
+let tipo="int_res";
+const VIEWS={
+ INTERIOR:[["keep","Manter como no print"],["neutral","Neutra, céu claro sem detalhes"],["cidade","Cidade"],["mar","Mar"],["montanhas","Montanhas"],["mata","Mata pouco densa"],["mata_densa","Mata densa"],["jardim","Jardim tropical"],["jardim_res","Jardim residencial"]],
+ EXTERIOR:[["keep","Manter como no print"],["neutral","Neutro, mínima interferência"],["casas","Casas"],["bairro","Bairro residencial"],["alto_padrao","Condomínio alto padrão"],["mata","Mata pouco densa"],["mata_densa","Mata densa"],["montanha","Montanha"],["cidade","Cidade com prédios"],["cidade_capital","Cidade capital"],["pracas","Praças"],["centro_comercial","Centro comercial"],["mar","Mar"]]};
+const ATMO={clean:"clean, bright, airy and minimal; light neutral tones, nothing heavy",editorial:"editorial interior-magazine photograph; refined window light, calm styling, balanced composition",aconchegante:"cozy and inviting; warm tones, soft warm light, a sense of comfort, without yellow cast",sofisticado:"sophisticated restrained luxury; rich but controlled contrast, deep shadows with detail, refined highlights",ludico:"playful and vibrant; slightly enhanced color saturation while keeping every material color recognizable"};
+function renderTypes(){ $("types").innerHTML=""; TYPES.forEach(([v,n])=>{const b=document.createElement("button");b.type="button";b.textContent=n;b.setAttribute("aria-pressed",v===tipo);b.onclick=()=>setTipo(v);$("types").append(b)}); }
+function renderView(prev){ const list=VIEWS[kind]; $("view").innerHTML=list.map(([v,n])=>`<option value="${v}">${n}</option>`).join(""); $("view").value=list.some(x=>x[0]===prev)?prev:"keep"; $("viewLabel").textContent=kind==="INTERIOR"?"Vista pela janela":"Entorno (a arquitetura fica travada)"; }
+function setTipo(t){ tipo=t; const k=TYPES.find(x=>x[0]===t)[2]; renderTypes(); setKind(k); }
+const EXTRAS = [
+ {id:"micro",on:true,n:"Microvariações dos materiais",d:"Mantém o material do print e só varia roughness e reflexo",t:"Realismo físico dos materiais: manter exatamente o mesmo material visível no print. Proibido alterar padrão, veios, paginação, escala, tonalidade ou acabamento. Adicionar apenas micro variações ópticas de superfície: leve variação de roughness, sutis irregularidades de reflexão, micro variação tonal sem alterar o padrão. As microimperfeições afetam só a forma como a luz reage ao material, nunca o desenho ou a textura. Texturas reproduzidas com fidelidade e precisão fotográfica."},
+ {id:"cam",on:true,n:"Câmera / FOV travado",d:"Mesma distância focal e campo de visão, verticais retas",t:"Manter a mesma distância focal equivalente e o mesmo campo de visão da referência (não alterar FOV). Perspectiva linear precisa, verticais retas, nitidez natural. Fotografia profissional em alta resolução 4K. Profundidade de campo leve e realista. Zero ruído digital."},
+ {id:"check",on:true,n:"Checklist final",d:"Lista de conferência no fim do prompt",t:"Checklist final: enquadramento e ângulo idênticos à referência; todos os objetos e proporções exatamente no mesmo lugar; nenhum elemento adicionado ou removido; cores, texturas e acabamentos 100% iguais à referência; iluminação fisicamente coerente; resultado indistinguível de fotografia real de arquitetura, sem aparência de render ou IA."},
+ {id:"hd",on:false,n:"Fotografia high-end",d:"Full-frame, 35/50mm, grão orgânico, vinheta sutil",t:"Alta definição máxima, detalhes finos e nitidez dos materiais, texturas sem blur. Simular câmera full-frame (Sony A7R V / Canon R5), lente 35mm ou 50mm, f/2.8–f/4.0, leve depth of field natural, microcontraste realista, sombras com densidade física, leve vinheta óptica sutil, leve grain fotográfico orgânico (não digital), highlights com leve bloom natural, reflexos imperfeitos. Nada excessivamente perfeito ou polido."},
+ {id:"mirror",on:false,n:"Espelho nítido",d:"Resolve espelho borrado ou fosco",t:"Espelho com reflexão perfeitamente nítida e fiel, comportamento óptico real. Reflexão especular limpa, sem desfoque, sem blur, sem efeito fosco ou acetinado. Roughness = 0.0. Sem suavização de reflexos."},
+ {id:"mirrorwall",on:false,n:"Espelho só reflete o ambiente",d:"Sem porta, corredor ou exterior no reflexo",t:"O espelho deve refletir apenas a continuação da parede interna do próprio ambiente, sem mostrar porta, corredor, abertura ou espaço externo."},
+ {id:"same",on:false,n:"Mesmo revestimento em várias superfícies",d:"Evita tons diferentes do mesmo material",t:"Revestimentos idênticos devem ser tratados como uma única instância de material. Se o mesmo revestimento aparece em múltiplas superfícies ou refletido no espelho, mantém exatamente a mesma tonalidade, padrão e variação. Proibido variar tonalidade entre superfícies do mesmo material. Proibido interpretar reflexos como material diferente."},
+ {id:"ceiling",on:false,n:"Forro liso sem trama",d:"Quando o forro sai com textura de tecido",t:"Forro de gesso pintado de branco, superfície predominantemente lisa, com imperfeições orgânicas muito sutis e não padronizadas. Remover completamente qualquer textura de trama, tecido ou padrão."},
+];
+let exampleActive = true;
+
+const EXAMPLE = [
+  {elemento:"Piso",material:"Porcelanato grande formato",acabamento:"Acetinado",cor:"Bege muito claro",nota:""},
+  {elemento:"Paredes",material:"Pintura",acabamento:"Fosco",cor:"Greige RGB 209,202,194",nota:""},
+  {elemento:"Painel da TV",material:"Lambri ripado 10cm, espaço 1cm",acabamento:"Liso",cor:"Marrom RGB 152,136,123",nota:"NÃO é amadeirado, sem veio. Exatamente como no print"},
+];
+
+/* ---------- materiais ---------- */
+function addRow(r={}){
+  const d=document.createElement("div"); d.className="mrow";
+  const uid=Math.random().toString(36).slice(2,8);
+  d.innerHTML=`<label class="elem"><input type="text" id="e_${uid}" aria-label="Elemento" placeholder="Elemento"></label>
+  <input type="text" id="m_${uid}" aria-label="Material" placeholder="Material">
+  <input type="text" id="a_${uid}" aria-label="Acabamento" placeholder="Acabamento">
+  <input type="text" id="c_${uid}" aria-label="Cor ou RGB" placeholder="Cor / RGB">
+  <button class="x" title="Remover" aria-label="Remover">×</button>
+  <input type="text" class="note" id="n_${uid}" aria-label="Observação" placeholder="Observação (opcional): ex. NÃO é madeira">`;
+  const ins=d.querySelectorAll("input");
+  ins[0].value=r.elemento||""; ins[1].value=r.material||""; ins[2].value=r.acabamento||""; ins[3].value=r.cor||""; ins[4].value=r.nota||"";
+  d.querySelector(".x").onclick=()=>d.remove();
+  $("mat").append(d);
+}
+function rows(){
+  return [...document.querySelectorAll(".mrow")].map(d=>{const i=d.querySelectorAll("input");
+    return {elemento:i[0].value.trim(),material:i[1].value.trim(),acabamento:i[2].value.trim(),cor:i[3].value.trim(),nota:i[4].value.trim()}}).filter(r=>r.elemento);
+}
+function setRows(list){ $("mat").innerHTML=""; list.forEach(addRow); }
+
+/* ---------- chips / tipo ---------- */
+function renderChips(){
+  const list=PRESETS[kind]; if(lightStyle>=list.length) lightStyle=0; if(lightStyle<-1) lightStyle=0;
+  ["lightChips","qChips"].forEach(cid=>{ const box=$(cid); if(!box) return; box.innerHTML="";
+    if(cid==="qChips"){const b=document.createElement("button");b.className="chip";b.type="button";b.textContent="Só o que eu escrevi";b.setAttribute("aria-pressed",lightStyle===-1);b.onclick=()=>{lightStyle=-1;renderChips()};box.append(b)}
+    list.forEach((p,i)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=p.n;
+    b.setAttribute("aria-pressed",i===lightStyle);b.onclick=()=>{lightStyle=i;renderChips()};box.append(b)}); });
+  if(typeof updateFineSum==="function"&&$("fineSum")) try{updateFineSum()}catch{}
+  if(lightStyle<0){$("presetText").textContent="Sem cenário: a luz segue só o seu texto.";return}
+  $("presetText").textContent=list[lightStyle].t;
+}
+function renderExtras(){
+  $("extras").innerHTML="";
+  EXTRAS.forEach(x=>{const l=document.createElement("label");l.className="check";
+    l.innerHTML=`<input type="checkbox" id="x_${x.id}"><span><b></b><small></small></span>`;
+    l.querySelector("b").textContent=x.n;l.querySelector("small").textContent=x.d;
+    const c=l.querySelector("input");c.checked=x.on;c.onchange=()=>{x.on=c.checked;$("sameMatWrap").hidden=!EXTRAS.find(e=>e.id==="same").on};
+    $("extras").append(l)});
+  $("sameMatWrap").hidden=!EXTRAS.find(e=>e.id==="same").on;
+}
+function setKind(k){ const prev=$("view").value; const changed=k!==kind; kind=k; renderView(changed?"keep":prev);
+  $("lightDir").placeholder=k==="EXTERIOR"?"Ex.: sol fixo como no print, vindo da esquerda":"Ex.: ao fundo, através da varanda";
+  $("lights").placeholder=k==="EXTERIOR"?"Ex.: só os balizadores do muro da fachada, luz quente suave":"fita de LED acima e abaixo da prateleira\nspots no forro amadeirado\narandela de leitura acima do sofá, dourado acetinado";
+  renderChips(); }
+
+
+/* ---------- imagem ---------- */
+function setImage(f){
+  if(!f||!/^image\/(jpeg|png|webp)$/.test(f.type)){toast("Use um print em JPG, PNG ou WebP");return}
+  imgFile=f; const r=new FileReader();
+  r.onload=()=>{ $("preview").src=r.result; $("preview").hidden=false; $("dropEmpty").hidden=true; $("clearImg").hidden=false; updateAnalyze(); };
+  r.readAsDataURL(f);
+}
+function clearExample(){ if(exampleActive){ exampleActive=false; $("mat").innerHTML=""; } }
+function updateAnalyze(){ $("analyze").disabled=AI.mode?!(imgFile&&imgOK):false; $("analyze").textContent=(!document.body.classList.contains("quick")&&!exampleActive&&rows().length)?"Analisar e completar elementos":"Analisar print"; }
+const drop=$("drop");
+drop.onclick=()=>$("file").click();
+drop.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("file").click()}};
+$("file").onchange=e=>setImage(e.target.files[0]);
+drop.ondragover=e=>{e.preventDefault();drop.classList.add("over")};
+drop.ondragleave=()=>drop.classList.remove("over");
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove("over");setImage(e.dataTransfer.files[0])};
+document.addEventListener("paste",e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/"));if(!it)return;if(!$("viewCmp").hidden)dropCmp([it.getAsFile()]);else if(!$("viewGen").hidden)setImage(it.getAsFile())});
+$("clearImg").onclick=e=>{e.stopPropagation();imgFile=null;$("preview").hidden=true;$("dropEmpty").hidden=false;$("clearImg").hidden=true;$("file").value="";updateAnalyze()};
+
+/* ---------- status / erros ---------- */
+function status(el,msg,busy,err){ el.className="status"+(err?" err":""); el.innerHTML=(busy?'<span class="dot"></span>':"")+(msg?`<span></span>`:""); if(msg) el.lastChild.textContent=msg; }
+function errMsg(e){
+  const m={not_granted:"Você não autorizou o uso do Claude nesta página.",rate_limited:"Muitas solicitações agora. Tente de novo em alguns minutos.",
+    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
+    session_expired:"Sua sessão expirou. Entre de novo no claude.ai.",refused:"O pedido foi recusado. Revise o texto e tente de novo.",images_unavailable:"Esta visualização não permite enviar imagens.",
+    network:"A conexão caiu no meio do caminho. Confira a internet e tente de novo.",server:"O servidor não respondeu. Tente de novo em instantes.",overloaded:"A IA está sobrecarregada agora. Tente de novo em um minuto.",
+    bad_code:"Código de acesso incorreto. Digite de novo no aviso acima.",too_large:"As imagens ficaram grandes demais. Tente com menos fotos de referência.",not_configured:"O servidor ainda não tem a chave da API configurada.",
+    bad_request:"O pedido não foi aceito. Tente de novo; se repetir, encurte o texto.",no_ai:"A IA não está conectada agora.",cancelled:"Interrompido."};
+  return m[e?.code]||"Não deu certo desta vez. Tente de novo.";
+}
+function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,2200)}
+
+/* ---------- análise do print ---------- */
+$("analyze").onclick=async()=>{
+  clearExample();
+  if(quickMode()) $("mat").innerHTML="";
+  const existing=rows();
+  $("analyze").disabled=true; status($("aStatus"),"Lendo o print…",true);
+  const prompt=`Você é especialista em visualização arquitetônica e materiais de acabamento. A imagem anexada é a IMAGEM 1: um print do SketchUp de um projeto do tipo "${TYPES.find(x=>x[0]===tipo)[1]}" (${kind}). Ele vai virar fotografia por IA, e a sua leitura vira a base do prompt, então precisão vale mais que quantidade.
+Analise somente o que está visível e responda em português do Brasil.
+${existing.length?`A usuária já definiu estes elementos (NÃO repita nem altere; devolva só elementos visíveis que faltam): ${existing.map(r=>r.elemento).join("; ")}.`:"Liste de 8 a 18 elementos relevantes, do maior para o menor em área visível (piso, paredes, teto/forro, marcenaria, painéis, bancadas, metais, portas/divisórias, esquadrias e vidros, estofados, tapete, mesas, cortinas/persianas, luminárias, decoração, vegetação; em exterior: muro, volumes e pinturas da fachada, painéis, esquadrias e vidros, portão e metais, cobertura, calçada e piso externo, vegetação, rua)."}
+Como ler o SketchUp:
+- Textura com veio = material natural (madeira, pedra); cor chapada = pintura, laca, laminado liso ou tecido liso. Diga qual é o mais provável pelo contexto (ex.: armário de cozinha chapado = laca ou laminado).
+- O RGB é lido numa área bem iluminada, sem sombra e sem reflexo, e descreve a cor do material, não a sombra do modelo.
+- Superfícies amarelas, brancas brilhantes ou com faixa clara em nichos, sancas, prateleiras e forros costumam indicar LED. Liste como luminária, não como material amarelo.
+- Em "acabamento" inclua brilho (fosco, acetinado, polido), formato e paginação (placas grandes, ripas verticais, réguas no comprimento) e direção dos veios quando houver.
+- Em "cor" escreva só o nome do tom e em "rgb" o valor aproximado (ex.: "226,219,208").
+- Móveis e objetos também, um por linha, com quantidade quando houver mais de um (ex.: "Banquetas (3)"). Conte com cuidado.
+- Seja honesto: se não tiver certeza, escreva "provável" e marque "conferir": true.
+Formato JSON:
+{"ambiente":"ex.: sala de estar integrada à cozinha","luzNatural":"de onde a luz natural entra, citando a abertura","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"~3000K","materiais":[{"elemento":"Piso","material":"Porcelanato","acabamento":"Acetinado, placas grandes","cor":"Bege muito claro","rgb":"226,219,208","conferir":false}]}`;
+  const apply=data=>{
+    const mats=Array.isArray(data?.materiais)?data.materiais:[];
+    const have=new Set(existing.map(r=>r.elemento.toLowerCase()));
+    if(!existing.length) $("mat").innerHTML="";
+    let added=0; mats.forEach(m=>{const el=String(m.elemento||"").trim(); if(el&&!have.has(el.toLowerCase())){addRow({elemento:el,material:String(m.material||""),acabamento:String(m.acabamento||""),cor:String(m.cor||"")+(m.rgb?" · RGB "+m.rgb:"")});added++}});
+    if(!$("lightDir").value && data?.luzNatural) $("lightDir").value=String(data.luzNatural);
+    if(!$("lights").value.trim() && Array.isArray(data?.luminarias)) $("lights").value=data.luminarias.map(String).join("\n");
+        renderRead(data,mats);
+    status($("aStatus"),`${data?.ambiente?String(data.ambiente)+" · ":""}${added} elemento(s) identificados.`);
+  };
+  if(!AI.mode){
+    $("analyze").disabled=false; status($("aStatus"),"");
+    manual({title:"ler o print",prompt:prompt+JSON_TAIL,attach:"anexe o print do SketchUp",onReply:t=>apply(parseJSON(t))});
+    return;
+  }
+  try{ apply(await aiJSON(prompt,{images:[imgFile]})); }
+  catch(e){ status($("aStatus"),errMsg(e),false,true); if(e?.code==="not_granted"||e?.code==="images_unavailable") $("analyze").hidden=true; }
+  updateAnalyze();
+};
+
+/* ---------- geração ---------- */
+function updateFineSum(){
+  const parts=[];
+  if(quickMode()) parts.push(lightStyle>=0?PRESETS[kind][lightStyle].n:"luz do seu texto");
+  if($("view").value!=="keep") parts.push($("view").selectedOptions[0].textContent);
+  if($("atmo").value) parts.push($("atmo").selectedOptions[0].textContent.split(" ·")[0]);
+  parts.push(curPreset()?.art==="off"?"luzes desligadas pelo cenário":$("ledTemp").value==="off"?"luzes desligadas":$("ledTemp").value==="neutral"?"luzes suaves neutras":"luzes "+$("ledTemp").selectedOptions[0].textContent.split("· ")[1].split(" (")[0]);
+  parts.push($("ratio").value==="print"?"proporção do print":$("ratio").value);
+  parts.push($("size").selectedOptions[0].textContent.toLowerCase());
+  $("fineSum").textContent="· "+parts.join(" · ");
+}
+["view","atmo","ratio","size","dest","ledTemp"].forEach(id=>document.addEventListener("change",e=>{if(e.target.id===id)updateFineSum()}));
+let readText="";
+function renderRead(data,mats){
+  const box=$("qRead"); box.innerHTML="";
+  const conf=mats.filter(m=>m.conferir).length;
+  const head=document.createElement("div"); head.className="rhead";
+  head.innerHTML='<b></b><div class="rtags"></div>';
+  head.querySelector("b").textContent=String(data?.ambiente||"ambiente");
+  const tags=head.querySelector(".rtags");
+  const tag=(k,v)=>{ if(!v) return; const t=document.createElement("span"); t.className="rtag"; t.innerHTML="<i></i> <span></span>"; t.querySelector("i").textContent=k; t.querySelector("span").textContent=v; tags.append(t); };
+  tag("luz natural",String(data?.luzNatural||"")); tag("temperatura",String(data?.temperatura||""));
+  if(conf) tag("conferir",conf+" item(ns)");
+  box.append(head);
+  const lum=Array.isArray(data?.luminarias)?data.luminarias.map(String).filter(Boolean):[];
+  if(lum.length){ const l=document.createElement("div"); l.className="rgroup"; l.innerHTML='<span class="rlabel">luminárias</span><div class="chips"></div>'; lum.forEach(x=>{const c=document.createElement("span");c.className="chip static";c.textContent=x;l.querySelector(".chips").append(c)}); box.append(l); }
+  const g=document.createElement("div"); g.className="rgroup"; g.innerHTML='<span class="rlabel">materiais</span><div class="rlist"></div>'; box.append(g);
+  const list=g.querySelector(".rlist");
+  mats.forEach(m=>{
+    const r=document.createElement("div"); r.className="ritem"+(m.conferir?" unsure":"");
+    const rgb=String(m.rgb||"").match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/);
+    r.innerHTML='<span class="sw"></span><div class="rtxt"><b></b><span></span></div><span class="rcor"></span><button class="btn ghost small" type="button">corrigir</button>';
+    if(rgb) r.querySelector(".sw").style.background=`rgb(${rgb[1]},${rgb[2]},${rgb[3]})`; else r.querySelector(".sw").classList.add("none");
+    r.querySelector("b").textContent=String(m.elemento||"");
+    r.querySelector(".rtxt span").textContent=[m.material,m.acabamento].filter(Boolean).map(String).join(" · ");
+    r.querySelector(".rcor").textContent=[m.cor,rgb?`RGB ${rgb[1]}, ${rgb[2]}, ${rgb[3]}`:""].filter(Boolean).map(String).join(" · ");
+    r.querySelector("button").onclick=()=>{ const t=$("qText"); t.value=(t.value.trim()?t.value.replace(/\s*$/,"")+"\n":"")+String(m.elemento||"")+": "; t.focus(); t.setSelectionRange(t.value.length,t.value.length); };
+    list.append(r);
+  });
+  readText=`Ambiente: ${data?.ambiente||"—"}\nLuz natural: ${data?.luzNatural||"—"}\nLuminárias: ${lum.join("; ")||"—"}\nMateriais:\n`+mats.map(m=>`• ${m.elemento}: ${[m.material,m.acabamento,m.cor,m.rgb?"RGB "+m.rgb:""].filter(Boolean).join(", ")}${m.conferir?" (incerto)":""}`).join("\n");
+}
+function quickMode(){ return document.body.classList.contains("quick"); }
+function curPreset(){ return lightStyle>=0?PRESETS[kind][lightStyle]:null; }
+function ledRule(quick){
+  const ps=curPreset(), v=$("ledTemp").value, art=quick?"on":$("artOn").value;
+  const who=quick?"padrão da usuária quando o texto dela não disser outra coisa; se o texto dela falar das luzes, o texto vence":"padrão fixo da usuária";
+  if(v==="off"||art==="off") return "LUZ ARTIFICIAL: todas as luminárias DESLIGADAS, sem nenhum brilho de LED. Só a luz do cenário.";
+  if(ps?.art==="off") return `LUZ ARTIFICIAL: DESLIGADA, porque o cenário escolhido ("${ps.n}") é sem luz artificial. Nenhuma luminária acesa, nenhum brilho de LED.`;
+  const which=art==="some"?"SOMENTE as luminárias listadas ficam ligadas; todas as outras ficam desligadas":"todas as luminárias existentes no print ficam ligadas";
+  if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, quentes (~2700K) como pede o cenário. Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova.`;
+  const t={neutral:"branco neutro, cerca de 3500K–4000K",3000:"levemente quente, cerca de 3000K",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
+  const role=ps?.nat===false?"complementando a luz difusa do cenário, sem virar a fonte principal":"só complementando a luz natural, que continua dominante";
+  return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, LEVEMENTE acesas, intensidade baixa e sutil, ${role}. Fitas e perfis de LED com brilho suave e contínuo, sem faixas estouradas. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova.`;
+}
+const PIECE_PRESETS=[
+ ["Spot embutir múltiplo","Spot de embutir retangular múltiplo (quantidade de focos conforme o print), moldura branca fina rente ao forro, cada foco recuado dentro de uma célula quadrada branca fosca, com refletor interno direcionável. Cada foco gera um facho próprio e suave. Não é painel, plafon nem luminária de sobrepor."],
+ ["Spot direcionável","Spot de embutir quadrado recuado e direcionável, corpo interno preto, aro branco rente ao forro, facho suave apontado para a parede ou objeto conforme o print. Não é plafon nem luminária saliente."],
+ ["Perfil de LED","Perfil de LED linear embutido no forro, rasgo fino e contínuo com difusor leitoso, emitindo uma linha de luz suave e uniforme, sem pontos visíveis. Não é luminária saliente."],
+ ["Fita LED / sanca","Fita de LED escondida (sanca, nicho ou prateleira), fonte invisível, só a luz rebatida aparece como um degradê suave na superfície. Sem pontos de LED visíveis."],
+ ["Trilho eletrificado","Trilho eletrificado de sobrepor com spots cilíndricos direcionáveis, cor e quantidade exatamente como no print."],
+ ["Balizador","Balizador de parede/muro embutido, pequeno e retangular, luz rasante suave para baixo iluminando o piso."],
+ ["Arandela","Arandela com desenho exatamente como no print, luz suave para cima e/ou para baixo conforme o modelo."],
+];
+let pieceImgMax=1;
+function addPiece(name="",desc=""){
+  const uid=Math.random().toString(36).slice(2,8);
+  const d=document.createElement("div"); d.className="piece"; d._img=null;
+  d.innerHTML=`<label class="ph" tabindex="0" title="Anexar foto de referência"><span>+ foto de referência</span><input type="file" accept="image/jpeg,image/png,image/webp" hidden id="pf_${uid}"></label>
+  <div class="pb"><input type="text" id="pn_${uid}" placeholder="Nome da peça (ex.: spot triplo do forro da sala)" aria-label="Nome da peça"><textarea id="pd_${uid}" placeholder="Como ela é: formato, cor, acabamento, quantas saídas de luz, onde está…" aria-label="Descrição da peça"></textarea>
+  <label class="send" hidden><input type="checkbox" id="ps_${uid}"> Vou enviar esta foto junto para a IA de imagem</label></div>
+  <button class="x" type="button" aria-label="Remover peça">×</button>`;
+  const [ni,de]=[d.querySelector("input[type=text]"),d.querySelector("textarea")]; ni.value=name; de.value=desc;
+  const fi=d.querySelector("input[type=file]"), ph=d.querySelector(".ph"), send=d.querySelector(".send");
+  ph.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fi.click()}};
+  fi.onchange=()=>{const f=fi.files[0]; if(!f) return; if(!/^image\/(jpeg|png|webp)$/.test(f.type)){toast("Use JPG, PNG ou WebP");return}
+    d._img=f; const r=new FileReader(); r.onload=()=>{ph.innerHTML="";const im=document.createElement("img");im.src=r.result;im.alt="Referência";ph.append(im,fi);send.hidden=false}; r.readAsDataURL(f);};
+  d.querySelector(".x").onclick=()=>d.remove();
+  $("pieces").append(d);
+}
+function pieces(){ return [...document.querySelectorAll(".piece")].map(d=>({nome:d.querySelector("input[type=text]").value.trim(),desc:d.querySelector("textarea").value.trim(),img:d._img,send:d.querySelector(".send input").checked})).filter(p=>p.nome||p.desc||p.img); }
+function piecesBrief(refStart){
+  const ps=pieces(); if(!ps.length) return "";
+  let n=refStart, sendN=2, out=[];
+  ps.forEach(p=>{
+    const hasRef=p.img&&n<=pieceImgMax; const refTag=hasRef?` [foto de referência anexada: IMAGEM ${n} desta conversa]`:"";
+    if(hasRef) n++;
+    const sendTag=p.img&&p.send?` — a usuária vai anexar esta foto ao gerador de imagem como IMAGE ${sendN++}: no prompt final, diga "match the piece shown in IMAGE ${sendN-1} for shape, finish and light output, keeping position and quantity from IMAGE 1"`:"";
+    out.push(`- ${p.nome||"Peça"}: ${p.desc||"(descrever pela foto)"}${refTag}${sendTag}`);
+  });
+  return `\nPEÇAS ESPECÍFICAS (prioridade alta; descreva cada uma com precisão física no prompt final, num bloco próprio dentro de materiais/iluminação, e repita nas restrições que forma, quantidade e posição seguem a IMAGE 1; se houver foto de referência, olhe a foto e descreva formato, cor, acabamento e saída de luz que ela mostra):\n${out.join("\n")}`;
+}
+function ctxView(){
+  const vsel=$("view").value, vname=$("view").selectedOptions[0]?.textContent||"", atmo=$("atmo").value;
+  const v=vsel==="keep"?(kind==="INTERIOR"?"vista pela janela exatamente como no print, sem inventar paisagem":"céu e entorno exatamente como no print; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara":"entorno neutro com mínima interferência visual"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}, só nas áreas vazias além do projeto; o projeto continua 100% travado`);
+  return `${kind==="INTERIOR"?"VISTA PELA JANELA":"ENTORNO"}: ${v}\nATMOSFERA: ${atmo?ATMO[atmo]+" (só o clima fotográfico; nunca muda materiais nem cores)":"neutra"}`;
+}
+function buildQuickBrief(){
+  const size=$("size").value;
+  const ps=lightStyle>=0?PRESETS[kind][lightStyle]:null;
+  return `MODO RÁPIDO — a usuária escreveu tudo em texto corrido. Sua tarefa:
+1) Ler o TEXTO DA USUÁRIA, corrigir ortografia e digitação, e organizar cada material num bloco próprio (elemento → material, acabamento, cor). Iluminação e luminárias vão para LIGHTING.
+2) Copiar EXATAMENTE todos os valores dela: RGB, nomes comerciais (marca, linha, cor), medidas, temperaturas. Nunca arredondar, traduzir nome comercial ou trocar por sinônimo.
+3) Tudo que ela disser que NÃO é (ex.: não é amadeirado) vira regra no material e se repete nas restrições.
+4) Elementos visíveis no print que ela NÃO citou: descrever pela LEITURA DO PRINT, sempre com "exactly as shown in IMAGE 1". Nunca contradizer o texto dela.
+5) Não inventar materiais, cores ou luminárias que ela não citou e que não aparecem no print.
+6) RGB em TODOS os materiais: se ela deu RGB, copie exatamente. Se não deu, estime pelo print e escreva "approx. RGB r, g, b, sampled from IMAGE 1" (no PT: "RGB aproximado r, g, b, lido da IMAGEM 1"). O RGB dela sempre vence o estimado.
+${ledRule(true)}
+
+TIPO DE PROJETO: ${TYPES.find(x=>x[0]===tipo)[1]} (${kind})
+${ps?`CENÁRIO DE LUZ (referência do método; o texto dela vence se conflitar): ${ps.n} — ${ps.t}`:"CENÁRIO DE LUZ: seguir só o texto da usuária; se ela não falar de luz, manter a luz como no print."}
+${ctxView()}
+PROPORÇÃO DE SAÍDA: ${$("ratio").value==="print"?"a mesma do print (IMAGE 1)":$("ratio").value}
+LEITURA DO PRINT (apoio, só para o que ela não especificou):
+${readText||"(não analisado; olhe a IMAGEM 1 anexada, se houver)"}
+
+TEXTO DA USUÁRIA (fonte principal, prioridade máxima):
+${$("qText").value.trim()}
+${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
+
+BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
+${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
+TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.8)+" caracteres para ter margem. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO e todos os materiais"}`;
+}
+function buildBrief(){
+  const r=rows(), size=$("size").value;
+  const art={on:"Toda a iluminação artificial LIGADA",some:"Somente as luminárias listadas LIGADAS",off:"Iluminação artificial DESLIGADA"}[$("artOn").value];
+  const vsel=$("view").value, vname=$("view").selectedOptions[0]?.textContent||"";
+  const viewTxt=vsel==="keep"?(kind==="INTERIOR"?"vista pela janela exatamente como no print, sem inventar paisagem":"céu e entorno exatamente como no print; não completar contexto; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara, sem detalhes que chamem atenção":"entorno neutro com mínima interferência visual; só o céu pode ganhar realismo"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a altura e a luz da cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}. O entorno pode ser enriquecido SOMENTE nas áreas vazias além do projeto; o projeto arquitetônico continua 100% travado`);
+  const atmo=$("atmo").value;
+  return `TIPO DE PROJETO: ${TYPES.find(x=>x[0]===tipo)[1]} (${kind})${tipo==="planta"?" — planta humanizada vista de cima: manter escala, paredes, layout e mobiliário exatamente como no print, com sombras suaves de luz vinda do alto e texturas fotorrealistas":""}${tipo==="urb"?" — projeto urbanístico: preservar traçado, calçadas, mobiliário urbano, vegetação e volumes exatamente":""}
+${kind==="INTERIOR"?"VISTA PELA JANELA":"ENTORNO"}: ${viewTxt}
+ATMOSFERA: ${atmo?ATMO[atmo]+" (a atmosfera ajusta só o clima fotográfico; nunca muda materiais, cores ou o cenário de luz)":"neutra, seguir só o cenário de luz"}
+PROPORÇÃO DE SAÍDA: ${$("ratio").value==="print"?"a mesma do print (IMAGE 1)":$("ratio").value+" (se a ferramenta tiver seletor de proporção, usar ele; não esticar nem distorcer a geometria)"}
+${lightStyle>=0?`CENÁRIO DE LUZ (bloco de referência do método, usar fielmente e adaptar às aberturas desta cena): ${PRESETS[kind][lightStyle].n} — ${PRESETS[kind][lightStyle].t}`:"CENÁRIO DE LUZ: seguir só as especificações abaixo"}
+ILUMINAÇÃO: luz natural vem de = ${$("lightDir").value||"manter exatamente como na IMAGEM 1"}; ${art}.
+${ledRule(false)}
+LUMINÁRIAS:
+${$("lights").value.trim()||"(manter as existentes na IMAGEM 1)"}
+MATERIAIS (elemento | material | acabamento | cor | observação):
+${r.map(x=>`- ${x.elemento} | ${x.material} | ${x.acabamento} | ${x.cor} | ${x.nota}`).join("\n")||"(seguir o print)"}
+BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
+${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
+RGB: todo material sem RGB informado recebe um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); os informados valem exatamente.
+${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
+DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}
+TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.8)+" caracteres para ter margem. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
+}
+
+const DEST={
+ magnific:"- Destino Magnific/Nano Banana: comece com as três linhas de peso: (KEEP GEOMETRY IDENTICAL:2.0) (NO REDESIGN:2.0) (STRICT GEOMETRY PRESERVATION:2.0) em linhas separadas; no português: (MANTER GEOMETRIA IDÊNTICA:2.0) (NÃO REDESENHAR:2.0) (PRESERVAÇÃO RIGOROSA DA GEOMETRIA:2.0).",
+ gemini:"- Destino Gemini / AI Studio (Nano Banana direto): NÃO use a sintaxe de peso com parênteses. Comece com uma linha em caixa alta: KEEP GEOMETRY IDENTICAL. NO REDESIGN. STRICT GEOMETRY PRESERVATION. Chame o print de \"the attached image (IMAGE 1)\".",
+ gpt:"- Destino ChatGPT (geração de imagem): NÃO use a sintaxe de peso com parênteses. Comece com \"Edit the attached SketchUp screenshot (IMAGE 1) into a photorealistic architectural photograph.\" e logo depois uma linha em caixa alta: KEEP THE GEOMETRY IDENTICAL. DO NOT REDESIGN ANYTHING. Escreva em frases diretas; listas curtas funcionam melhor que blocos longos.",
+ flux:"- Destino Flux Kontext / Krea / Leonardo: prompt CURTO e direto (no máximo ~1.500 caracteres cada), sem sintaxe de peso, sem linhas de hífens. Comece com \"Transform this SketchUp screenshot into a photorealistic architectural photograph while keeping the exact same geometry, camera, layout and objects.\" Depois: luz em 1-2 frases, materiais em uma lista compacta (elemento: material, acabamento, cor/RGB), e uma linha final de restrições. Mantenha as regras de NÃO (não é madeira etc.).",
+ universal:"- Destino universal: sem sintaxe de peso com parênteses. Comece com uma linha em caixa alta: KEEP GEOMETRY IDENTICAL. NO REDESIGN. STRICT GEOMETRY PRESERVATION. Refira-se ao print como \"the reference image (IMAGE 1)\". Linguagem clara que qualquer modelo de edição de imagem entende."};
+$("dest").addEventListener("change",()=>{ if($("dest").value==="flux") $("size").value="1500"; else if($("size").value==="1500") $("size").value="10000"; });
+const DEST_NAME={magnific:"o Nano Banana dentro do Magnific",gemini:"o Gemini / Nano Banana no Google AI Studio",gpt:"a geração de imagem do ChatGPT",flux:"o Flux Kontext (ou Krea / Leonardo)",universal:"qualquer IA de edição de imagem"};
+const MASTER = (brief)=>`Você escreve prompts para ${DEST_NAME[$("dest").value]} que transformam um print do SketchUp em fotografia arquitetônica fotorrealista, preservando 100% da geometria.
+
+IMPORTANTE: responda só com texto. NÃO gere nem edite imagens; as imagens anexadas servem só para você conferir os elementos.
+
+Use EXATAMENTE as especificações abaixo. As especificações da usuária vencem qualquer suposição. Não invente elementos que ela não citou e que não aparecem no print.
+
+PRINCÍPIOS DE PRECISÃO (valem para o prompt inteiro):
+- Cada frase precisa mudar o resultado. Nada de adjetivos vagos (bonito, moderno, elegante, luxuoso) dentro de materiais e luz; use dados físicos: material, acabamento, brilho, cor/RGB, medida, temperatura em Kelvin, direção.
+- Um nome canônico por elemento: chame cada elemento sempre pelo mesmo nome em todas as seções, para o gerador não achar que são coisas diferentes.
+- Posição explícita: quando houver elementos parecidos (duas paredes, dois armários, várias luminárias), diga onde cada um está na imagem (à esquerda, ao fundo, no forro acima da bancada).
+- Instruções afirmativas primeiro (o que deve aparecer), depois as proibições. As proibições ficam concentradas em RESTRIÇÕES, sem repetir a mesma frase em várias seções.
+- Nunca descreva o resultado como render, 3D ou CGI; o resultado é sempre uma fotografia.
+
+${brief}
+
+REGRAS:
+${DEST[$("dest").value]}
+- Se as regras de destino conflitarem com a estrutura descrita abaixo, as regras de destino vencem.
+- Logo após a abertura, inclua dois blocos curtos e explícitos: "WHAT MAY CHANGE" (somente: aparência fotográfica, comportamento físico da luz conforme o cenário escolhido, microtexturas e reflexos dos materiais${$("view").value!=="keep"?", e a vista/entorno conforme descrito":""}) e "WHAT MUST NOT CHANGE" (geometria, layout, câmera, proporções, cada material e cor definidos, quantidade de móveis e objetos, luminárias, aberturas). No PT: "O QUE PODE MUDAR" e "O QUE NÃO PODE MUDAR".
+- Inventário: todo elemento listado nos materiais é um inventário travado. Se houver quantidade (ex.: 3 banquetas), escreva a quantidade e "exactly N, no more, no less".
+- Cada material tem o seu bloco próprio, mesmo os pequenos; nunca agrupe materiais diferentes num bloco só. Se a cor tiver RGB, ele é a verdade de cor daquele material medida sob luz neutra: na sombra e nos reflexos a luminosidade varia de forma física, mas o matiz e a saturação continuam os mesmos, sem puxar para amarelo, verde ou magenta.
+- O cenário de luz tem prioridade sobre qualquer menção a horário do dia em outros campos. A regra de LUZ ARTIFICIAL do briefing decide se as luminárias ficam acesas; nunca contradiga essa regra em outra seção.
+- Abertura: fotografia arquitetônica fotorrealista baseada estritamente na IMAGE 1 (print do SketchUp); IMAGE 1 é a fonte absoluta da verdade geométrica; tratar como ambiente ${kind==="INTERIOR"?"interno":"externo"} real, fixo, já projetado; listar os elementos da cena que devem ser preservados; DO NOT redesign, reinterpret, remodel, reposition, remove, add, simplify, improve, modernize, or complete any element; elementos decorativos permanecem exatamente na posição, escala, orientação e quantidade.
+- Seções nesta ordem, separadas por uma linha de hífens (--------------------------------------------------) acima e abaixo do título: LIGHTING, MATERIALS — LOCKED, CAMERA, PHOTOREALISM, STRICT RESTRICTIONS, FINAL CONSISTENCY. No português: ILUMINAÇÃO, MATERIAIS — BLOQUEADOS, CÂMERA, FOTORREALISMO, RESTRIÇÕES ABSOLUTAS, CONSISTÊNCIA FINAL.
+- LIGHTING: luz predominante, direção da luz natural citando a abertura, "Preserve the exact natural-light direction established by IMAGE 1", estado da luz artificial, frase de equilíbrio natural x artificial, lista "Artificial lighting:" com um item por luminária terminando em ": ON" ou ": OFF" conforme a regra de LUZ ARTIFICIAL (inclua acabamento de luminária se informado), preservar posição/quantidade das luminárias, comportamento físico da luz, "Do not create additional light sources."
+- MATERIALS: um bloco por elemento com o nome em CAIXA ALTA seguido de dois-pontos, depois linhas curtas: material, acabamento, cor. RGB vira "Exact color: RGB r, g, b." Nomes comerciais (ex.: Amendoa Natural) ficam com o nome original; se a usuária disser "exatamente como no print", acrescente "exactly matching the appearance shown in IMAGE 1". Se várias peças usam o mesmo amadeirado, crie o bloco ALL WOODEN JOINERY com "Do not introduce different wood colors." Medidas (ripas, espaçamentos) em bullets. Quando algo NÃO é um material (ex.: NÃO é madeira, NÃO é moldura), diga explicitamente no bloco e liste o que não fazer. Termine com DECORATIVE ELEMENTS mantendo tudo no lugar.
+- CAMERA: manter exatamente ângulo, perspectiva, enquadramento; lista Preserve: camera position, height, orientation, focal perspective, field of view, proportions, composition, visible geometry; ótica realista, sem fisheye, sem distorção exagerada, sem correção de perspectiva que altere a geometria.
+- PHOTOREALISM: indistinguível de fotografia profissional real; lista de qualidades físicas (GI, AO, sombras de contato, reflexos, transmissão de vidro, texturas dos materiais desta cena); lista Avoid (contraste e saturação excessivos, HDR artificial, CGI, plástico, over-sharpening, bloom, DOF artificial); No stylization. No artistic interpretation. No redesign.
+- STRICT RESTRICTIONS: linhas "DO NOT ..." cobrindo geometria, adicionar/remover, móveis, decoração, cada elemento importante desta cena, inventar elementos, completar contexto oculto${kind==="EXTERIOR"?" (ajustado conforme a regra de céu/entorno)":""}, câmera, proporções, materiais definidos, materiais adicionais${/RGB/i.test(brief)?", cores RGB especificadas":""}. Repita aqui cada regra "X is NOT Y and must NOT receive Z".
+- FINAL CONSISTENCY: mesmo ambiente da IMAGE 1; IMAGE 1 é referência absoluta; a única transformação é de SketchUp para fotografia fotorrealista; Preserve everything. Improve only the photographic realism. No reinterpretation. No redesign. No geometry modification.
+${kind==="EXTERIOR"?`- EXTERIOR: abrir com "Real photograph produced by a professional architectural photographer, based on IMAGE 1"; a seção de materiais se chama FACADE MATERIALS — LOCKED (no PT: MATERIAIS DA FACHADA — TRAVADOS) e cobre muro, volumes, painéis, esquadrias com vidro e o que se vê atrás dele, portão e metais, calçada e piso externo, vegetação existente, rua; tintas com nome comercial ficam com marca e nome entre aspas (ex.: "Prata Envelhecido" by Suvinil) mais descrição do tom; a posição do sol é fixa exatamente como na IMAGE 1; se só algumas luminárias externas ficam ligadas, dizer "ONLY ... must be ON" e que todas as outras ficam desligadas; restrições incluem: do not redesign the facade, do not modify openings, ${$("view").value==="keep"||$("view").value==="neutral"?"do not create fictional surroundings, ":"do not change anything of the project while composing the chosen surroundings, "}do not add extra lighting; câmera com comportamento natural de lente e compressão focal realista.`:""}
+- Os blocos extras do método entram nas seções correspondentes (materiais, câmera, fotorrealismo, restrições, consistência final), traduzidos para o inglês no prompt EN.
+- Escreva PRIMEIRO o prompt completo em PORTUGUÊS. Depois o inglês, que é a tradução fiel e completa do português, mesma estrutura e mesmos valores.
+- Texto puro, sem markdown, sem blocos de código, sem comentários seus.
+
+FORMATO DE SAÍDA, exatamente:
+===PT===
+(prompt em português)
+===EN===
+(prompt em inglês)`;
+
+function showPrompts(text){
+  text=String(text).replace(/```[a-z]*\s*/gi,"").replace(/\*{1,2}\s*(===(?:PT|EN)===)\s*\*{1,2}/g,"$1").replace(/^#+\s*(===(?:PT|EN)===)/gm,"$1");
+  const ip=text.indexOf("===PT==="), ie=text.indexOf("===EN===");
+  const pt=ip>-1?text.slice(ip+8, ie>ip?ie:undefined).trim():"";
+  const en=ie>-1?text.slice(ie+8).trim():"";
+  $("pEn").textContent=en; $("pPt").textContent=pt;
+  const lim=$("size").value==="full"?Infinity:+$("size").value;
+  [["cEn",en],["cPt",pt]].forEach(([id,t])=>{$(id).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(id).classList.toggle("over",t.length>lim)});
+}
+$("gen").onclick=async()=>{
+  const quick=quickMode();
+  if(quick && !$("qText").value.trim()){toast("Escreva os materiais e a iluminação no passo 2");return}
+  if(!quick && exampleActive){toast("Analise um print ou edite os materiais de exemplo primeiro");return}
+  if(!quick && !rows().length && !$("notes").value.trim()){toast("Preencha os materiais ou os detalhes extras");return}
+  if(!AI.mode){
+    const withPics=pieces().filter(p=>p.img).length;
+    const prompt=MASTER(quick?buildQuickBrief():buildBrief())+"\n\nA IMAGEM 1 (print do SketchUp) está anexada nesta conversa."+(withPics?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":"");
+    manual({title:"gerar o prompt",prompt,attach:"anexe o print do SketchUp"+(withPics?` e depois as ${withPics} foto(s) das peças, na ordem da lista`:""),onReply:t=>{
+      if(!t.includes("===PT===")||!t.includes("===EN===")) throw {code:"manual_format"};
+      $("outSec").hidden=false; showPrompts(t);
+      const lim=$("size").value==="full"?0:+$("size").value, over=lim&&($("pPt").textContent.length>lim||$("pEn").textContent.length>lim);
+      status($("gStatus"),over?`Passou de ${lim.toLocaleString("pt-BR")} caracteres. No mesmo chat, peça: "encurte cada prompt para no máximo ${Math.round(lim*.85).toLocaleString("pt-BR")} caracteres, mantendo todos os materiais, RGB, medidas e regras de NÃO, no mesmo formato" e cole a nova resposta.`:"Pronto. Copie e cole na sua IA de imagem.",false,!!over);
+      $("outSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+    }});
+    return;
+  }
+  genCtl=new AbortController(); $("gen").disabled=true; $("stop").hidden=false;
+  $("outSec").hidden=false; $("pEn").textContent=""; $("pPt").textContent="";
+  status($("gStatus"),"Montando os prompts… isso leva cerca de um minuto",true);
+  const opts={signal:genCtl.signal,effort:"high",onText:({text})=>{showPrompts(text);status($("gStatus"),"Escrevendo…",true)}};
+  if(imgOK){ const ims=[]; if(imgFile) ims.push(imgFile); pieces().forEach(p=>{ if(p.img && ims.length<pieceImgMax) ims.push(p.img) }); if(ims.length) opts.images=ims; }
+  try{
+    const {text,truncated}=await aiText(MASTER(quick?buildQuickBrief():buildBrief())+(opts.images?(imgFile?"\n\nA IMAGEM 1 (print) está anexada para conferência dos elementos.":"")+(opts.images.length>(imgFile?1:0)?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":""):""),opts);
+    showPrompts(text);
+    let fixed=false;
+    const lim=$("size").value==="full"?0:+$("size").value;
+    if(lim && !truncated){
+      for(const id of ["pPt","pEn"]){
+        for(let pass=0; pass<2 && $(id).textContent.length>lim; pass++){
+          const cur=$(id).textContent, target=Math.round(lim*(pass?0.75:0.85));
+          status($("gStatus"),`Ajustando o ${id==="pPt"?"português":"inglês"} ao limite (${cur.length.toLocaleString("pt-BR")} → até ${lim.toLocaleString("pt-BR")})…`,true);
+          const r=await aiText(`Encurte o prompt abaixo para no máximo ${target} caracteres (hoje ele tem ${cur.length}). Mantenha o mesmo idioma, as mesmas seções e a mesma ordem. Mantenha TODOS os materiais, todos os valores RGB, nomes comerciais, medidas, luminárias e todas as regras do tipo "NÃO é". Corte primeiro: frases repetidas, listas genéricas de fotorrealismo, restrições que repetem o que já foi dito, adjetivos de enfeite. Responda só com o prompt encurtado, sem comentários e sem markdown.\n\n${cur}`,{signal:genCtl.signal,effort:"low"});
+          $(id).textContent=r.text.trim(); fixed=true;
+        }
+      }
+      [["cEn","pEn"],["cPt","pPt"]].forEach(([c,pid])=>{const t=$(pid).textContent;$(c).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(c).classList.toggle("over",t.length>lim)});
+    }
+    const still=lim && ($("pPt").textContent.length>lim || $("pEn").textContent.length>lim);
+    status($("gStatus"),truncated?"O texto foi cortado. Escolha um tamanho menor e gere de novo.":still?"Ainda passou do limite. Gere de novo ou escolha um tamanho menor.":fixed?"Pronto, ajustado ao limite de caracteres. Copie e cole na sua IA.":"Pronto. Copie e cole na sua IA.",false,truncated||still);
+    $("outSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  }catch(e){
+    if(e?.text) showPrompts(e.text);
+    status($("gStatus"),e?.code==="cancelled"?"Geração interrompida.":errMsg(e),false,e?.code!=="cancelled");
+  }
+  $("gen").disabled=false; $("stop").hidden=true;
+};
+$("stop").onclick=()=>genCtl?.abort();
+
+async function copy(id,btn){
+  const t=$(id).textContent; if(!t)return;
+  try{await navigator.clipboard.writeText(t);toast("Copiado")}
+  catch{const s=getSelection(),r=document.createRange();r.selectNodeContents($(id));s.removeAllRanges();s.addRange(r);toast("Texto selecionado, use Ctrl+C")}
+}
+$("copyEn").onclick=()=>copy("pEn"); $("copyPt").onclick=()=>copy("pPt");
+
+/* ---------- projetos (só neste navegador) ---------- */
+const KEY="lais-render-projetos";
+function loadAll(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch{return[]}}
+function saveAll(l){try{localStorage.setItem(KEY,JSON.stringify(l));return true}catch{return false}}
+function renderProjects(){
+  const l=loadAll(), box=$("projList"); box.innerHTML="";
+  if(!l.length){box.innerHTML='<p class="hint">Nenhum projeto salvo ainda.</p>';return}
+  l.forEach((p,i)=>{const d=document.createElement("div");d.className="proj";
+    d.innerHTML=`<div style="min-width:0;display:flex;flex-direction:column"><span></span><small></small></div><div class="actions"><button class="btn small">Carregar</button><button class="btn ghost small" aria-label="Excluir">×</button></div>`;
+    d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${p.qText?" · texto salvo":" · "+p.rows.length+" materiais"}`;
+    const [lb,db]=d.querySelectorAll("button");
+    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"neutral";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
+    db.onclick=()=>{if(db.dataset.c){const a=loadAll();a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
+    box.append(d)});
+}
+$("saveProj").onclick=()=>{
+  const nome=$("projName").value.trim(); if(!nome){toast("Dê um nome ao projeto");return}
+  const p={nome,kind,tipo,quick:quickMode(),qText:$("qText").value,ledTemp:$("ledTemp").value,pieces:pieces().map(x=>({nome:x.nome,desc:x.desc})),view:$("view").value,atmo:$("atmo").value,dest:$("dest").value,ratio:$("ratio").value,rows:rows(),lightStyle,extras:EXTRAS.filter(x=>x.on).map(x=>x.id),sameMat:$("sameMat").value,lightDir:$("lightDir").value,artOn:$("artOn").value,lights:$("lights").value,notes:$("notes").value};
+  const l=loadAll().filter(x=>x.nome!==nome); l.unshift(p);
+  toast(saveAll(l)?"Projeto salvo neste navegador":"Não foi possível salvar neste navegador"); renderProjects();
+};
+
+/* ---------- início ---------- */
+function setMode(q){ document.body.classList.toggle("quick",q); $("mQuick").setAttribute("aria-pressed",q); $("mDetail").setAttribute("aria-pressed",!q); try{localStorage.setItem("lais-render-modo",q?"q":"d")}catch{} }
+$("mQuick").onclick=()=>setMode(true); $("mDetail").onclick=()=>setMode(false);
+let _m="q"; try{_m=localStorage.getItem("lais-render-modo")||"q"}catch{} setMode(_m!=="d");
+PIECE_PRESETS.forEach(([n,t])=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent="+ "+n;b.onclick=()=>addPiece(n,t);$("pieceChips").append(b)});
+$("addPiece").onclick=()=>addPiece();
+renderTypes(); renderView("keep"); renderChips(); renderExtras(); setRows(EXAMPLE); renderProjects();
+document.querySelectorAll(".mrow").forEach(d=>d.style.opacity=".7");
+$("mat").addEventListener("input",()=>{ if(exampleActive){exampleActive=false;document.querySelectorAll(".mrow").forEach(d=>d.style.opacity="")} });
+$("analyze").hidden=true; $("gen").disabled=true;
+connectAI();
+$("mat").addEventListener("input",updateAnalyze);
+</script>
+
+<script>$("addRow").onclick=()=>{clearExample();addRow();updateAnalyze()};</script>
+
+<script>
+const LOCK=`Do not change global color grading.
+Lock white balance exactly as original image.
+Keep identical temperature and tint.
+Neutral whites must remain neutral.
+No green tint.
+No magenta tint.
+Do not auto-correct color temperature.
+Do not recalibrate scene lighting.
+Preserve original photographic color profile.
+Only apply the requested corrections.`;
+const ORD=["primeira","segunda","terceira","quarta"];
+function sameEnv(n,opt){
+  if(opt===1){
+    const refs=ORD.slice(1,n+1); const r=refs.length>1?refs.slice(0,-1).join(", ")+" e "+refs.at(-1):refs[0];
+    return `A primeira imagem (print do sketch) deve parecer uma NOVA FOTOGRAFIA do MESMO ambiente já fotografado anteriormente (${r} imagem).
+Considere que todas as imagens pertencem ao mesmo ensaio fotográfico profissional de arquitetura, capturado no mesmo minuto e sob as mesmas condições naturais de iluminação.
+A iluminação NÃO deve ser recalculada nem reinterpretada. Ela deve ser herdada do ambiente original.
+• Mesma direção de luz
+• Mesma intensidade
+• Mesma exposição
+• Mesmo balanço de branco
+• Mesma suavidade de sombras
+• Mesmos níveis de contraste
+• Mesma atmosfera
+O horário do dia é fixo e não pode mudar.
+A posição do sol é fixa e não pode mudar.
+A leitura fotográfica deve permanecer idêntica.
+Apenas o ponto de vista da câmera muda.
+Nada mais muda.
+Transformar o print em fotografia mantendo continuidade temporal absoluta.`;}
+  const sk=ORD[n]; const refs=ORD.slice(0,n); const r=refs.length>1?refs.slice(0,-1).join(", ")+" e "+refs.at(-1):refs[0];
+  return `Use a ${sk} imagem (print do SketchUp) como base absoluta de geometria, arquitetura, layout, enquadramento e câmera. NÃO altere absolutamente nada do projeto.
+Use a ${r} imagem como referência visual e fotográfica obrigatória.
+Replique exatamente o mesmo estilo de render da ${r} imagem: iluminação, exposição, balanço de branco, materiais, cores, contraste, temperatura de cor, realismo dos materiais, nível de detalhe, microtexturas, acabamento e atmosfera.
+A ${sk} imagem deve parecer outra fotografia do MESMO ambiente, feita pelo MESMO fotógrafo, no MESMO dia, com a MESMA câmera e os MESMOS parâmetros.
+Materiais PBR realistas, madeira com variação sutil de veios, tecidos com textura natural, piso acetinado com reflexo suave, metais com brilho controlado.
+Iluminação natural difusa, suave e equilibrada, sem sombras duras, sem estourar brancos, sem HDR artificial.
+Câmera de fotografia de interiores, lente equivalente 24–28mm, linhas verticais perfeitamente retas, composição idêntica ao Sketch.
+Resultado final deve ser indistinguível de fotografia profissional, coerente com a ${r} imagem, sem qualquer aparência de IA ou render genérico.`;
+}
+function sameEnvImgs(n,opt){ return opt===1?`Envie: 1º o print novo, depois ${n} render(s) prontos do ambiente`:`Envie: ${n} render(s) prontos do ambiente, por último o print novo`; }
+function anim(dir){
+  if(dir==="frente") return `Plano de acompanhamento cinematográfico para frente.
+A câmera avança lentamente pelo espaço, como se estivesse caminhando naturalmente para dentro do projeto.
+Estabilização sutil com a câmera na mão, efeito de paralaxe natural entre os elementos do primeiro plano e do fundo.
+A perspectiva de profundidade muda de forma realista conforme a câmera avança.
+A folhagem do jardim se move com o vento.
+Mantém-se uma iluminação natural suave, reflexos realistas e materiais detalhados.
+Sem zoom digital. Movimento real da câmera pelo espaço.`;
+  return `Plano de acompanhamento diagonal cinematográfico para a frente.
+A câmera se desloca fisicamente para a frente e ligeiramente para a ${dir} em linha reta diagonal.
+Sem rotação. Sem panorâmica. Sem inclinação. Sem mudança de ângulo da câmera.
+Mantenha a mesma direção e perspectiva de visualização.
+A câmera se move como se estivesse entrando no espaço, enquanto se desloca suavemente para a ${dir}.
+Não revele novas áreas fora do enquadramento original.
+Animação apenas do que já está visível na imagem.
+Paralaxe natural entre os elementos do primeiro plano e do fundo.
+Objetos mais próximos da câmera se movem mais rápido do que os distantes, criando profundidade realista.
+Mantenha 100% da arquitetura, layout, materiais, iluminação e objetos originais.
+Sem adições, modificações ou reinterpretações.
+Sem zoom digital. Apenas movimento espacial real da câmera.`;
+}
+const PRESERVE=`Preservar completamente:
+– materiais
+– iluminação
+– texturas
+– enquadramento original
+– cores
+– proporções do ambiente
+Não inventar novos objetos. Não modificar a arquitetura. Não alterar o layout. Não girar a câmera.`;
+const LIB=[
+ {c:"Gemini",n:"Gem: seu gerador de prompts",w:"Cole este texto como instruções de um Gem no Gemini. Depois é só mandar o print e escrever os materiais do seu jeito.",gem:true,lock:false},
+ {c:"Ajustes",n:"Pós no Magnific sem modificar",w:"Melhora o realismo da imagem pronta sem mexer em nada.",lock:false,t:`Não modifique geometria, layout, proporções ou ângulo de câmera.
+Não altere nenhuma cor ou tonalidade dos materiais.
+Não reinterprete a iluminação.
+Não altere balanço de branco ou exposição.
+Preserve a composição original exatamente como está.
+Apenas melhore o realismo físico através de:
+– refinamento de microtexturas de superfície
+– leve profundidade nos materiais
+– melhor definição das fibras dos tecidos
+– nitidez realista nas bordas
+– micro contraste natural
+– ruído fotográfico sutil
+– realismo de lente
+Sem reinterpretação criativa.
+Sem mudanças de design.
+Sem alteração de cores.
+Sem adição de elementos.`},
+ {c:"Ajustes",n:"Trava de cor",w:"Cole no fim de qualquer pedido de alteração para a imagem não amarelar nem esverdear.",lock:false,t:LOCK},
+ {c:"Ajustes",n:"Corrigir usando o print",w:"A imagem está ótima mas um elemento saiu diferente do SketchUp.",img:"Envie: 1º o print do SketchUp, 2º o render",lock:true,t:`Na segunda imagem, mude apenas:
+Represente a geometria do [ELEMENTO, ex.: painel de TV] EXATAMENTE conforme o print do SketchUp (primeira imagem).
+[Detalhe, ex.: Os frisos devem ser exatamente iguais.]`},
+ {c:"Ajustes",n:"Corrigir geometria e textura pelo print",w:"Quando a textura de um móvel também precisa seguir o print.",img:"Envie: 1º o print do SketchUp, 2º o render",lock:true,t:`Na segunda imagem, mude apenas:
+Represente a geometria e textura do [ELEMENTO, ex.: tampo e da base da mesa de jantar], EXATAMENTE conforme o print do SketchUp (primeira imagem).
+As texturas desses materiais, presentes no print, devem ser reproduzidas com fidelidade e precisão fotográfica.`},
+ {c:"Ajustes",n:"Trocar cor de revestimento",w:"Testar outra cor de revestimento numa imagem pronta.",img:"Envie: 1º o render, 2º a referência de cor",lock:true,t:`Use a imagem do ambiente como base final e correta.
+Use a SEGUNDA imagem enviada como referência EXATA de cor.
+Altere APENAS a cor do [REVESTIMENTO, ex.: revestimento cerâmico rosa da parede da janela].
+Substitua a cor atual pela MESMA cor presente na imagem de referência, igualando:
+- tonalidade
+- saturação
+- luminosidade
+- temperatura de cor
+NÃO interpretar, NÃO aproximar, NÃO variar a cor.
+A cor deve ser visualmente idêntica à imagem de referência.
+NÃO altere:
+- paginação
+- sentido das peças
+- formato
+- tamanho
+- juntas
+- material
+- textura
+- acabamento
+- geometria
+- iluminação
+- câmera
+- nenhum outro elemento do ambiente
+Esta é uma substituição cromática precisa, não uma reinterpretação do revestimento.`},
+ {c:"Ajustes",n:"Bancada em São Gabriel escovado",w:"Trocar só o acabamento da bancada. Adapte a pedra se for outra.",img:"Envie: 1º o render, 2º a referência da pedra",lock:true,t:`Modificar exclusivamente o material da bancada.
+Toda a cena deve permanecer absolutamente idêntica.
+Não alterar geometria, iluminação, câmera, objetos, paredes, piso, madeira ou espelho.
+Substituir completamente o acabamento superficial da bancada.
+Transformar o acabamento da pedra para granito preto São Gabriel escovado.
+A superfície não deve parecer polida.
+O acabamento da pedra deve ser resultado de escovação diamantada sobre granito natural, com micro erosão superficial.
+Deve haver:
+– diamond brushed granite surface micro erosion
+– subtle stone brushing abrasion marks
+– extremely fine granite surface grain
+– very shallow irregularities on the stone surface
+– delicate mineral relief interacting with light
+– extremely fine mineral speckles
+– irregular microscopic mineral distribution
+– micro crystalline granite composition
+A escala mineral deve ser extremamente pequena em relação ao tamanho da bancada.
+Evitar completamente:
+– aparência polida
+– brilho especular forte
+– relevo profundo
+– aparência de rocha quebrada
+– aparência de ardósia rústica
+– textura procedural uniforme`},
+ {c:"Ajustes",n:"Mesmo revestimento, cores diferentes",w:"Use no checklist final quando o mesmo material sai com tons diferentes.",lock:false,t:`O revestimento da [SUPERFÍCIE, ex.: parede refletida no espelho] deve ser idêntico ao revestimento da [OUTRAS SUPERFÍCIES, ex.: parede da janela e do piso] ([NOME DO REVESTIMENTO]), acabamento [ACABAMENTO].
+Esses revestimentos idênticos devem ser tratados como uma única instância de material.
+Se um mesmo revestimento aparece em múltiplas superfícies refletido no espelho, ele deve manter exatamente a mesma tonalidade, padrão e variação.
+Proibido variar tonalidade entre superfícies do mesmo material.
+Proibido interpretar reflexos como material diferente.`},
+ {c:"Ajustes",n:"Espelho borrado",w:"Adicione ao prompt quando o espelho reflete estranho.",lock:false,t:`Espelho com reflexão perfeitamente nítida e fiel, comportamento óptico real.
+Reflexão especular limpa, sem desfoque, sem blur, sem efeito fosco ou acetinado.
+Roughness = 0.0.
+Sem suavização de reflexos, sem tratamento artístico.
+O espelho deve refletir o ambiente com nitidez total, como um espelho real de alta qualidade.`},
+ {c:"Iluminação",n:"Ligar luzes artificiais",w:"A imagem está pronta e você quer acender as luzes. Edite a lista.",lock:true,t:`Ligar as luzes artificiais existentes no modelo:
+Spots do forro ligados
+Iluminação do cortineiro ligada
+Perfis de LED do forro ligados
+Nicho ligado
+Luzes artificiais com temperatura de cor de 2700K e intensidade baixa.
+O forro não possui sanca iluminada em nenhuma lateral do seu perímetro.
+Não adicionar e nem modificar nenhuma peça de iluminação.`},
+ {c:"Iluminação",n:"Blue hour",w:"Transformar a imagem pronta em início de noite. Edite as luzes que acendem.",lock:false,t:`Use a imagem renderizada como base.
+Altere APENAS as condições de iluminação e a temperatura da cor.
+Iluminação: blue hour / início da noite.
+Luz externa levemente azulada e fria, entrando suavemente pela janela.
+Ligar as luzes artificiais [do nicho, do spot existente no forro e do perfil de LED centralizado no forro], com temperatura de cor de 2700K, criando contraste com o exterior.
+Não ligar mais nenhuma outra luz artificial.
+Expressamente proibido adicionar spots ou qualquer luminária no forro.
+Nenhum elemento adicionado ou removido.
+Preservar exatamente: arquitetura, materiais, texturas, mobiliário, proporções, câmera, enquadramento e composição.
+Sem alterações nos materiais, sem redesenho, sem movimentação de objetos, sem reinterpretação. Sem adicionar nada.
+Aparência fotográfica, equilíbrio de exposição realista, sombras suaves, contraste natural.
+O resultado deve parecer a mesma fotografia tirada em um horário diferente do dia.`},
+ {c:"Iluminação",n:"Golden hour suave, sem sol direto",w:"Fim de tarde elegante e difuso.",lock:false,t:`• Use a imagem renderizada como base e mantenha 100% do projeto original.
+• Ajuste exclusivamente a iluminação para um estilo de fotografia profissional de arquitetura, inspirado em luz natural suave de fim de tarde, porém sem sol direto.
+• Iluminação principal: luz natural indireta e difusa, simulando um dia claro com luz quente suave entrando por aberturas fora do enquadramento ou janelas existentes. Não permitir incidência direta do sol sobre superfícies internas.
+• Distribuição de luz equilibrada e uniforme, com preenchimento suave (bounce light natural), sombras muito macias, de baixo contraste e transições suaves.
+• White balance levemente quente e elegante (aprox. 4500–4800K), sem dominante amarela ou alaranjada. Brancos limpos e naturais.
+• Iluminação artificial apenas como preenchimento invisível, sem spots aparentes, fachos ou iluminação dramática.
+• Altere APENAS as condições de iluminação e a temperatura da cor.
+• Expressamente proibido adicionar spots ou qualquer luminária no forro.
+• Nenhum elemento adicionado ou removido.
+• Preservar exatamente: arquitetura, materiais, texturas, mobiliário, proporções, câmera, enquadramento e composição.
+• O resultado deve parecer uma fotografia editorial real, com atmosfera acolhedora, sofisticada e extremamente realista, sem aparência de render ou IA.`},
+ {c:"Iluminação",n:"Golden hour com sol entrando",w:"Pôr do sol de verdade, luz lateral e sombras longas.",lock:false,t:`Transforme o mood desta imagem para um cenário de final de tarde (golden hour).
+A geometria, layout, materiais, móveis, câmera, enquadramento e composição devem permanecer exatamente iguais.
+Não alterar o projeto arquitetônico. Apenas modificar a atmosfera de iluminação.
+ILUMINAÇÃO NATURAL – GOLDEN HOUR
+• Luz solar quente entrando lateralmente pela abertura principal do ambiente.
+• Direção da luz baixa no horizonte, típica de fim de tarde.
+• A luz atravessa o ambiente criando áreas iluminadas naturais sobre piso, mesa e superfícies próximas à janela.
+Sombras suaves porém alongadas, projetadas pela luz lateral do sol.
+Temperatura de cor da luz natural: 3800K – 4500K.
+Equilíbrio de exposição: interior levemente mais escuro, exterior mais iluminado, contraste natural, nenhuma área estourada.
+Atmosfera: sensação de pôr do sol entrando no ambiente, tons naturalmente quentes.
+Não adicionar luz artificial. Toda a iluminação deve parecer proveniente apenas da luz solar externa.`},
+ {c:"Iluminação",n:"Blue hour com referência",w:"Copiar o clima de uma foto de referência.",img:"Envie: 1º o render, 2º a foto de referência",lock:false,t:`Mudar o clima do ambiente para Blue hour e ligar as luzes artificiais [do perfil de LED do forro e do nicho] com temperatura de cor de 2700K.
+Manter a imagem do plano de fundo da janela a mesma, apenas mudar a cor.`},
+ {c:"Iluminação",n:"Golden hour com referência",w:"Copiar o clima de uma foto de referência.",img:"Envie: 1º o render, 2º a foto de referência",lock:false,t:`Mude o clima dessa fotografia para Golden Hour.`},
+ {c:"Mesmo ambiente",n:"Novo ângulo do mesmo ambiente",w:"Outra imagem do projeto mantendo luz e materiais iguais aos renders prontos.",same:true,lock:false},
+ {c:"Humanizar",n:"Pessoas e pets",w:"Prompt simples, descrevendo só a ação.",lock:true,t:`Insira [uma mulher lavando as mãos de frente para o espelho / um cachorro da raça maltês deitado descansando no tapete].`},
+ {c:"Humanizar",n:"Mulher andando com motion blur",w:"Pessoa passando casualmente, borrada pelo movimento.",lock:true,t:`Inserir uma mulher caminhando naturalmente na cena, integrada ao ambiente como fotografia arquitetônica profissional.
+Mulher em movimento real de caminhada.
+Aplicar motion blur horizontal suave e natural, simulando pessoa capturada em movimento com obturador levemente lento.
+Corpo levemente borrado, mas mantendo silhueta legível.
+Sem efeito fantasma exagerado. Sem deformações anatômicas.
+Roupas neutras e realistas, sem chamar atenção.
+Regras obrigatórias de integração:
+Respeitar escala humana correta.
+Respeitar perspectiva do piso.
+Respeitar direção da luz existente.
+Aplicar sombra coerente com a iluminação da cena.
+Igualar exposição, contraste e temperatura de cor.
+Não alterar arquitetura nem materiais do projeto.
+A imagem deve parecer uma fotografia real de arquitetura com pessoa passando casualmente, não um personagem inserido por IA.`},
+ {c:"Humanizar",n:"Criança pulando na cama",w:"Movimento espontâneo num quarto infantil.",lock:false,t:`Adicionar uma criança menina (aproximadamente 5-8 anos) pulando sobre a cama existente na imagem.
+A criança deve estar capturada no meio do salto ou no momento de aterrissagem, no meio da cama, transmitindo movimento natural e espontâneo.
+Aplicar motion blur físico e realista apenas nas partes em movimento (pernas).
+O rosto deve permanecer parcialmente legível, com leve desfoque coerente com velocidade real de salto.
+O cabelo deve reagir à gravidade e ao movimento.
+Roupas leves (ex.: pijama claro neutro), com leve deformação causada pelo salto.
+A interação com o colchão gera leve compressão realista no ponto de contato, sem deformar excessivamente a cama.
+Motion blur consistente com fotografia DSLR, shutter speed entre 1/30s e 1/60s.
+Manter profundidade de campo idêntica à imagem original.
+Sombras coerentes com a direção de luz já existente.
+Oclusão natural entre corpo e roupa de cama.
+Do not change global lighting.
+Lock white balance exactly as original image.
+Keep identical temperature and tint.
+Do not recalibrate exposure.
+Do not modify materials.
+Do not alter geometry of the bed or room.
+Do not change camera angle or framing.
+Do not add any new objects.
+Preserve original architectural elements pixel-identical.
+Only insert the child with realistic motion blur.`},
+ {c:"Detalhes",n:"Foto de detalhe do projeto",w:"Close de material, marcenaria ou encontro construtivo. Versão curta: “Gere um detalhe ultra-realista desta cena.”",lock:false,t:`1) Fotografia de detalhe profissional (obrigatório)
+Gerar uma fotografia de detalhe do ambiente, como se fosse capturada por um fotógrafo profissional de arquitetura.
+A IA deve escolher automaticamente um ponto relevante do projeto para enquadramento em close, priorizando materiais, encontros construtivos, texturas, mobiliário, metais, marcenaria, tecidos ou superfícies com interesse visual.
+O enquadramento deve simular fotografia real:
+• Close natural, não artificial
+• Crop fotográfico realista (não parecer zoom digital)
+• Profundidade de campo física e natural
+• Leve desfoque de fundo quando plausível
+• Lente profissional realista
+2) Realismo físico do detalhe (obrigatório)
+• Microtexturas reais
+• Rugosidade física coerente
+• Reflexos naturais conforme material
+• Micro imperfeições sutis e plausíveis
+• Variações mínimas de superfície
+• Contatos físicos corretos entre materiais
+Não exagerar imperfeições. Não inventar novos materiais. Preservar fielmente o projeto original.
+3) Fidelidade absoluta ao projeto (obrigatório)
+• Não alterar geometria
+• Não alterar layout
+• Não substituir materiais
+• Não alterar cores do projeto
+• Não adicionar objetos
+Apenas gerar uma fotografia de detalhe do MESMO ambiente.`},
+ {c:"Detalhes",n:"Mapa Random Color",w:"Gera um passe de cores sólidas para selecionar materiais no Photoshop.",lock:false,t:`Gere uma imagem Render Elements / Material Random Color, baseada EXCLUSIVAMENTE na imagem de referência enviada.
+Mantenha 100% a mesma câmera, enquadramento, perspectiva e proporções.
+A imagem final deve ser um mapa técnico de seleção de materiais para edição no Photoshop: cada material diferente deve aparecer com uma cor sólida única e bem contrastada (flat colors), sem gradientes, sem sombras, sem textura, sem iluminação, sem reflexos e sem variações de tom.
+Não deve parecer fotografia, e sim um passe de renderização.`},
+ {c:"Animação",n:"Câmera entrando no ambiente",w:"Movimento de câmera a partir da imagem pronta.",anim:true,lock:false},
+ {c:"Animação",n:"Mulher lavando as mãos",w:"Banheiro ou lavabo com pessoa já inserida na imagem.",lock:false,t:`A câmera realiza um movimento de aproximação suave (slow dolly in), entrando no ambiente de forma contínua e fluida, como se estivesse caminhando para dentro do banheiro. O movimento deve ser estável, sem tremores, sem cortes e sem alteração de ângulo.
+Durante a aproximação, a câmera direciona suavemente o foco para a mulher lavando as mãos na pia, mantendo proporções naturais e anatomia correta. Não alterar o rosto, não modificar roupas, não adicionar ou remover elementos da cena.
+A água corrente deve ter movimento natural e sutil. O reflexo no espelho deve permanecer coerente e fiel à cena original, sem distorções ou duplicações incorretas.
+${PRESERVE}
+Movimento suave, realista e controlado, com profundidade de campo leve focando na mulher no final da animação.`},
+ {c:"Animação",n:"Água saindo da torneira",w:"Banheiro ou lavabo, foco na torneira.",lock:false,t:`A câmera realiza um movimento de aproximação suave (slow dolly in), entrando no ambiente de forma contínua e fluida, como se estivesse caminhando para dentro do banheiro. O movimento deve ser estável, sem tremores, sem cortes e sem alteração de ângulo.
+Durante a aproximação, a câmera direciona suavemente o foco para a torneira enquanto a água cai.
+A água corrente deve ter movimento natural e sutil. O reflexo no espelho deve permanecer coerente e fiel à cena original, sem distorções ou duplicações incorretas.
+${PRESERVE}
+Movimento suave, realista e controlado, com profundidade de campo leve focando na água no final da animação.`},
+ {c:"Fachada",n:"Fachada diurna · céu azul",w:"Insere rua, calçada, vizinhança discreta e árvores. Use quando o print não tem entorno.",lock:false,t:`Fotografia externa hiper-realista de fachada residencial brasileira contemporânea, documentando exatamente a arquitetura presente no print fornecido, sem qualquer alteração de materiais, cores, volumetria, proporções ou elementos arquitetônicos.
+A imagem deve parecer uma fotografia profissional real: câmera full-frame posicionada no mesmo ponto físico do print, lente equivalente a 35–50mm, ângulo, altura e distância 100% idênticos ao print (TIGHT framing). Manter o aspect ratio da imagem fornecida.
+A arquitetura é a protagonista absoluta (≈55–60% do quadro), estritamente fiel ao projeto.
+Contexto urbano brasileiro contemporâneo plausível, com leitura clara de rua, calçada e alinhamento urbano. Casas vizinhas só como contexto silencioso (≈15–20%): contemporâneas, volumes simples, platibandas, paleta neutra (branco, cinza, madeira, preto), menos contraste e menos detalhe que a casa principal.
+Vegetação urbana viva e realista como coprotagonista (≈25–30%): 2 a 4 árvores urbanas brasileiras (palmeiras e/ou copa leve), camadas bem definidas (árvore + arbustos + gramado) e sombras orgânicas no solo, calçada e rua. A vegetação emoldura a composição sem competir com a arquitetura.
+Primeiro plano: rua asfaltada realista com desgaste sutil, calçada e meio-fio em concreto bem executado. Quando fizer sentido, vegetação rasteira discreta como moldura fotográfica.
+Luz diurna natural brasileira: céu azul com gradiente suave, poucas nuvens baixas, sol alto ou levemente lateral, sombras nítidas e fisicamente corretas, 5500K–6500K.
+Sinais sutis de vida real: garagem ocupada, carros compatíveis com o padrão do bairro, cortinas ou persianas visíveis, reflexos naturais nos vidros.
+Qualidade editorial: hiper-realismo fotográfico, alta faixa dinâmica, nitidez precisa sem excesso, materiais com comportamento físico correto.
+Nenhuma interpretação, nenhuma melhoria estética, nenhuma modificação arquitetônica. O print é a única fonte de verdade.
+Evitar: arquitetura imaginada, casa genérica, alterar ângulo da câmera ou perspectiva, nivelar horizonte, corrigir inclinação, alterar materiais ou cores, redesenhar a arquitetura, prédios altos ao fundo, embelezamento, iluminação cinematográfica, céu dramático, aparência de CGI ou render, vista panorâmica, elementos decorativos.`},
+ {c:"Fachada",n:"Fachada diurna · nublado",w:"Luz difusa de dia encoberto, cores fiéis, entorno discreto.",lock:false,t:`Registro fotográfico externo de fachada residencial contemporânea brasileira sob céu encoberto, com luz ambiente difusa e uniforme.
+A edificação corresponde exatamente à arquitetura do print de referência, preservando volumetria, materiais, cores, proporções, aberturas e elementos construtivos, sem ajuste, interpretação ou correção estética.
+A câmera está no mesmo ponto físico do print, com enquadramento fechado (TIGHT), mesma altura, distância e perspectiva, como se o render fosse a prévia de uma foto real feita no local após a obra.
+A casa ocupa a maior parte do quadro. O entorno urbano aparece de forma funcional e silenciosa: rua, calçada e vizinhança compatível, sem competir com a edificação.
+Vegetação urbana presente: árvores de porte médio e copa leve, arbustos e gramado, saudáveis e bem cuidados.
+Céu encoberto: sombras suaves, abertas e pouco contrastadas, que ainda dão leitura de escala e profundidade. Contraste reduzido, saturação controlada, reprodução fiel dos materiais, temperatura neutra a levemente fria (~6000K). Reflexos discretos, sem brilhos especulares intensos.
+Indícios sutis de uso: garagem em uso, veículos compatíveis com o bairro, interiores levemente visíveis pelos vidros, cortinas ou persianas, sem encenação.
+Resultado indistinguível de uma fotografia editorial documental feita num dia nublado comum no Brasil.
+Evitar: arquitetura imaginada, casa genérica, alterar ângulo da câmera ou perspectiva, nivelar horizonte, corrigir inclinação, alterar materiais ou cores, redesenhar a arquitetura, prédios altos ao fundo, embelezamento, sol direto, sombras duras, céu dramático, aparência de CGI ou render, vista panorâmica.`},
+ {c:"Fachada",n:"Fachada noturna",w:"Noite com luzes quentes reais da casa e iluminação pública discreta.",lock:false,t:`Fotografia externa hiper-realista e noturna de fachada residencial brasileira contemporânea, documentando exatamente a arquitetura do print, sem qualquer alteração de materiais, cores, volumetria, proporções ou elementos arquitetônicos.
+O enquadramento corresponde rigorosamente ao ponto de vista do print: mesmo ângulo, altura, distância e recorte.
+A casa é o elemento central e dominante. Leitura urbana clara: rua, calçada e alinhamento frontal num bairro brasileiro contemporâneo organizado e habitado.
+Iluminação noturna com luzes quentes reais, vindas só de fontes plausíveis do dia a dia: iluminação arquitetônica externa da própria casa, balizadores, arandelas, luz interna visível pelas aberturas e iluminação pública discreta. Temperatura predominantemente quente (2700K–3000K), leitura confortável dos volumes, sem efeitos cênicos.
+Vegetação urbana integrada: árvores de porte médio ou copa leve, arbustos e gramado, iluminados de forma indireta, com sombras suaves e orgânicas.
+Calçada e área frontal com piso contínuo, meio-fio visível e integração coerente entre paisagismo, acesso e rua.
+Céu noturno discreto e profundo, só como fundo neutro. Sombras suaves, múltiplas e coerentes com várias fontes quentes.
+Sinais sutis de habitação: luzes internas parcialmente acesas, garagem em uso, reflexos quentes e naturais em vidros.
+Resultado indistinguível de uma fotografia real noturna de arquitetura residencial, exposição equilibrada, cores controladas, aparência editorial.
+Evitar: arquitetura imaginada, casa genérica, alterar ângulo da câmera ou perspectiva, nivelar horizonte, corrigir inclinação, alterar materiais ou cores, redesenhar a arquitetura, luminárias inventadas, embelezamento, iluminação cinematográfica, céu dramático, aparência de CGI ou render.`},
+ {c:"Fachada",n:"Fachada blue hour com luzes",w:"Céu azul profundo, casa acesa, calçada e vegetação obrigatórias.",lock:false,t:`Fotografia externa hiper-realista de fachada residencial brasileira contemporânea durante a blue hour, documentando exatamente a arquitetura do print, sem qualquer alteração de materiais, cores, volumetria, proporções ou elementos arquitetônicos.
+Enquadramento rigorosamente idêntico ao do print: mesmo ângulo, altura, distância e ponto de vista, sem ajuste de perspectiva.
+A arquitetura é o elemento principal e ocupa a maior parte do quadro, inserida num contexto urbano brasileiro real e legível: calçada, meio-fio e rua compondo a frente do lote de forma organizada.
+A calçada não pode ser vazia, abstrata ou genérica: piso contínuo, alinhamento urbano claro e integração física com o acesso da casa, sem competir com a arquitetura.
+Vegetação urbana obrigatória e visível: 2 a 4 árvores de porte compatível, arbustos e gramado em camadas claras (árvore + arbusto + solo), criando profundidade e escala, com sombras orgânicas no solo, na calçada e na fachada.
+Céu azul profundo característico da blue hour, gradiente suave, luminosidade baixa, em equilíbrio com a iluminação artificial.
+Luzes da residência acesas, quentes (2700K–3000K) e realistas: iluminação arquitetônica externa, arandelas, balizadores e luz interna visível pelas aberturas, revelando volumes sem efeito cênico.
+Entorno construído só como apoio contextual, silencioso e secundário. Sinais sutis de uso: garagem em uso, veículos compatíveis com o bairro, reflexos naturais nos vidros.
+Resultado indistinguível de uma fotografia real de arquitetura residencial brasileira na blue hour.
+Evitar: arquitetura imaginada, casa genérica, alterar ângulo da câmera ou perspectiva, nivelar horizonte, corrigir inclinação, alterar materiais ou cores, redesenhar a arquitetura, luminárias inventadas, embelezamento, céu dramático ou roxo, aparência de CGI ou render.`},
+ {c:"Fachada",n:"Área de lazer com piscina",w:"Fidelidade máxima: não acrescenta nada ao projeto, nem vegetação nem objetos.",lock:false,t:`Fotografia externa hiper-realista de área de lazer residencial, gerada exclusivamente a partir do print fornecido, que é a única e absoluta fonte de verdade. A tarefa é apenas converter a aparência do print em fotografia profissional real, sem interpretação de projeto, decisão criativa ou complemento de informação.
+É expressamente proibido acrescentar qualquer coisa: volumes, planos, bordas, espessuras, elementos construtivos, mobiliário, vegetação, objetos, equipamentos, aberturas, fundos, vizinhos, detalhes, texturas ou decoração que não estejam clara e inequivocamente presentes no print.
+É igualmente proibido remover, substituir, completar, corrigir, regularizar, otimizar ou reinterpretar qualquer elemento. Geometria, proporções, alinhamentos, assimetrias, encontros de planos e limites físicos ficam exatamente como no print.
+Câmera exatamente no mesmo ponto físico do print. Full-frame, lente equivalente 35–50mm apenas como referência técnica, mantendo ângulo de visão, altura, distância, eixo óptico, campo visual, enquadramento e aspect ratio 100% idênticos (TIGHT framing). Sem mover, aproximar, afastar, cortar, expandir, recompor ou corrigir perspectiva.
+Materiais, cores e texturas exatamente como visíveis no print, sem substituições nem inferências. O que não estiver claramente definido no print não aparece na imagem.
+Luz natural diurna neutra, com sombras fisicamente corretas, só para revelar o que já existe. A luz não pode esconder, suavizar, dramatizar ou alterar a leitura da geometria. A água da piscina com transparência, reflexos e cáusticas físicas, sem mudar a cor do revestimento.
+Humanização limitada a vestígios passivos de uso real, sem novos elementos: nada de pessoas, móveis soltos, objetos, plantas ou veículos que não estejam no print.
+Hiper-realismo fotográfico, alta faixa dinâmica, nitidez precisa sem oversharpen. Se houver conflito entre realismo e fidelidade ao print, a fidelidade prevalece. A imagem deve parecer uma fotografia real exatamente do projeto, sem acrescentar absolutamente nada.`},
+ {c:"Interna",n:"Interna diurna clean",w:"Fotografia editorial documental, luz natural suave pelas aberturas existentes.",lock:false,t:`Fotografia interna hiper-realista de arquitetura construída, com aparência inequívoca de fotografia profissional editorial, como publicada em revistas brasileiras de arquitetura contemporânea. Capturada in loco por um fotógrafo de arquitetura experiente, com câmera full-frame e lente equivalente a 35–50mm, sem distorção óptica, correção artificial de perspectiva ou efeito de lente exagerado.
+O print fornecido é a ÚNICA fonte de verdade do projeto. A imagem documenta exatamente a arquitetura do print, sem interpretação, adaptação ou correção.
+Ângulo, enquadramento, ponto de vista, altura da câmera e distância focal rigorosamente idênticos ao print.
+É terminantemente proibido alterar, por menor que seja: materiais, cores, volumetria, proporções, layout, revestimentos, esquadrias, mobiliário, elementos construtivos e arquitetônicos. Nada pode ser adicionado, removido, substituído, reorganizado ou redesenhado. Se houver conflito entre realismo e fidelidade ao print, a fidelidade prevalece.
+Luz predominantemente natural diurna, entrando só pelas aberturas existentes no print (janelas, portas ou panos de vidro), suave, difusa e realista, sem contraluz excessivo e sem luz artificial dominante. Balanço de branco natural, ~5600–6000K.
+Sombras leves, orgânicas e fisicamente corretas, com gradiente progressivo de luz que dá profundidade e escala.
+Materiais com resposta física real: reflexos sutis e controlados, microtexturas visíveis, variações naturais de superfície, imperfeições mínimas, sem oversharpen. Nada de aparência de render, CGI ou ilustração.
+Ambiente limpo, organizado e habitado de forma sutil. Cortinas, persianas, caixilhos, trilhos e ferragens só se já estiverem no print.
+Estética editorial: alto alcance dinâmico, contraste equilibrado, cores neutras e fiéis, sem saturação excessiva. Sem estilização, efeito cinematográfico, dramatização de luz ou intervenção criativa.
+Evitar: ambiente imaginado, alterar ângulo da câmera ou perspectiva, corrigir verticais, alterar materiais ou cores, adicionar ou remover objetos, embelezamento, iluminação cinematográfica, sombras duras, janela estourada, aparência de CGI ou render, saturação excessiva.`},
+ {c:"Interna",n:"Interna diurna · nublado",w:"Luz homogênea de dia encoberto, atmosfera calma.",lock:false,t:`Fotografia interna hiper-realista de arquitetura, com aparência de foto profissional editorial, câmera full-frame e lente padrão (35–50mm equivalente), mantendo ângulo, altura e distância de câmera rigorosamente idênticos ao print, sem correção criativa de perspectiva.
+Ambiente reproduzido exatamente como no projeto fornecido, sem alteração de layout, volumetria, materiais, cores, mobiliário ou proporções.
+Luz natural difusa de céu nublado (overcast), entrando pelas aberturas existentes: homogênea, suave e envolvente, sem contraste forte, sem sombras duras, sem sol direto. Leves gradientes naturais de luminosidade, atmosfera calma e silenciosa.
+Balanço de branco levemente neutro-frio (≈5200–5600K), cores fiéis e dessaturação sutil típica de dia nublado.
+Materiais com comportamento físico correto: reflexos baixos, texturas suaves, leitura clara das superfícies, sem brilho excessivo.
+Ambiente clean e organizado, com sinais mínimos de uso real, sem encenação nem elementos adicionados.
+Estética de fotografia de arquitetura publicada: alto alcance dinâmico, contraste reduzido e controlado, nitidez natural, aparência honesta e documental.
+Evitar: ambiente imaginado, alterar ângulo da câmera ou perspectiva, corrigir verticais, alterar materiais ou cores, adicionar ou remover objetos, embelezamento, sol direto, sombras duras, iluminação cinematográfica, aparência de CGI ou render.`},
+ {c:"Interna",n:"Interna blue hour",w:"Transição dia–noite, luz fria de fora e luminárias existentes quentes.",lock:false,t:`Fotografia interna hiper-realista de arquitetura, aparência de fotografia profissional editorial, câmera full-frame e lente padrão (35–50mm equivalente), com ângulo, altura, distância e enquadramento rigorosamente idênticos ao print, câmera na altura do olhar, sem correção ou otimização de perspectiva.
+Ambiente reproduzido exatamente conforme o projeto, que é a única fonte de verdade. É terminantemente proibido alterar, reinterpretar, corrigir ou melhorar geometria, layout, volumetria, proporções, alinhamentos, espessuras, vãos, alturas, ângulos, encontros construtivos, materiais, cores ou mobiliário. Nada pode ser adicionado, removido, deslocado, redimensionado ou suavizado.
+Luz natural de fim de tarde avançando para o início da blue hour, entrando só pelas aberturas existentes: luz externa baixa e difusa, tons frios azulados do céu, sem sol direto.
+Iluminação artificial interna acesa somente onde já existe no projeto, quente (≈3000K), intensidade moderada, como luz de apoio, sem dominar a cena nem criar efeito cenográfico.
+Balanço de branco equilibrado para a transição dia–noite (≈4800–5200K), convivência natural entre luz externa fria e luz interna quente, contraste controlado, sombras suaves, profundidade clara sem efeito cinematográfico.
+Materiais com resposta física correta sobre a geometria original, reflexos discretos coerentes com pouca luz, texturas legíveis, sem oversharpen.
+Ambiente clean e organizado. Cortinas, persianas ou caixilhos só se já existirem no projeto.
+Se houver conflito entre realismo e fidelidade ao projeto, a fidelidade prevalece. A imagem deve parecer uma fotografia real do espaço construído exatamente como projetado, no momento real da transição para a blue hour.
+Evitar: ambiente imaginado, alterar ângulo da câmera ou perspectiva, alterar materiais ou cores, luminárias inventadas, adicionar ou remover objetos, céu roxo ou saturado, iluminação cinematográfica, aparência de CGI ou render.`},
+ {c:"Representação",n:"Perspectiva isométrica técnica",w:"Transforma a cena em isométrica estilo CAD, com cotas e anotações.",lock:false,t:`Crie uma perspectiva isométrica técnica (axonometric/isometric) baseada estritamente na imagem de referência, mantendo fielmente arquitetura, proporções, layout, mobiliário e elementos construtivos, sem qualquer alteração no projeto.
+A representação simula um desenho técnico em estilo CAD, com:
+- projeção isométrica precisa (sem perspectiva cônica)
+- linhas limpas e bem definidas, com hierarquia de espessuras (contornos, detalhes, elementos secundários)
+- cotas de largura, altura, profundidade e afastamentos aplicadas na isometria
+- anotações técnicas e chamadas de materiais
+- indicação de paredes, esquadrias e mobiliário fixo
+- símbolos técnicos quando aplicável
+Direção visual: estilo CAD sem renderização realista; preto e branco ou cores técnicas mínimas (linhas pretas, cotas em cinza ou azul claro); fundo branco com aparência de prancha técnica profissional; organização clara e legível; alta precisão gráfica.
+Evite texturas, sombras realistas e efeitos artísticos. O foco é uma representação técnica isométrica, limpa, precisa e informativa, como um desenho executivo tridimensional.`},
+ {c:"Representação",n:"Moodboard editorial",w:"Extrai paleta, materiais e mobiliário da imagem num painel de revista.",lock:false,t:`Crie um moodboard arquitetônico editorial de alto padrão baseado estritamente na imagem de referência do interior. Use a imagem para extrair com precisão paleta de cores, materiais, texturas e linguagem do mobiliário, sem reinterpretar o estilo.
+O moodboard inclui:
+- amostras realistas dos materiais da cena (madeira, pedra, tecido, metal, vidro)
+- recortes do mobiliário e dos elementos decorativos do ambiente original
+- paleta cromática organizada com as cores reais da cena
+- texturas em alta definição com aparência tátil (grão da madeira, veios da pedra, trama dos tecidos)
+- composição limpa e sofisticada, com respiro entre os elementos
+Direção estética: layout editorial minimalista de revista de arquitetura premium, fundo branco ou off-white, luz suave e difusa com sombras leves, grid assimétrico equilibrado, hierarquia clara.
+Evite exageros gráficos, cores saturadas ou elementos que não estejam na imagem original.`},
+ {c:"Representação",n:"Desenho técnico CAD",w:"Vista ortogonal com cotas, hierarquia de linhas e chamadas de materiais.",lock:false,t:`Crie uma versão de desenho técnico em estilo CAD baseada estritamente na imagem de referência. Mantenha exatamente a mesma arquitetura, proporções, volumetria, esquadrias e elementos construtivos.
+Apresente como desenho técnico arquitetônico, com:
+- linhas precisas e limpas (traço técnico) com espessuras hierarquizadas
+- cotas de altura, largura e afastamentos
+- anotações técnicas e chamadas de materiais
+- símbolos arquitetônicos quando aplicável
+- portas, janelas e aberturas representadas com clareza
+- projeção ortogonal (vista frontal ou lateral conforme o ângulo original)
+- aparência de prancha técnica, fundo branco, sem texturas realistas
+Evite renderização realista, cores, sombras volumétricas e efeitos artísticos. O objetivo é uma representação técnica e construtiva fiel à imagem original.`},
+ {c:"Animação",n:"Transição: cena → desenho técnico",w:"Vídeo interativo · da imagem 1 para a 2. Zoom que atravessa a arquitetura.",lock:false,t:`A câmera faz um zoom extremo que começa suave e acelera progressivamente até se tornar um zoom profundo e intenso, com continuidade fluida durante todo o movimento. Ao avançar, atravessa as camadas da arquitetura, passando por elementos construtivos, volumes e superfícies sem interrupções ou cortes. A transição é contínua e integrada, até a cena se converter diretamente em um desenho técnico. Enquadramento final preciso, linhas nítidas, alta definição e composição centralizada. Movimento estável, leitura clara, transição totalmente seamless.`},
+ {c:"Animação",n:"Transição: desenho → moodboard",w:"Vídeo interativo · formas se expandem e viram painel de inspiração.",lock:false,t:`As formas se expandem gradualmente pela página, ganhando profundidade, textura e variações sutis de tonalidade. Conforme se desenvolvem, a iluminação evolui suavemente para uma paleta de tons quentes. Elementos de design surgem e flutuam de forma leve e controlada, elevando-se com movimentos suaves e contínuos, até se organizarem com precisão num painel de inspiração estruturado. Composição final equilibrada, hierarquia clara, acabamento refinado, transição fluida e estética editorial.`},
+ {c:"Animação",n:"Transição: moodboard → ambiente",w:"Vídeo interativo · texturas orbitam e montam a sala.",lock:false,t:`Texturas entram em rotação suave, orbitando como pequenos planetas ao redor do centro da composição. Superfícies de madeira, tecido, metal e formas orgânicas saem do painel de inspiração em trajetórias controladas e elegantes. Ao desacelerar, cada elemento encontra sua posição com precisão e se encaixa na sua função espacial. A composição se organiza de forma fluida e contínua até, no fim do movimento, o ambiente se materializar por completo, com coerência visual, profundidade e acabamento refinado.`},
+ {c:"Animação",n:"Transição: zoom rápido no detalhe",w:"Vídeo interativo · aproximação brusca até a foto de detalhe.",lock:false,t:`A câmera executa um zoom rápido e direto em direção à [ELEMENTO, ex.: mesa de jantar], com aceleração brusca e movimento preciso, criando uma aproximação imediata e impactante, sem desvios no enquadramento.`},
+ {c:"Animação",n:"Transição: interior → fachada",w:"Vídeo interativo · recuo extremo, paredes se dissolvem até a fachada.",lock:false,t:`A câmera executa um zoom extremo para trás, com movimento contínuo que rapidamente ganha amplitude. Durante o recuo, as paredes se dissolvem suavemente, revelando aos poucos a estrutura completa da casa. A transição é fluida e sem cortes, até o movimento desacelerar e se estabilizar na fachada externa realista, iluminada por luz natural do dia, com leitura clara, profundidade e composição equilibrada.`},
+];
+/* ---------- instruções para um Gem do Gemini (o mesmo método da página, para usar direto no chat) ---------- */
+function gemText(){
+  const cen=k=>PRESETS[k].map(p=>`- ${p.n}: ${p.t}`).join("\n");
+  const ex=EXTRAS.map(x=>`- ${x.n}${x.on?" (sempre)":" (só quando eu pedir)"}: ${x.t}`).join("\n");
+  return `Você é o gerador de prompts de renderização do estúdio laís (lais3d.com.br). Eu envio o print do SketchUp (IMAGEM 1) e, se quiser, um texto corrido com materiais e luz. Você devolve um prompt em PORTUGUÊS e a tradução fiel em INGLÊS, prontos para colar numa IA de imagem, que transforma o print em fotografia arquitetônica fotorrealista preservando 100% da geometria.
+
+NUNCA gere nem edite imagens. Responda só com o texto dos prompts, sem markdown, sem blocos de código e sem comentários.
+
+COMO LER O QUE EU MANDO
+- Meu texto é a fonte principal e vence o print. Corrija ortografia e organize cada material num bloco próprio (elemento: material, acabamento, cor).
+- Copie EXATAMENTE meus valores: RGB, nomes comerciais (marca, linha, cor), medidas, temperaturas. Nunca arredonde nem traduza nome comercial.
+- Tudo que eu disser que NÃO é (ex.: não é amadeirado) vira regra no bloco do material e se repete nas restrições.
+- Elementos visíveis no print que eu não citei: descreva pelo print, sempre com "exactly as shown in IMAGE 1". Não invente nada que não esteja no print nem no meu texto.
+- Leitura do SketchUp: textura com veio = material natural; cor chapada = pintura, laca ou laminado; faixas amarelas ou brilhantes em nichos, sancas, prateleiras e forros = LED, não material amarelo. Conte móveis e objetos repetidos e escreva "exactly N, no more, no less".
+- RGB em todos os materiais: se eu dei, copie; se não, estime numa área iluminada do print e escreva "approx. RGB r, g, b, sampled from IMAGE 1". O RGB é a cor do material sob luz neutra: na sombra e nos reflexos muda só a luminosidade, nunca o matiz.
+
+COMANDOS QUE POSSO ESCREVER (sem eles, use o padrão)
+- Destino: "magnific" (padrão), "gemini", "chatgpt", "flux" ou "universal".
+- Cenário de luz: o nome de um dos cenários abaixo. Sem cenário, siga meu texto; se eu não falar de luz, mantenha a luz do print.
+- Luzes artificiais: padrão = todas as existentes no print levemente acesas, neutras (~3500–4000K), só complementando a luz natural; posso pedir "quente 3000K", "2700K", "fria 4500K" ou "desligadas". Se o cenário for sem luz artificial, ficam desligadas. Na blue hour, ficam quentes (~2700K) e são a luz principal. Nunca adicione luminárias.
+- Vista pela janela / entorno: padrão = exatamente como no print; posso pedir neutra, cidade, mar, montanhas, mata, jardim etc. (o projeto continua travado).
+- Tamanho: padrão = até 10.000 caracteres por idioma; posso pedir "6000", "curto" (1.500, ideal para Flux) ou "completo".
+- Atmosfera: clean, editorial, aconchegante, sofisticado ou lúdico (muda só o clima fotográfico, nunca materiais ou cores).
+
+DESTINOS
+- magnific: comece com as linhas (KEEP GEOMETRY IDENTICAL:2.0) (NO REDESIGN:2.0) (STRICT GEOMETRY PRESERVATION:2.0), cada uma numa linha; no português: (MANTER GEOMETRIA IDÊNTICA:2.0) (NÃO REDESENHAR:2.0) (PRESERVAÇÃO RIGOROSA DA GEOMETRIA:2.0).
+- gemini e universal: sem parênteses de peso; comece com KEEP GEOMETRY IDENTICAL. NO REDESIGN. STRICT GEOMETRY PRESERVATION.
+- chatgpt: comece com "Edit the attached SketchUp screenshot (IMAGE 1) into a photorealistic architectural photograph." e depois KEEP THE GEOMETRY IDENTICAL. DO NOT REDESIGN ANYTHING. Frases diretas.
+- flux: prompt curto (até ~1.500 caracteres cada), sem peso e sem linhas de hífens: frase de abertura que mantém geometria, câmera, layout e objetos; luz em 1–2 frases; materiais em lista compacta; uma linha de restrições.
+
+ESTRUTURA DO PROMPT (exceto flux)
+1. Abertura: fotografia arquitetônica fotorrealista baseada estritamente na IMAGE 1, fonte absoluta da verdade geométrica; ambiente real, fixo, já projetado; DO NOT redesign, reinterpret, remodel, reposition, remove, add, simplify, improve, modernize, or complete any element.
+2. Blocos curtos "WHAT MAY CHANGE" (só aparência fotográfica, comportamento físico da luz, microtexturas e reflexos) e "WHAT MUST NOT CHANGE" (geometria, layout, câmera, proporções, materiais e cores, quantidades, luminárias, aberturas). No PT: O QUE PODE MUDAR / O QUE NÃO PODE MUDAR.
+3. Seções nesta ordem, com uma linha de hífens acima e abaixo de cada título: LIGHTING, MATERIALS — LOCKED, CAMERA, PHOTOREALISM, STRICT RESTRICTIONS, FINAL CONSISTENCY (PT: ILUMINAÇÃO, MATERIAIS — BLOQUEADOS, CÂMERA, FOTORREALISMO, RESTRIÇÕES ABSOLUTAS, CONSISTÊNCIA FINAL). Em exterior, a de materiais se chama FACADE MATERIALS — LOCKED e a posição do sol fica fixa como na IMAGE 1.
+- LIGHTING: luz predominante, direção citando a abertura, "Preserve the exact natural-light direction established by IMAGE 1", lista "Artificial lighting:" com cada luminária terminando em ": ON" ou ": OFF", "Do not create additional light sources."
+- MATERIALS: um bloco por elemento com o nome em CAIXA ALTA, linhas curtas de material, acabamento e cor; RGB como "Exact color: RGB r, g, b."; medidas em bullets; regras de NÃO dentro do bloco; termine com DECORATIVE ELEMENTS no lugar.
+- CAMERA: mesma posição, altura, orientação, perspectiva focal e campo de visão; sem fisheye, sem correção de perspectiva que mude a geometria.
+- PHOTOREALISM: qualidades físicas (GI, AO, sombras de contato, reflexos, vidro, texturas desta cena) e lista Avoid (HDR artificial, CGI, plástico, over-sharpening, bloom, saturação excessiva).
+- STRICT RESTRICTIONS: linhas "DO NOT ..." para geometria, adicionar/remover, móveis, decoração, câmera, materiais e cores; repita cada regra de NÃO.
+- FINAL CONSISTENCY: a única transformação é de SketchUp para fotografia; preserve tudo, melhore só o realismo fotográfico.
+
+PRINCÍPIOS DE PRECISÃO
+- Cada frase precisa mudar o resultado: nada de adjetivos vagos em materiais e luz; use dados físicos (material, acabamento, brilho, cor/RGB, medida, Kelvin, direção).
+- Um nome por elemento em todas as seções; posição explícita quando houver elementos parecidos.
+- Proibições concentradas em RESTRIÇÕES, sem repetir a mesma frase em várias seções.
+- Nunca descreva o resultado como render, 3D ou CGI: é sempre uma fotografia.
+- Respeite o limite de caracteres: corte primeiro repetições e listas genéricas, nunca materiais, RGB, nomes comerciais, medidas ou regras de NÃO.
+
+BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas)
+${ex}
+
+CENÁRIOS DE LUZ — INTERIOR
+${cen("INTERIOR")}
+
+CENÁRIOS DE LUZ — EXTERIOR
+${cen("EXTERIOR")}
+
+FORMATO DE SAÍDA, exatamente:
+===PT===
+(prompt em português)
+===EN===
+(o mesmo prompt em inglês, mesma estrutura e mesmos valores)`;
+}
+let libCat="Todos";
+function renderLib(){
+  const cats=["Todos",...new Set(LIB.map(x=>x.c))];
+  $("libCats").innerHTML="";
+  cats.forEach(c=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c;b.setAttribute("aria-pressed",c===libCat);b.onclick=()=>{libCat=c;renderLib()};$("libCats").append(b)});
+  const g=$("libGrid"); g.innerHTML="";
+  LIB.filter(x=>libCat==="Todos"||x.c===libCat).forEach((x,i)=>{
+    const k=LIB.indexOf(x);
+    const d=document.createElement("article"); d.className="card";
+    d.innerHTML=`<span class="cat"></span><h3></h3><p class="when"></p><div class="opts" hidden></div><div class="imgs" hidden></div><textarea id="lib_${k}" spellcheck="false" aria-label="Texto do prompt"></textarea><div class="actions"><button class="btn small">Copiar</button><label class="lock" hidden><input type="checkbox" id="lock_${k}"> incluir trava de cor</label></div>`;
+    d.querySelector(".cat").textContent=x.c; d.querySelector("h3").textContent=x.n; d.querySelector(".when").textContent=x.w;
+    const ta=d.querySelector("textarea"), im=d.querySelector(".imgs"), op=d.querySelector(".opts");
+    const setImg=t=>{im.hidden=!t; im.textContent=t||""};
+    if(x.same){
+      op.hidden=false;
+      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option></select>`;
+      const [sn,so]=op.querySelectorAll("select");
+      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
+      sn.onchange=upd; so.onchange=upd; upd();
+    } else if(x.anim){
+      op.hidden=false;
+      op.innerHTML=`<select id="ad_${k}" aria-label="Direção"><option value="frente">Frontal</option><option value="direita">Diagonal para a direita</option><option value="esquerda">Diagonal para a esquerda</option></select>`;
+      const sel=op.querySelector("select"); const upd=()=>{ta.value=anim(sel.value)}; sel.onchange=upd; upd();
+    } else { ta.value=x.gem?gemText():x.t; setImg(x.img); }
+    if(x.gem){
+      const bt=document.createElement("button"); bt.className="btn ghost small"; bt.type="button"; bt.textContent="baixar .txt";
+      bt.onclick=async()=>{
+        const blob=new Blob([ta.value],{type:"text/plain;charset=utf-8"}), filename="gem-prompt-de-render-lais.txt";
+        if(cmp.dl){ try{ await cmp.dl.save({filename,data:blob}); toast("Arquivo salvo") }catch(e){ if(e?.code!=="cancelled") toast("Não foi possível salvar agora") } return }
+        const u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download=filename; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000);
+      };
+      d.querySelector(".actions").append(bt);
+    }
+    const lk=d.querySelector(".lock"), lc=d.querySelector("input[type=checkbox]");
+    if(x.lock){lk.hidden=false; lc.checked=true;}
+    d.querySelector(".btn").onclick=async()=>{
+      const txt=ta.value.trim()+(x.lock&&lc.checked?"\n\n"+LOCK:"");
+      try{await navigator.clipboard.writeText(txt);toast("Copiado")}catch{ta.focus();ta.select();toast("Texto selecionado, use Ctrl+C")}
+    };
+    g.append(d);
+  });
+}
+function showView(v){ const m={gen:"viewGen",lib:"viewLib",cmp:"viewCmp"}; Object.entries(m).forEach(([k,id])=>{$(id).hidden=k!==v}); [["gen","tabGen"],["lib","tabLib"],["cmp","tabCmp"]].forEach(([k,id])=>$(id).setAttribute("aria-selected",k===v)); $("hero").hidden=v!=="gen"; if(v!=="cmp"&&isFs()) closeFs(); if(v==="cmp") $("usePrint").hidden=!imgFile; window.scrollTo({top:0}); }
+$("tabGen").onclick=()=>showView("gen"); $("tabLib").onclick=()=>showView("lib"); $("tabCmp").onclick=()=>showView("cmp");
+
+/* ---------- comparar ---------- */
+const cmp={a:null,b:null,aUrl:"",bUrl:"",mode:"drag",x:50,flip:false,dl:null};
+const CMP_TXT={a:"sketchup",b:"render ia"};
+async function setCmp(which,f){
+  if(!f||!/^image\/(jpeg|png|webp)$/.test(f.type)){toast("Use JPG, PNG ou WebP");return}
+  const url=await readURL(f); cmp[which]=f; cmp[which+"Url"]=url;
+  const th=$(which==="a"?"thA":"thB"); th.innerHTML=""; const im=document.createElement("img"); im.src=url; im.alt=""; th.append(im);
+  $(which==="a"?"infA":"infB").textContent=f.name||"imagem anexada";
+  renderCmp();
+}
+function sides(){ return cmp.flip?["b","a"]:["a","b"]; }
+function renderCmp(){
+  const has=!!(cmp.a&&cmp.b), drag=cmp.mode==="drag", st=$("stage"), [L,R]=sides();
+  st.classList.toggle("isempty",!has); $("stageEmpty").hidden=has;
+  ["cmpImgB","cmpTop","cmpHandle","tagL","tagR"].forEach(id=>$(id).hidden=!has);
+  st.hidden=has&&!drag; $("sbs").hidden=!(has&&!drag);
+  st.setAttribute("role",has?"slider":"button");
+  if(has){
+    $("cmpImgA").src=cmp[L+"Url"]; $("cmpImgB").src=cmp[R+"Url"]; $("sbsA").src=cmp[L+"Url"]; $("sbsB").src=cmp[R+"Url"];
+    $("tagL").textContent=$("capA").textContent=CMP_TXT[L]; $("tagR").textContent=$("capB").textContent=CMP_TXT[R];
+    const t=new Image(); t.onload=()=>{ st.style.setProperty("--ar",`${t.naturalWidth} / ${t.naturalHeight}`); $("cmpView").style.setProperty("--arn",t.naturalWidth/t.naturalHeight); }; t.src=cmp[R+"Url"];
+  }
+  ["cmpDrag","fsDrag"].forEach(id=>$(id).setAttribute("aria-pressed",drag)); ["cmpSide","fsSide"].forEach(id=>$(id).setAttribute("aria-pressed",!drag));
+  $("cmpSwap").disabled=!has; $("cmpFull").disabled=!has; $("cmpSave").disabled=!has;
+  $("cmpDiff").disabled=!(has&&imgOK);
+  if(!has&&isFs()) closeFs();
+  setX(cmp.x);
+}
+function setX(p){ p=Math.max(0,Math.min(100,p)); cmp.x=p; $("stage").style.setProperty("--x",p+"%"); $("stage").setAttribute("aria-valuenow",Math.round(p)); }
+function pickNext(){ $(!cmp.a?"fileA":"fileB").click(); }
+function cmpMode(m){ cmp.mode=m; renderCmp(); }
+(function(){
+  const st=$("stage"); let pid=null;
+  const at=e=>{const r=st.getBoundingClientRect(); if(r.width) setX((e.clientX-r.left)/r.width*100)};
+  st.addEventListener("pointerdown",e=>{
+    if(!(cmp.a&&cmp.b)){ if(e.button===0) pickNext(); return }
+    if(e.pointerType==="mouse"&&e.button!==0) return;
+    pid=e.pointerId; try{st.setPointerCapture(pid)}catch{} st.classList.add("drag"); at(e); e.preventDefault();
+  });
+  st.addEventListener("pointermove",e=>{ if(e.pointerId===pid) at(e) });
+  const end=e=>{ if(e.pointerId===pid){ pid=null; st.classList.remove("drag") } };
+  ["pointerup","pointercancel","lostpointercapture"].forEach(t=>st.addEventListener(t,end));
+  st.addEventListener("dragstart",e=>e.preventDefault());
+  st.addEventListener("keydown",e=>{
+    if(!(cmp.a&&cmp.b)){ if(e.key==="Enter"||e.key===" "){e.preventDefault();pickNext()} return }
+    const k={ArrowLeft:-(e.shiftKey?10:2),ArrowRight:e.shiftKey?10:2,Home:-100,End:100}[e.key];
+    if(k!==undefined){ setX(cmp.x+k); e.preventDefault(); }
+  });
+})();
+async function dropCmp(files,target){
+  const fs=[...(files||[])].filter(f=>/^image\/(jpeg|png|webp)$/.test(f.type));
+  if(!fs.length){ toast("Use JPG, PNG ou WebP"); return }
+  if(target){ await setCmp(target,fs[0]); return }
+  if(fs.length>1){ await setCmp("a",fs[0]); await setCmp("b",fs[1]); return }
+  await setCmp(!cmp.a?"a":"b",fs[0]);
+}
+[["stage",null],["slotA","a"],["slotB","b"]].forEach(([id,target])=>{
+  const el=$(id);
+  el.addEventListener("dragover",e=>{ if([...(e.dataTransfer?.types||[])].includes("Files")){ e.preventDefault(); el.classList.add("over") } });
+  el.addEventListener("dragleave",()=>el.classList.remove("over"));
+  el.addEventListener("drop",e=>{ e.preventDefault(); el.classList.remove("over"); dropCmp(e.dataTransfer.files,target) });
+});
+$("pickA").onclick=()=>$("fileA").click(); $("pickB").onclick=()=>$("fileB").click();
+$("fileA").onchange=e=>{setCmp("a",e.target.files[0]);e.target.value=""}; $("fileB").onchange=e=>{setCmp("b",e.target.files[0]);e.target.value=""};
+$("usePrint").onclick=()=>{ if(imgFile) setCmp("a",imgFile) };
+$("cmpDrag").onclick=$("fsDrag").onclick=()=>cmpMode("drag");
+$("cmpSide").onclick=$("fsSide").onclick=()=>cmpMode("side");
+$("cmpSwap").onclick=()=>{ cmp.flip=!cmp.flip; renderCmp(); };
+
+/* tela cheia: usa a API do navegador quando existe e cai numa sobreposição fixa no iPhone */
+const cview=$("cmpView");
+function isFs(){ return cview.classList.contains("fs") }
+async function openFs(){
+  if(!(cmp.a&&cmp.b)||isFs()) return;
+  cview.classList.add("fs"); document.body.classList.add("locked");
+  try{ if(cview.requestFullscreen&&!document.fullscreenElement) await cview.requestFullscreen({navigationUI:"hide"}) }catch{}
+  (cmp.mode==="drag"?$("stage"):$("fsClose")).focus({preventScroll:true});
+}
+async function closeFs(){
+  cview.classList.remove("fs"); document.body.classList.remove("locked");
+  if(document.fullscreenElement){ try{ await document.exitFullscreen() }catch{} }
+}
+document.addEventListener("fullscreenchange",()=>{ if(!document.fullscreenElement&&isFs()) closeFs() });
+$("cmpFull").onclick=openFs; $("fsClose").onclick=closeFs;
+document.addEventListener("keydown",e=>{
+  if($("viewCmp").hidden||e.target.closest?.("input,textarea,select")) return;
+  if(e.key==="Escape"&&isFs()){ closeFs(); }
+  else if((e.key==="f"||e.key==="F")&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ e.preventDefault(); isFs()?closeFs():openFs(); }
+});
+
+$("cmpDiff").onclick=async()=>{
+  $("cmpDiff").disabled=true; status($("cStatus"),"Comparando as duas imagens… leva cerca de um minuto",true);
+  const ctx=$("qText").value.trim();
+  const prompt=`Você é especialista em visualização arquitetônica e em edição de imagens com IA. A IMAGEM 1 é o print do SketchUp: a verdade do projeto. A IMAGEM 2 é o render feito por IA a partir dele.
+${ctx?"Especificações que a autora deu para materiais e luz (também são verdade do projeto):\n"+ctx+"\n":""}
+Compare as duas com cuidado, região por região (esquerda, centro, direita; piso, paredes, teto; primeiro plano e fundo), e liste só o que o render MUDOU em relação ao projeto: geometria e proporções, móveis e objetos (quantidade, posição, forma), materiais, cores e acabamentos, luminárias e se estão acesas, aberturas e esquadrias, câmera e enquadramento, elementos inventados ou removidos.
+Ignore o que é ganho legítimo de realismo: texturas mais ricas, reflexos, sombras e luz fisicamente corretas.
+Gravidade: "alta" quando muda o projeto (forma, quantidade, material errado, elemento inventado ou sumido); "media" quando muda cor, acabamento ou luz de forma visível; "baixa" para detalhes pequenos.
+Depois escreva um prompt de correção para enviar ao gerador junto com as duas imagens (1º o print, 2º o render). Ele começa com "Na segunda imagem, mude apenas:" e traz uma linha curta por correção, cada uma citando o elemento, onde ele está e como deve ficar "exatamente como no print do SketchUp (primeira imagem)". Termine com "Mantenha todo o resto da segunda imagem idêntico: luz, cores, materiais, câmera e enquadramento." Inclua no máximo as 6 correções mais importantes, da mais grave para a menos grave. correcaoEN é a mesma coisa em inglês ("In the second image, change only:").
+Formato JSON:
+{"resumo":"uma frase","diferencas":[{"elemento":"...","problema":"...","gravidade":"alta|media|baixa"}],"correcaoPT":"...","correcaoEN":"..."}
+Se não houver diferença relevante, devolva "diferencas":[] e as correções vazias.`;
+  const showDiff=r=>{
+    const list=Array.isArray(r?.diferencas)?r.diferencas:[];
+    $("diffSec").hidden=false; $("diffSum").textContent=String(r?.resumo||"");
+    $("diffList").innerHTML="";
+    if(!list.length){const li=document.createElement("li");li.innerHTML='<span class="sev baixa"></span><span>Nenhuma diferença relevante. O render está fiel ao print.</span>';$("diffList").append(li)}
+    list.forEach(d=>{const li=document.createElement("li");li.innerHTML='<span class="sev"></span><span><b></b> · <span></span></span>';
+      const g=String(d.gravidade||"media").toLowerCase(); li.querySelector(".sev").classList.add(g.startsWith("a")?"alta":g.startsWith("b")?"baixa":"media");
+      li.querySelector("b").textContent=String(d.elemento||""); li.querySelector("span span").textContent=String(d.problema||""); $("diffList").append(li)});
+    $("dPt").textContent=String(r?.correcaoPT||"").trim(); $("dEn").textContent=String(r?.correcaoEN||"").trim();
+    $("dcPt").textContent=$("dPt").textContent.length.toLocaleString("pt-BR")+" caracteres"; $("dcEn").textContent=$("dEn").textContent.length.toLocaleString("pt-BR")+" caracteres";
+    status($("cStatus"),list.length?`${list.length} diferença(s) encontrada(s).`:"Tudo certo.");
+    $("diffSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  };
+  if(!AI.mode){
+    $("cmpDiff").disabled=false; status($("cStatus"),"");
+    manual({title:"encontrar diferenças",prompt:prompt+JSON_TAIL,attach:"anexe 1º o print do SketchUp e 2º o render",onReply:t=>showDiff(parseJSON(t))});
+    return;
+  }
+  try{ showDiff(await aiJSON(prompt,{images:[cmp.a,cmp.b]})) }catch(e){ status($("cStatus"),errMsg(e),false,true) }
+  renderCmp();
+};
+async function copyWithLock(id){ const t=$(id).textContent.trim(); if(!t) return; const full=t+"\n\n"+LOCK;
+  try{await navigator.clipboard.writeText(full);toast("Copiado com a trava de cor")}catch{const s=getSelection(),r=document.createRange();r.selectNodeContents($(id));s.removeAllRanges();s.addRange(r);toast("Texto selecionado, use Ctrl+C")} }
+$("dCopyPt").onclick=()=>copyWithLock("dPt"); $("dCopyEn").onclick=()=>copyWithLock("dEn");
+
+$("cmpSave").onclick=async()=>{
+  if(!(cmp.a&&cmp.b)) return;
+  const [L,R]=sides();
+  const load=u=>new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=u});
+  const [A,B]=await Promise.all([load(cmp[L+"Url"]),load(cmp[R+"Url"])]);
+  const h=1200, wA=Math.round(A.naturalWidth*h/A.naturalHeight), wB=Math.round(B.naturalWidth*h/B.naturalHeight), pad=40, top=40, bot=120;
+  const c=document.createElement("canvas"); c.width=wA+wB+pad*3; c.height=h+top+bot; const g=c.getContext("2d");
+  g.fillStyle="#F5F2EE"; g.fillRect(0,0,c.width,c.height);
+  g.drawImage(A,pad,top,wA,h); g.drawImage(B,pad*2+wA,top,wB,h);
+  g.fillStyle="#737A80"; g.font="500 30px Poppins, sans-serif"; g.fillText(CMP_TXT[L],pad,top+h+60); g.fillText(CMP_TXT[R],pad*2+wA,top+h+60);
+  g.fillStyle="#334049"; g.font="700 60px Poppins, sans-serif"; const w=g.measureText("laís").width; const x=c.width-pad-w-24; g.fillText("laís",x,top+h+80); g.fillStyle="#D1ADA4"; g.fillText(".",x+w,top+h+80);
+  const filename="comparacao-lais.png";
+  c.toBlob(async b=>{
+    if(!b){ toast("Não foi possível gerar a imagem"); return }
+    if(cmp.dl){ try{ await cmp.dl.save({filename,data:b}); toast("Comparação salva") }catch(e){ if(e?.code!=="cancelled") toast("Não foi possível salvar agora") } return }
+    const u=URL.createObjectURL(b), a=document.createElement("a"); a.href=u; a.download=filename; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000); toast("Comparação baixada");
+  },"image/png");
+};
+(async()=>{ try{ cmp.dl=await window.claude?.use("downloads") }catch{ cmp.dl=null } renderCmp(); })();
+renderLib();
+</script>
+
+</body></html>
