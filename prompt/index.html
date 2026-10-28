@@ -614,10 +614,10 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
             <div class="f quickonly">Cenário de luz
               <div class="chips" id="qChips"></div>
             </div>
-            <label class="f">Luzes artificiais (padrão: levemente ligadas e neutras)
+            <label class="f">Luzes artificiais (padrão: levemente ligadas, branco quente equilibrado)
               <select id="ledTemp">
-                <option value="neutral" selected>Ligadas suaves · neutra (~3500–4000K)</option>
-                <option value="3000">Ligadas suaves · quente (~3000K)</option>
+                <option value="3000" selected>Ligadas suaves · branco quente equilibrado (~3000K)</option>
+                <option value="neutral">Ligadas suaves · neutra (~3500–4000K)</option>
                 <option value="2700">Ligadas suaves · bem quente (~2700K)</option>
                 <option value="cool">Ligadas suaves · branca fria (~4500K)</option>
                 <option value="off">Desligadas</option>
@@ -874,12 +874,12 @@ const GBASE="https://generativelanguage.googleapis.com/v1beta/", GKEY="lais-gemi
 const G={key:"",model:"",models:[]};
 function lsGet(k){ try{return localStorage.getItem(k)||""}catch{return""} }
 function lsSet(k,v){ try{ v?localStorage.setItem(k,v):localStorage.removeItem(k) }catch{} }
-async function shrink(f){ // até 1568px em JPEG: envio rápido e dentro dos limites da API
+async function shrink(f){ // até 2048px em JPEG: detalhe suficiente para ler o print, dentro dos limites da API
   const url=await readURL(f), im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=url});
-  const s=Math.min(1,1568/Math.max(im.naturalWidth,im.naturalHeight)), c=document.createElement("canvas");
+  const s=Math.min(1,2048/Math.max(im.naturalWidth,im.naturalHeight)), c=document.createElement("canvas");
   c.width=Math.max(1,Math.round(im.naturalWidth*s)); c.height=Math.max(1,Math.round(im.naturalHeight*s));
   const g=c.getContext("2d"); g.fillStyle="#fff"; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height);
-  return {mime_type:"image/jpeg",data:c.toDataURL("image/jpeg",.86).split(",")[1]};
+  return {mime_type:"image/jpeg",data:c.toDataURL("image/jpeg",.9).split(",")[1]};
 }
 async function gemErr(res){
   let st="", msg=""; try{ const e=(await res.json()).error||{}; st=e.status||""; msg=e.message||"" }catch{}
@@ -1160,7 +1160,7 @@ $("analyze").onclick=async()=>{
   clearExample();
   if(quickMode()) $("mat").innerHTML="";
   const existing=rows();
-  $("analyze").disabled=true; status($("aStatus"),"Lendo o print…",true);
+  $("analyze").disabled=true; status($("aStatus"),"Lendo o print com atenção… pode levar até um minuto",true);
   const prompt=`Você é especialista em visualização arquitetônica e materiais de acabamento. A imagem anexada é a IMAGEM 1: um print do SketchUp de um projeto do tipo "${TYPES.find(x=>x[0]===tipo)[1]}" (${kind}). Ele vai virar fotografia por IA, e a sua leitura vira a base do prompt, então precisão vale mais que quantidade.
 Analise somente o que está visível e responda em português do Brasil.
 ${existing.length?`A usuária já definiu estes elementos (NÃO repita nem altere; devolva só elementos visíveis que faltam): ${existing.map(r=>r.elemento).join("; ")}.`:"Liste de 8 a 18 elementos relevantes, do maior para o menor em área visível (piso, paredes, teto/forro, marcenaria, painéis, bancadas, metais, portas/divisórias, esquadrias e vidros, estofados, tapete, mesas, cortinas/persianas, luminárias, decoração, vegetação; em exterior: muro, volumes e pinturas da fachada, painéis, esquadrias e vidros, portão e metais, cobertura, calçada e piso externo, vegetação, rua)."}
@@ -1192,7 +1192,7 @@ Formato JSON:
     manual({title:"ler o print",prompt:prompt+JSON_TAIL,attach:"anexe o print do SketchUp",onReply:t=>apply(parseJSON(t))});
     return;
   }
-  try{ apply(await aiJSON(prompt,{images:[imgFile],light:true})); }
+  try{ apply(await aiJSON(prompt,{images:[imgFile]})); } // raciocínio completo: leitura mais precisa
   catch(e){ status($("aStatus"),errMsg(e),false,true); if(e?.code==="not_granted"||e?.code==="images_unavailable") $("analyze").hidden=true; }
   updateAnalyze();
 };
@@ -1282,7 +1282,7 @@ function ledRule(quick){
   if(ps?.art==="off") return `LUZ ARTIFICIAL: DESLIGADA, porque o cenário escolhido ("${ps.n}") é sem luz artificial. Nenhuma luminária acesa, nenhum brilho de LED.`;
   const which=art==="some"?"SOMENTE as luminárias listadas ficam ligadas; todas as outras ficam desligadas":"todas as luminárias existentes no print ficam ligadas";
   if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, quentes (~2700K) como pede o cenário. Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam onde há luz; nada de luz amarelada artificial.`;
-  const t={neutral:"branco neutro, cerca de 3500K–4000K",3000:"levemente quente, cerca de 3000K",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
+  const t={neutral:"branco neutro, cerca de 3500K–4000K",3000:"branco quente suave e equilibrado, cerca de 3000K (luz de LED real, aconchegante, sem amarelar)",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
   const role=ps?.nat===false?"complementando a luz difusa do cenário, sem virar a fonte principal":"só complementando a luz natural, que continua dominante";
   return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, LEVEMENTE acesas, intensidade baixa e sutil, ${role}. Fitas e perfis de LED com brilho suave e contínuo, sem faixas estouradas. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam ONDE há luz: a luz nunca é amarela; o resultado é LED real, natural, como numa fotografia.`;
 }
@@ -1410,6 +1410,7 @@ ${DEST[$("dest").value]}
 - Logo após a abertura, inclua dois blocos curtos e explícitos: "WHAT MAY CHANGE" (somente: aparência fotográfica, comportamento físico da luz conforme o cenário escolhido, microtexturas e reflexos dos materiais${$("view").value!=="keep"?", e a vista/entorno conforme descrito":""}) e "WHAT MUST NOT CHANGE" (geometria, layout, câmera, proporções, cada material e cor definidos, quantidade de móveis e objetos, luminárias, aberturas). No PT: "O QUE PODE MUDAR" e "O QUE NÃO PODE MUDAR".
 - Inventário: todo elemento listado nos materiais é um inventário travado. Se houver quantidade (ex.: 3 banquetas), escreva a quantidade e "exactly N, no more, no less".
 - Cada material tem o seu bloco próprio, mesmo os pequenos; nunca agrupe materiais diferentes num bloco só. Se a cor tiver RGB, ele é a verdade de cor daquele material medida sob luz neutra: na sombra e nos reflexos a luminosidade varia de forma física, mas o matiz e a saturação continuam os mesmos, sem puxar para amarelo, verde ou magenta.
+- EQUILÍBRIO DE COR (vale para o prompt inteiro e entra na seção de iluminação): fotografia com balanço de branco natural e equilibrado, como um fotógrafo de interiores faria. Luz do dia em torno de 5000–5500K e luz artificial no tom definido; madeiras, bege, greige e tons terrosos mantêm o calor real que têm no print. O resultado não pode ficar frio, azulado, acinzentado ou "lavado", nem amarelado: sem dominante azul, ciano, verde ou magenta. Paredes claras com o leve calor de uma foto real, nunca cinza frio.
 - O cenário de luz tem prioridade sobre qualquer menção a horário do dia em outros campos. A regra de LUZ ARTIFICIAL do briefing decide se as luminárias ficam acesas; nunca contradiga essa regra em outra seção.
 - Abertura: fotografia arquitetônica fotorrealista baseada estritamente na IMAGE 1 (print do SketchUp); IMAGE 1 é a fonte absoluta da verdade geométrica; tratar como ambiente ${kind==="INTERIOR"?"interno":"externo"} real, fixo, já projetado; listar os elementos da cena que devem ser preservados; DO NOT redesign, reinterpret, remodel, reposition, remove, add, simplify, improve, modernize, or complete any element; elementos decorativos permanecem exatamente na posição, escala, orientação e quantidade.
 - Seções nesta ordem, separadas por uma linha de hífens (--------------------------------------------------) acima e abaixo do título: LIGHTING, MATERIALS — LOCKED, CAMERA, PHOTOREALISM, STRICT RESTRICTIONS, FINAL CONSISTENCY. No português: ILUMINAÇÃO, MATERIAIS — BLOQUEADOS, CÂMERA, FOTORREALISMO, RESTRIÇÕES ABSOLUTAS, CONSISTÊNCIA FINAL.
@@ -1507,7 +1508,7 @@ function renderProjects(){
     d.innerHTML=`<div style="min-width:0;display:flex;flex-direction:column"><span></span><small></small></div><div class="actions"><button class="btn small">Carregar</button><button class="btn ghost small" aria-label="Excluir">×</button></div>`;
     d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${p.qText?" · texto salvo":" · "+p.rows.length+" materiais"}`;
     const [lb,db]=d.querySelectorAll("button");
-    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);if(p.read)renderRead(p.read,p.read.materiais);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"neutral";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
+    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);if(p.read)renderRead(p.read,p.read.materiais);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3000";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
     db.onclick=()=>{if(db.dataset.c){const a=loadAll();a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
     box.append(d)});
 }
@@ -1963,7 +1964,8 @@ COMO LER O QUE EU MANDO
 COMANDOS QUE POSSO ESCREVER (sem eles, use o padrão)
 - Destino: "magnific" (padrão), "gemini", "chatgpt", "flux" ou "universal".
 - Cenário de luz: o nome de um dos cenários abaixo. Sem cenário, siga meu texto; se eu não falar de luz, mantenha a luz do print.
-- Luzes artificiais: padrão = todas as existentes no print levemente acesas, neutras (~3500–4000K), só complementando a luz natural; posso pedir "quente 3000K", "2700K", "fria 4500K" ou "desligadas". Se o cenário for sem luz artificial, ficam desligadas. Na blue hour, ficam quentes (~2700K) e são a luz principal. Nunca adicione luminárias.
+- Luzes artificiais: padrão = todas as existentes no print levemente acesas, branco quente equilibrado (~3000K, LED real, sem amarelar), só complementando a luz natural; posso pedir "neutra 4000K", "2700K", "fria 4500K" ou "desligadas".
+- Equilíbrio de cor: balanço de branco natural e equilibrado; luz do dia ~5000–5500K; madeiras, bege e greige mantêm o calor real; nada frio, azulado, acinzentado ou amarelado. Se o cenário for sem luz artificial, ficam desligadas. Na blue hour, ficam quentes (~2700K) e são a luz principal. Nunca adicione luminárias.
 - Vista pela janela / entorno: padrão = exatamente como no print; posso pedir neutra, cidade, mar, montanhas, mata, jardim etc. (o projeto continua travado).
 - Tamanho: padrão = até 10.000 caracteres por idioma; posso pedir "6000", "curto" (1.500, ideal para Flux) ou "completo".
 - Atmosfera: clean, editorial, aconchegante, sofisticado ou lúdico (muda só o clima fotográfico, nunca materiais ou cores).
@@ -2182,7 +2184,7 @@ Formato JSON: {"novos":[{"elemento":"Painel do lavabo","descricao":"lâmina de c
     return;
   }
   $("sDetect").disabled=true; status($("sStatus"),"Comparando o print com os renders…",true);
-  try{ apply(await aiJSON(prompt,{images:imgs,light:true})) }catch(e){ status($("sStatus"),errMsg(e),false,true) }
+  try{ apply(await aiJSON(prompt,{images:imgs})) }catch(e){ status($("sStatus"),errMsg(e),false,true) }
   $("sDetect").disabled=!(same.refs.length&&same.print);
 };
 renderSame();
