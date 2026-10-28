@@ -691,7 +691,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
     <aside class="board">
       <section class="step">
         <h2><span class="n">passo 1</span>Imagens da <em>cena</em></h2>
-        <div class="slabel">renders prontos do ambiente <small>(1 a 3)</small></div>
+        <div class="slabel">renders prontos do ambiente <small>(1 a 4 · pode soltar vários de uma vez)</small></div>
         <div class="refs" id="sRefs"></div>
         <input type="file" id="sRefFile" accept="image/jpeg,image/png,image/webp" multiple hidden>
         <div class="slabel">print do novo ângulo</div>
@@ -1607,7 +1607,8 @@ Do not auto-correct color temperature.
 Do not recalibrate scene lighting.
 Preserve original photographic color profile.
 Only apply the requested corrections.`;
-const ORD=["primeira","segunda","terceira","quarta"];
+const ORD=["primeira","segunda","terceira","quarta","quinta","sexta","sétima"];
+const MAX_REFS=4;
 function sameEnv(n,opt){
   if(opt===1){
     const refs=ORD.slice(1,n+1); const r=refs.length>1?refs.slice(0,-1).join(", ")+" e "+refs.at(-1):refs[0];
@@ -2093,7 +2094,7 @@ function renderLib(){
     const setImg=t=>{im.hidden=!t; im.textContent=t||""};
     if(x.same){
       op.hidden=false;
-      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
+      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option><option value="4">4 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
       const [sn,so]=op.querySelectorAll("select"), nw=op.querySelector("textarea");
       const upd=()=>{ta.value=sameEnv(+sn.value,+so.value)+sameNew(nw.value,+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
       sn.onchange=upd; so.onchange=upd; nw.oninput=upd; upd();
@@ -2121,7 +2122,7 @@ function renderLib(){
   });
 }
 /* ---------- mesmo ambiente: nova cena do mesmo projeto ---------- */
-const ORD_EN=["first","second","third","fourth"];
+const ORD_EN=["first","second","third","fourth","fifth","sixth","seventh"];
 function listEN(a){ return a.length>1?a.slice(0,-1).join(", ")+" and "+a.at(-1):a[0]; }
 function sameEnvEN(n,opt){
   if(opt===1){ const r=listEN(ORD_EN.slice(1,n+1));
@@ -2166,8 +2167,8 @@ function dropZone(el,onFiles){
 }
 function addRefs(files){
   const fs=[...(files||[])].filter(okImg); if(!fs.length){ toast("Use JPG, PNG ou WebP"); return }
-  const room=3-same.refs.length;
-  if(fs.length>room) toast(room?`Cabem só mais ${room} render(s)`:"Use no máximo 3 renders prontos");
+  const room=MAX_REFS-same.refs.length;
+  if(fs.length>room) toast(room?`Cabem só mais ${room} render(s)`:`Use no máximo ${MAX_REFS} renders prontos`);
   same.refs.push(...fs.slice(0,room)); renderSame();
 }
 function setSamePrint(f){ if(!okImg(f)){ toast("Use JPG, PNG ou WebP"); return } same.print=f; renderSame(); }
@@ -2186,7 +2187,7 @@ function renderSame(){
     d.querySelector(".x").onclick=()=>{ same.refs.splice(i,1); renderSame() };
     box.append(d);
   });
-  if(same.refs.length<3){
+  if(same.refs.length<MAX_REFS){
     const a=document.createElement("button"); a.type="button"; a.className="rtile add";
     a.textContent=same.refs.length?"+ outro render":"+ render pronto"; a.onclick=()=>$("sRefFile").click();
     dropZone(a,addRefs); box.append(a);
