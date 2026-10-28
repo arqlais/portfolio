@@ -562,7 +562,7 @@ textarea{padding:12px 14px}
       </section>
 
       <section class="step quickonly">
-        <h2><span class="n">passo 2</span>Descreva o <em>projeto</em></h2>
+        <h2><span class="n">passo 2 · opcional</span>Especifique ou <em>altere</em></h2>
         <p class="hint">Escreva o que a leitura não pegou ou o que quer mudar: material, cor, RGB, acabamento, luminárias e o que NÃO é. Pode escrever corrido. O que você escrever aqui vence a ficha.</p>
         <div class="actions qtools"><button class="btn ghost small" id="qPick" type="button">conta-gotas · inserir RGB do print</button></div>
         <textarea id="qText" aria-label="Descrição do projeto" placeholder="piso porcelanato acetinado bege muito claro, paredes greige fosca rgb 209,202,194, teto da sala amadeirado Amendoa Natural exatamente como no print, painel da tv lambri ripas 10cm espaço 1cm marrom liso rgb 152,136,123 NAO é amadeirado, bancada quartzo branco polido, metais preto acetinado...
@@ -1386,7 +1386,7 @@ function ctxView(){
 function buildQuickBrief(){
   const size=$("size").value;
   const ps=lightStyle>=0?PRESETS[kind][lightStyle]:null;
-  return `MODO RÁPIDO — a usuária escreveu tudo em texto corrido. Sua tarefa:
+  return `MODO RÁPIDO — a usuária usa a ficha do print e, se quiser, um texto corrido. Sua tarefa:
 1) Ler o TEXTO DA USUÁRIA, corrigir ortografia e digitação, e organizar cada material num bloco próprio (elemento → material, acabamento, cor). Iluminação e luminárias vão para LIGHTING.
 2) Copiar EXATAMENTE todos os valores dela: RGB, nomes comerciais (marca, linha, cor), medidas, temperaturas. Nunca arredondar, traduzir nome comercial ou trocar por sinônimo.
 3) Tudo que ela disser que NÃO é (ex.: não é amadeirado) vira regra no material e se repete nas restrições.
@@ -1404,12 +1404,12 @@ FICHA DO PRINT (lida pela IA e conferida pela usuária; vale como especificaçã
 ${readingText()||"(não analisado; olhe a IMAGEM 1 anexada, se houver)"}
 
 TEXTO DA USUÁRIA (fonte principal, prioridade máxima):
-${$("qText").value.trim()}
+${$("qText").value.trim()||"(vazio: ela não quis especificar nada além da ficha; siga a FICHA DO PRINT e a IMAGEM 1)"}
 ${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
 
 BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
 ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
-TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.8)+" caracteres para ter margem. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO e todos os materiais"}`;
+TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.7)+" caracteres (~"+Math.round(size*0.7/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO e todos os materiais"}`;
 }
 function buildBrief(){
   const r=rows(), size=$("size").value;
@@ -1433,7 +1433,7 @@ ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim
 RGB: os informados valem exatamente. Cores sólidas sem RGB (pintura, laca, laminado liso, tecido liso) recebem um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); materiais com textura natural (madeira, pedra, mármore) não recebem RGB inventado: descrever tom e veio "exactly matching the appearance shown in IMAGE 1". Elementos com "onde:" listando várias superfícies são o MESMO material em todas.
 ${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
 DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}
-TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.8)+" caracteres para ter margem. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
+TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.7)+" caracteres (~"+Math.round(size*0.7/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
 }
 
 const DEST={
@@ -1504,7 +1504,7 @@ function showPrompts(text){
 }
 $("gen").onclick=async()=>{
   const quick=quickMode();
-  if(quick && !$("qText").value.trim()){toast("Escreva os materiais e a iluminação no passo 2");return}
+  if(quick && !$("qText").value.trim() && !getRead() && !imgFile){toast("Envie o print (e analise) ou escreva os materiais no passo 2");return}
   if(!quick && exampleActive){toast("Analise um print ou edite os materiais de exemplo primeiro");return}
   if(!quick && !rows().length && !$("notes").value.trim()){toast("Preencha os materiais ou os detalhes extras");return}
   if(!AI.mode){
@@ -1531,10 +1531,10 @@ $("gen").onclick=async()=>{
     const lim=$("size").value==="full"?0:+$("size").value;
     if(lim && !truncated){
       for(const id of ["pPt","pEn"]){
-        for(let pass=0; pass<2 && $(id).textContent.length>lim; pass++){
-          const cur=$(id).textContent, target=Math.round(lim*(pass?0.75:0.85));
+        for(let pass=0; pass<3 && $(id).textContent.length>lim; pass++){
+          const cur=$(id).textContent, target=Math.round(lim*[0.8,0.7,0.6][pass]);
           status($("gStatus"),`Ajustando o ${id==="pPt"?"português":"inglês"} ao limite (${cur.length.toLocaleString("pt-BR")} → até ${lim.toLocaleString("pt-BR")})…`,true);
-          const r=await aiText(`Encurte o prompt abaixo para no máximo ${target} caracteres (hoje ele tem ${cur.length}). Mantenha o mesmo idioma, as mesmas seções e a mesma ordem. Mantenha TODOS os materiais, todos os valores RGB, nomes comerciais, medidas, luminárias e todas as regras do tipo "NÃO é". Corte primeiro: frases repetidas, listas genéricas de fotorrealismo, restrições que repetem o que já foi dito, adjetivos de enfeite. Responda só com o prompt encurtado, sem comentários e sem markdown.\n\n${cur}`,{signal:genCtl.signal,light:true});
+          const r=await aiText(`Encurte o prompt abaixo para no máximo ${target} caracteres, cerca de ${Math.round(target/6.5)} palavras (hoje ele tem ${cur.length} caracteres; precisa cortar uns ${Math.round((1-target/cur.length)*100)}%). O limite é rígido. Mantenha o mesmo idioma, as mesmas seções e a mesma ordem. Mantenha TODOS os materiais, todos os valores RGB, nomes comerciais, medidas, luminárias e todas as regras do tipo "NÃO é". Corte primeiro: frases repetidas, listas genéricas de fotorrealismo (pode reduzir a seção a 3 linhas), restrições que repetem o que já foi dito (no máximo 8 linhas), explicações longas, adjetivos de enfeite. Mantenha as travas de geometria (bloco inicial e linha final). Responda só com o prompt encurtado, sem comentários e sem markdown.\n\n${cur}`,{signal:genCtl.signal,light:true});
           $(id).textContent=r.text.trim(); fixed=true;
         }
       }
