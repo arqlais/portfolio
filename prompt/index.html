@@ -1531,6 +1531,20 @@ Reflexão especular limpa, sem desfoque, sem blur, sem efeito fosco ou acetinado
 Roughness = 0.0.
 Sem suavização de reflexos, sem tratamento artístico.
 O espelho deve refletir o ambiente com nitidez total, como um espelho real de alta qualidade.`},
+ {c:"Iluminação",n:"Copiar a luz de uma foto de referência",w:"Mande a foto ao Gemini, ChatGPT ou Claude com este pedido. O bloco que voltar serve em qualquer ambiente: cole nas observações ou no texto do passo 2.",img:"Envie: a foto de referência com a luz que você quer",lock:false,t:`Analise a iluminação desta foto de referência e escreva um BLOCO DE ILUMINAÇÃO reutilizável para eu colar no meu prompt de renderização (Nano Banana Pro), em outros ambientes e projetos.
+Descreva só a luz, com dados físicos e sem adjetivos vagos:
+– fonte principal: natural ou artificial, de onde vem (lateral, frontal, contraluz, zenital), dura ou difusa, filtrada por cortina, persiana ou nada
+– horário aparente e se há sol direto, com o desenho das manchas de luz
+– temperatura de cor da luz natural e da artificial em Kelvin, e o balanço de branco geral
+– sombras: suavidade, comprimento, densidade e contraste
+– exposição: se o exterior estoura ou não, nível geral de claro/escuro, faixa dinâmica
+– luz artificial: quais tipos aparecem, intensidade e papel (principal ou complemento)
+– rebatimentos e dominantes de cor (quente, fria, verde, magenta), e o que evitar
+Regras do bloco:
+– escrito para ser aplicado às aberturas e luminárias que JÁ existem em outro projeto; nunca peça para criar janelas, luminárias ou objetos
+– nada sobre materiais, cores de superfícies, mobiliário ou câmera
+– frases curtas e afirmativas, terminando com uma linha "Evitar:" com os erros típicos desse tipo de luz
+Responda só com o bloco, em português e depois em inglês, sem comentários.`},
  {c:"Iluminação",n:"Ligar luzes artificiais",w:"A imagem está pronta e você quer acender as luzes. Edite a lista.",lock:true,t:`Ligar as luzes artificiais existentes no modelo:
 Spots do forro ligados
 Iluminação do cortineiro ligada
