@@ -228,6 +228,8 @@ textarea#qText{min-height:250px;font-size:14px;background:var(--paper)}
 .card .imgs{font-size:12px;background:var(--sand);color:var(--ink);border-radius:10px;padding:6px 10px}
 .card .opts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .card .opts select{width:auto}
+.card .opts .newmat{flex:1 1 100%}
+.card .opts .newmat textarea{font-family:var(--body);font-size:13px;min-height:84px;background:var(--paper)}
 .lock{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
 .lock input{accent-color:var(--rose)}
 
@@ -1410,6 +1412,11 @@ Iluminação natural difusa, suave e equilibrada, sem sombras duras, sem estoura
 Câmera de fotografia de interiores, lente equivalente 24–28mm, linhas verticais perfeitamente retas, composição idêntica ao Sketch.
 Resultado final deve ser indistinguível de fotografia profissional, coerente com a ${r} imagem, sem qualquer aparência de IA ou render genérico.`;
 }
+function sameNew(txt,n,opt){ // materiais que só aparecem na cena nova
+  const items=String(txt||"").split("\n").map(x=>x.trim()).filter(Boolean); if(!items.length) return "";
+  const sk=opt===1?"primeira":ORD[n];
+  return `\n\nELEMENTOS NOVOS NESTA CENA (aparecem só na ${sk} imagem, o print; não existem nas imagens de referência):\n${items.map(i=>"• "+i).join("\n")}\nPara esses elementos: geometria, posição e quantidade exatamente como na ${sk} imagem; material, cor e acabamento exatamente como descrito acima (RGB, quando informado, é a cor exata). Eles recebem a mesma luz, exposição, balanço de branco e nível de realismo das referências, como se tivessem sido fotografados no mesmo ensaio. Todos os outros materiais continuam herdados das referências, sem nenhuma alteração.`;
+}
 function sameEnvImgs(n,opt){ return opt===1?`Envie: 1º o print novo, depois ${n} render(s) prontos do ambiente`:`Envie: ${n} render(s) prontos do ambiente, por último o print novo`; }
 function anim(dir){
   if(dir==="frente") return `Plano de acompanhamento cinematográfico para frente.
@@ -1834,10 +1841,10 @@ function renderLib(){
     const setImg=t=>{im.hidden=!t; im.textContent=t||""};
     if(x.same){
       op.hidden=false;
-      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option></select>`;
-      const [sn,so]=op.querySelectorAll("select");
-      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
-      sn.onchange=upd; so.onchange=upd; upd();
+      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
+      const [sn,so]=op.querySelectorAll("select"), nw=op.querySelector("textarea");
+      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value)+sameNew(nw.value,+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
+      sn.onchange=upd; so.onchange=upd; nw.oninput=upd; upd();
     } else if(x.anim){
       op.hidden=false;
       op.innerHTML=`<select id="ad_${k}" aria-label="Direção"><option value="frente">Frontal</option><option value="direita">Diagonal para a direita</option><option value="esquerda">Diagonal para a esquerda</option></select>`;
