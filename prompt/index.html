@@ -435,7 +435,7 @@ textarea{padding:12px 14px}
   <form method="dialog" class="mhd"><h2 id="aiTitle"><span class="n">inteligência artificial</span>gemini</h2><button class="x" aria-label="Fechar">×</button></form>
   <div class="msteps" style="gap:12px">
     <label class="f">Modelo<select id="aiModel"></select></label>
-    <p class="hint">Flash: rápido e com mais usos grátis por dia. Pro: mais caprichado, mas com menos usos grátis.</p>
+    <p class="hint">Padrão: o Pro mais novo. Se ele estiver sobrecarregado ou sem cota, a página usa um Flash só naquela vez e volta ao Pro na próxima.</p>
   </div>
   <div class="actions"><button class="btn ghost" id="aiOut" type="button">sair e apagar a chave</button></div>
 </dialog>
@@ -741,8 +741,8 @@ function parseJSON(text){
   try{ return JSON.parse(text.slice(a,b+1)) }catch{ throw {code:"invalid_json"} }
 }
 const JSON_TAIL="\n\nResponda apenas com o JSON, sem nenhum texto antes ou depois e sem blocos de código.";
-async function aiText(prompt,{images,signal,onText}={}){ if(AI.mode==="gemini") return await gemGenerate(prompt,{images,signal,onText}); const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
-async function aiJSON(prompt,{images}={}){ if(AI.mode==="gemini"){ const {text}=await gemGenerate(prompt+JSON_TAIL,{images,json:true}); return parseJSON(text) } const o={modelTier:"default",cache:false}; if(images) o.images=images; return await sample.json(prompt,o); }
+async function aiText(prompt,{images,signal,onText,light}={}){ if(AI.mode==="gemini") return await gemGenerate(prompt,{images,signal,onText,light}); const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
+async function aiJSON(prompt,{images,light}={}){ if(AI.mode==="gemini"){ const {text}=await gemGenerate(prompt+JSON_TAIL,{images,json:true,light}); return parseJSON(text) } const o={modelTier:"default",cache:false}; if(images) o.images=images; return await sample.json(prompt,o); }
 async function connectAI(){ try{ await connectAI0() }finally{ document.body.classList.remove("booting") } }
 async function connectAI0(){
   try{ sample=await window.claude?.use("sample") }catch{ sample=null }
@@ -785,37 +785,78 @@ async function gemModels(key){
   return (j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes("generateContent")&&/^models\/gemini-/.test(m.name)&&!/image|tts|audio|live|embed|robotics|computer|native/i.test(m.name))
     .map(m=>({id:m.name.replace("models/",""),label:m.displayName||m.name.replace("models/","")}));
 }
-function bestModel(list){ // prefere o Flash mais novo: bom no método e com mais usos grátis por dia
-  const sc=id=>{ const v=parseFloat((id.match(/gemini-(\d+(?:\.\d+)?)/)||[])[1]||0); return v*10+(/flash/.test(id)&&!/lite/.test(id)?3:/pro/.test(id)?2:0)-(/lite/.test(id)?4:0)-(/exp/.test(id)?2:0)-(/preview/.test(id)?1:0)-(/latest/.test(id)?.5:0); };
-  return [...list].sort((a,b)=>sc(b.id)-sc(a.id))[0]?.id||"";
+function rankModels(list){ // Pro mais novo primeiro (o melhor disponível); depois Flash, como reserva
+  const ver=id=>parseFloat((id.match(/gemini-(\d+(?:\.\d+)?)/)||[])[1]||0);
+  const sc=id=>(/pro/.test(id)?1000:/flash/.test(id)&&!/lite/.test(id)?500:0)+ver(id)*10-(/preview/.test(id)?1:0)-(/exp/.test(id)?3:0)-(/latest/.test(id)?.5:0)-(/lite/.test(id)?200:0);
+  return [...list].sort((a,b)=>sc(b.id)-sc(a.id));
 }
-async function gemGenerate(prompt,{images,signal,onText,json}={}){
-  const parts=[]; for(const f of images||[]) parts.push({inline_data:await shrink(f)});
-  parts.push({text:prompt});
+function bestModel(list){ return rankModels(list)[0]?.id||""; }
+function thinkCfg(model,light){ // menos raciocínio nas tarefas simples (ler o print, encurtar): responde bem mais rápido
+  if(!light) return null;
+  if(/gemini-2\.5/.test(model)) return {thinkingBudget:/pro/.test(model)?1024:512};
+  if(/gemini-([3-9]|\d\d)/.test(model)) return {thinkingLevel:"low"};
+  return null;
+}
+async function gemOnce(model,parts,{signal,onText,json,think}){
   const body={contents:[{role:"user",parts}],generationConfig:{maxOutputTokens:json?16384:32768}};
   if(json) body.generationConfig.responseMimeType="application/json";
-  let res;
-  try{ res=await fetch(`${GBASE}models/${encodeURIComponent(G.model)}:streamGenerateContent?alt=sse`,{method:"POST",signal,headers:{"content-type":"application/json","x-goog-api-key":G.key},body:JSON.stringify(body)}) }
-  catch{ throw {code:signal?.aborted?"cancelled":"network"} }
-  if(!res.ok){ const e=await gemErr(res); if(e.code==="bad_key") lockOut(); throw e; }
-  const rd=res.body.getReader(), dec=new TextDecoder(); let buf="", text="", finish="", blocked="";
+  if(think) body.generationConfig.thinkingConfig=think;
+  const ac=new AbortController(), stop=()=>ac.abort(); signal?.addEventListener("abort",stop);
+  let timedOut=false; const timer=setTimeout(()=>{timedOut=true;ac.abort()},180000); // sem terminar em 3 min: trata como sobrecarga
+  const fail=()=>({code:signal?.aborted?"cancelled":timedOut?"overloaded":"network"});
   try{
-    for(;;){
-      const {value,done}=await rd.read(); if(done) break;
-      buf+=dec.decode(value,{stream:true}); let i;
-      while((i=buf.indexOf("\n"))>=0){
-        const line=buf.slice(0,i).trim(); buf=buf.slice(i+1);
-        if(!line.startsWith("data:")) continue;
-        const m=JSON.parse(line.slice(5)); const c=m.candidates?.[0];
-        if(m.promptFeedback?.blockReason) blocked=m.promptFeedback.blockReason;
-        const t=(c?.content?.parts||[]).filter(p=>!p.thought).map(p=>p.text||"").join("");
-        if(t){ text+=t; onText?.({text}) }
-        if(c?.finishReason) finish=c.finishReason;
+    let res;
+    try{ res=await fetch(`${GBASE}models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`,{method:"POST",signal:ac.signal,headers:{"content-type":"application/json","x-goog-api-key":G.key},body:JSON.stringify(body)}) }
+    catch{ throw fail() }
+    if(!res.ok){
+      const e=await gemErr(res);
+      if(think&&e.code==="bad_request") return await gemOnce(model,parts,{signal,onText,json,think:null}); // modelo não aceita esse ajuste de raciocínio
+      throw e;
+    }
+    const rd=res.body.getReader(), dec=new TextDecoder(); let buf="", text="", finish="", blocked="";
+    try{
+      for(;;){
+        const {value,done}=await rd.read(); if(done) break;
+        buf+=dec.decode(value,{stream:true}); let i;
+        while((i=buf.indexOf("\n"))>=0){
+          const line=buf.slice(0,i).trim(); buf=buf.slice(i+1);
+          if(!line.startsWith("data:")) continue;
+          const m=JSON.parse(line.slice(5)); const c=m.candidates?.[0];
+          if(m.promptFeedback?.blockReason) blocked=m.promptFeedback.blockReason;
+          const t=(c?.content?.parts||[]).filter(p=>!p.thought).map(p=>p.text||"").join("");
+          if(t){ text+=t; onText?.({text}) }
+          if(c?.finishReason) finish=c.finishReason;
+        }
+      }
+    }catch{ throw {...fail(),text} }
+    if(blocked||/SAFETY|PROHIBITED|BLOCKLIST|RECITATION/.test(finish)) throw {code:"refused",text};
+    return {text,truncated:finish==="MAX_TOKENS"};
+  }finally{ clearTimeout(timer); signal?.removeEventListener("abort",stop); }
+}
+async function gemGenerate(prompt,{images,signal,onText,json,light}={}){
+  const parts=[]; for(const f of images||[]) parts.push({inline_data:await shrink(f)});
+  parts.push({text:prompt});
+  // sempre começa pelo modelo escolhido; se estiver sobrecarregado ou sem cota, tenta de novo e usa a reserva só desta vez
+  const order=[G.model,...rankModels(G.models).map(m=>m.id).filter(id=>id!==G.model&&!/lite/.test(id))].slice(0,3);
+  let last={code:"overloaded"};
+  for(let i=0;i<order.length;i++){
+    const model=order[i];
+    for(let tryN=0;tryN<2;tryN++){
+      try{
+        const r=await gemOnce(model,parts,{signal,onText,json,think:thinkCfg(model,light)});
+        if(model!==G.model) toast(`O ${G.model} estava indisponível; desta vez usei o ${model}`);
+        return r;
+      }catch(e){
+        last=e;
+        if(e.code==="bad_key"){ lockOut(); throw e }
+        if(e.code==="cancelled"||e.code==="refused"||e.code==="bad_request") throw e;
+        if(e.code==="overloaded"&&tryN===0){ toast("O Gemini está sobrecarregado, tentando de novo…"); await new Promise(r=>setTimeout(r,2500)); continue; }
+        break; // cota, modelo indisponível ou segunda falha: próximo modelo
       }
     }
-  }catch(e){ throw {code:signal?.aborted?"cancelled":"network",text} }
-  if(blocked||/SAFETY|PROHIBITED|BLOCKLIST|RECITATION/.test(finish)) throw {code:"refused",text};
-  return {text,truncated:finish==="MAX_TOKENS"};
+    if(order[i+1]) toast(`Tentando com o ${order[i+1]}…`);
+  }
+  throw last;
 }
 function lockOut(){ lsSet(GKEY,""); G.key=""; AI.mode=null; showGate("A chave não foi aceita pelo Google. Confira e cole de novo."); }
 function showGate(msg){
@@ -980,9 +1021,9 @@ $("clearImg").onclick=e=>{e.stopPropagation();imgFile=null;$("preview").hidden=t
 function status(el,msg,busy,err){ el.className="status"+(err?" err":""); el.innerHTML=(busy?'<span class="dot"></span>':"")+(msg?`<span></span>`:""); if(msg) el.lastChild.textContent=msg; }
 function errMsg(e){
   const m={not_granted:"Você não autorizou o uso do Claude nesta página.",rate_limited:"Muitas solicitações agora. Tente de novo em alguns minutos.",
-    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",gemini_quota:"Acabou a cota gratuita do Gemini por agora. Espere um minuto (ou até amanhã, se for o limite diário) ou troque para o modelo Flash no botão gemini.",gemini_model:"Esse modelo do Gemini não está disponível para a sua chave. Escolha outro no botão gemini.",bad_key:"A chave não foi aceita pelo Google. Confira se copiou inteira (começa com AIza).",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
+    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",gemini_quota:"Acabou a cota gratuita da API do Gemini por agora, inclusive no modelo reserva. Espere um minuto (ou até amanhã, se for o limite diário).",gemini_model:"Esse modelo do Gemini não está disponível para a sua chave. Escolha outro no botão gemini.",bad_key:"A chave não foi aceita pelo Google. Confira se copiou inteira (começa com AIza).",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
     session_expired:"Sua sessão expirou. Entre de novo no claude.ai.",refused:"O pedido foi recusado. Revise o texto e tente de novo.",images_unavailable:"Esta visualização não permite enviar imagens.",
-    network:"A conexão caiu no meio do caminho. Confira a internet e tente de novo.",server:"O servidor não respondeu. Tente de novo em instantes.",overloaded:"A IA está sobrecarregada agora. Tente de novo em um minuto.",
+    network:"A conexão caiu no meio do caminho. Confira a internet e tente de novo.",server:"O servidor não respondeu. Tente de novo em instantes.",overloaded:"O Gemini está sobrecarregado agora (comum no plano grátis da API). Tentei de novo e com outro modelo; espere um minuto e clique outra vez.",
     bad_code:"Código de acesso incorreto. Digite de novo no aviso acima.",too_large:"As imagens ficaram grandes demais. Tente com menos fotos de referência.",not_configured:"O servidor ainda não tem a chave da API configurada.",
     bad_request:"O pedido não foi aceito. Tente de novo; se repetir, encurte o texto.",no_ai:"A IA não está conectada agora.",cancelled:"Interrompido."};
   return m[e?.code]||"Não deu certo desta vez. Tente de novo.";
@@ -1023,7 +1064,7 @@ Formato JSON:
     manual({title:"ler o print",prompt:prompt+JSON_TAIL,attach:"anexe o print do SketchUp",onReply:t=>apply(parseJSON(t))});
     return;
   }
-  try{ apply(await aiJSON(prompt,{images:[imgFile]})); }
+  try{ apply(await aiJSON(prompt,{images:[imgFile],light:true})); }
   catch(e){ status($("aStatus"),errMsg(e),false,true); if(e?.code==="not_granted"||e?.code==="images_unavailable") $("analyze").hidden=true; }
   updateAnalyze();
 };
@@ -1266,7 +1307,7 @@ $("gen").onclick=async()=>{
         for(let pass=0; pass<2 && $(id).textContent.length>lim; pass++){
           const cur=$(id).textContent, target=Math.round(lim*(pass?0.75:0.85));
           status($("gStatus"),`Ajustando o ${id==="pPt"?"português":"inglês"} ao limite (${cur.length.toLocaleString("pt-BR")} → até ${lim.toLocaleString("pt-BR")})…`,true);
-          const r=await aiText(`Encurte o prompt abaixo para no máximo ${target} caracteres (hoje ele tem ${cur.length}). Mantenha o mesmo idioma, as mesmas seções e a mesma ordem. Mantenha TODOS os materiais, todos os valores RGB, nomes comerciais, medidas, luminárias e todas as regras do tipo "NÃO é". Corte primeiro: frases repetidas, listas genéricas de fotorrealismo, restrições que repetem o que já foi dito, adjetivos de enfeite. Responda só com o prompt encurtado, sem comentários e sem markdown.\n\n${cur}`,{signal:genCtl.signal,effort:"low"});
+          const r=await aiText(`Encurte o prompt abaixo para no máximo ${target} caracteres (hoje ele tem ${cur.length}). Mantenha o mesmo idioma, as mesmas seções e a mesma ordem. Mantenha TODOS os materiais, todos os valores RGB, nomes comerciais, medidas, luminárias e todas as regras do tipo "NÃO é". Corte primeiro: frases repetidas, listas genéricas de fotorrealismo, restrições que repetem o que já foi dito, adjetivos de enfeite. Responda só com o prompt encurtado, sem comentários e sem markdown.\n\n${cur}`,{signal:genCtl.signal,light:true});
           $(id).textContent=r.text.trim(); fixed=true;
         }
       }
