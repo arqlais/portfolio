@@ -590,7 +590,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
 
   <div id="viewLib" hidden>
     <div class="libhead">
-      <p class="hint">Para a imagem já renderizada. Edite no card e copie.</p>
+      <p class="hint">Prompts prontos: ajuste o texto no card, copie e cole na sua IA. O primeiro card monta um Gem do Gemini com todo o método.</p>
       <div class="chips" id="libCats"></div>
     </div>
     <div class="libgrid" id="libGrid"></div>
@@ -1051,7 +1051,9 @@ const DEST={
  universal:"- Destino universal: sem sintaxe de peso com parênteses. Comece com uma linha em caixa alta: KEEP GEOMETRY IDENTICAL. NO REDESIGN. STRICT GEOMETRY PRESERVATION. Refira-se ao print como \"the reference image (IMAGE 1)\". Linguagem clara que qualquer modelo de edição de imagem entende."};
 $("dest").addEventListener("change",()=>{ if($("dest").value==="flux") $("size").value="1500"; else if($("size").value==="1500") $("size").value="10000"; });
 const DEST_NAME={magnific:"o Nano Banana dentro do Magnific",gemini:"o Gemini / Nano Banana no Google AI Studio",gpt:"a geração de imagem do ChatGPT",flux:"o Flux Kontext (ou Krea / Leonardo)",universal:"qualquer IA de edição de imagem"};
-const MASTER = (brief)=>`Você escreve prompts para ${DEST_NAME[$("dest").value]} que transformam um print do SketchUp em fotografia arquitetônica fotorrealista, preservando 100% da geometria. NÃO gere imagem, só o texto.
+const MASTER = (brief)=>`Você escreve prompts para ${DEST_NAME[$("dest").value]} que transformam um print do SketchUp em fotografia arquitetônica fotorrealista, preservando 100% da geometria.
+
+IMPORTANTE: responda só com texto. NÃO gere nem edite imagens; as imagens anexadas servem só para você conferir os elementos.
 
 Use EXATAMENTE as especificações abaixo. As especificações da usuária vencem qualquer suposição. Não invente elementos que ela não citou e que não aparecem no print.
 
@@ -1091,6 +1093,7 @@ FORMATO DE SAÍDA, exatamente:
 (prompt em inglês)`;
 
 function showPrompts(text){
+  text=String(text).replace(/```[a-z]*\s*/gi,"").replace(/\*{1,2}\s*(===(?:PT|EN)===)\s*\*{1,2}/g,"$1").replace(/^#+\s*(===(?:PT|EN)===)/gm,"$1");
   const ip=text.indexOf("===PT==="), ie=text.indexOf("===EN===");
   const pt=ip>-1?text.slice(ip+8, ie>ip?ie:undefined).trim():"";
   const en=ie>-1?text.slice(ie+8).trim():"";
@@ -1264,6 +1267,7 @@ const PRESERVE=`Preservar completamente:
 – proporções do ambiente
 Não inventar novos objetos. Não modificar a arquitetura. Não alterar o layout. Não girar a câmera.`;
 const LIB=[
+ {c:"Gemini",n:"Gem: seu gerador de prompts",w:"Cole este texto como instruções de um Gem no Gemini. Depois é só mandar o print e escrever os materiais do seu jeito.",gem:true,lock:false},
  {c:"Ajustes",n:"Pós no Magnific sem modificar",w:"Melhora o realismo da imagem pronta sem mexer em nada.",lock:false,t:`Não modifique geometria, layout, proporções ou ângulo de câmera.
 Não altere nenhuma cor ou tonalidade dos materiais.
 Não reinterprete a iluminação.
@@ -1578,6 +1582,69 @@ Evite renderização realista, cores, sombras volumétricas e efeitos artístico
  {c:"Animação",n:"Transição: zoom rápido no detalhe",w:"Vídeo interativo · aproximação brusca até a foto de detalhe.",lock:false,t:`A câmera executa um zoom rápido e direto em direção à [ELEMENTO, ex.: mesa de jantar], com aceleração brusca e movimento preciso, criando uma aproximação imediata e impactante, sem desvios no enquadramento.`},
  {c:"Animação",n:"Transição: interior → fachada",w:"Vídeo interativo · recuo extremo, paredes se dissolvem até a fachada.",lock:false,t:`A câmera executa um zoom extremo para trás, com movimento contínuo que rapidamente ganha amplitude. Durante o recuo, as paredes se dissolvem suavemente, revelando aos poucos a estrutura completa da casa. A transição é fluida e sem cortes, até o movimento desacelerar e se estabilizar na fachada externa realista, iluminada por luz natural do dia, com leitura clara, profundidade e composição equilibrada.`},
 ];
+/* ---------- instruções para um Gem do Gemini (o mesmo método da página, para usar direto no chat) ---------- */
+function gemText(){
+  const cen=k=>PRESETS[k].map(p=>`- ${p.n}: ${p.t}`).join("\n");
+  const ex=EXTRAS.map(x=>`- ${x.n}${x.on?" (sempre)":" (só quando eu pedir)"}: ${x.t}`).join("\n");
+  return `Você é o gerador de prompts de renderização do estúdio laís (lais3d.com.br). Eu envio o print do SketchUp (IMAGEM 1) e, se quiser, um texto corrido com materiais e luz. Você devolve um prompt em PORTUGUÊS e a tradução fiel em INGLÊS, prontos para colar numa IA de imagem, que transforma o print em fotografia arquitetônica fotorrealista preservando 100% da geometria.
+
+NUNCA gere nem edite imagens. Responda só com o texto dos prompts, sem markdown, sem blocos de código e sem comentários.
+
+COMO LER O QUE EU MANDO
+- Meu texto é a fonte principal e vence o print. Corrija ortografia e organize cada material num bloco próprio (elemento: material, acabamento, cor).
+- Copie EXATAMENTE meus valores: RGB, nomes comerciais (marca, linha, cor), medidas, temperaturas. Nunca arredonde nem traduza nome comercial.
+- Tudo que eu disser que NÃO é (ex.: não é amadeirado) vira regra no bloco do material e se repete nas restrições.
+- Elementos visíveis no print que eu não citei: descreva pelo print, sempre com "exactly as shown in IMAGE 1". Não invente nada que não esteja no print nem no meu texto.
+- Leitura do SketchUp: textura com veio = material natural; cor chapada = pintura, laca ou laminado; faixas amarelas ou brilhantes em nichos, sancas, prateleiras e forros = LED, não material amarelo. Conte móveis e objetos repetidos e escreva "exactly N, no more, no less".
+- RGB em todos os materiais: se eu dei, copie; se não, estime numa área iluminada do print e escreva "approx. RGB r, g, b, sampled from IMAGE 1". O RGB é a cor do material sob luz neutra: na sombra e nos reflexos muda só a luminosidade, nunca o matiz.
+
+COMANDOS QUE POSSO ESCREVER (sem eles, use o padrão)
+- Destino: "magnific" (padrão), "gemini", "chatgpt", "flux" ou "universal".
+- Cenário de luz: o nome de um dos cenários abaixo. Sem cenário, siga meu texto; se eu não falar de luz, mantenha a luz do print.
+- Luzes artificiais: padrão = todas as existentes no print levemente acesas, neutras (~3500–4000K), só complementando a luz natural; posso pedir "quente 3000K", "2700K", "fria 4500K" ou "desligadas". Se o cenário for sem luz artificial, ficam desligadas. Na blue hour, ficam quentes (~2700K) e são a luz principal. Nunca adicione luminárias.
+- Vista pela janela / entorno: padrão = exatamente como no print; posso pedir neutra, cidade, mar, montanhas, mata, jardim etc. (o projeto continua travado).
+- Tamanho: padrão = até 10.000 caracteres por idioma; posso pedir "6000", "curto" (1.500, ideal para Flux) ou "completo".
+- Atmosfera: clean, editorial, aconchegante, sofisticado ou lúdico (muda só o clima fotográfico, nunca materiais ou cores).
+
+DESTINOS
+- magnific: comece com as linhas (KEEP GEOMETRY IDENTICAL:2.0) (NO REDESIGN:2.0) (STRICT GEOMETRY PRESERVATION:2.0), cada uma numa linha; no português: (MANTER GEOMETRIA IDÊNTICA:2.0) (NÃO REDESENHAR:2.0) (PRESERVAÇÃO RIGOROSA DA GEOMETRIA:2.0).
+- gemini e universal: sem parênteses de peso; comece com KEEP GEOMETRY IDENTICAL. NO REDESIGN. STRICT GEOMETRY PRESERVATION.
+- chatgpt: comece com "Edit the attached SketchUp screenshot (IMAGE 1) into a photorealistic architectural photograph." e depois KEEP THE GEOMETRY IDENTICAL. DO NOT REDESIGN ANYTHING. Frases diretas.
+- flux: prompt curto (até ~1.500 caracteres cada), sem peso e sem linhas de hífens: frase de abertura que mantém geometria, câmera, layout e objetos; luz em 1–2 frases; materiais em lista compacta; uma linha de restrições.
+
+ESTRUTURA DO PROMPT (exceto flux)
+1. Abertura: fotografia arquitetônica fotorrealista baseada estritamente na IMAGE 1, fonte absoluta da verdade geométrica; ambiente real, fixo, já projetado; DO NOT redesign, reinterpret, remodel, reposition, remove, add, simplify, improve, modernize, or complete any element.
+2. Blocos curtos "WHAT MAY CHANGE" (só aparência fotográfica, comportamento físico da luz, microtexturas e reflexos) e "WHAT MUST NOT CHANGE" (geometria, layout, câmera, proporções, materiais e cores, quantidades, luminárias, aberturas). No PT: O QUE PODE MUDAR / O QUE NÃO PODE MUDAR.
+3. Seções nesta ordem, com uma linha de hífens acima e abaixo de cada título: LIGHTING, MATERIALS — LOCKED, CAMERA, PHOTOREALISM, STRICT RESTRICTIONS, FINAL CONSISTENCY (PT: ILUMINAÇÃO, MATERIAIS — BLOQUEADOS, CÂMERA, FOTORREALISMO, RESTRIÇÕES ABSOLUTAS, CONSISTÊNCIA FINAL). Em exterior, a de materiais se chama FACADE MATERIALS — LOCKED e a posição do sol fica fixa como na IMAGE 1.
+- LIGHTING: luz predominante, direção citando a abertura, "Preserve the exact natural-light direction established by IMAGE 1", lista "Artificial lighting:" com cada luminária terminando em ": ON" ou ": OFF", "Do not create additional light sources."
+- MATERIALS: um bloco por elemento com o nome em CAIXA ALTA, linhas curtas de material, acabamento e cor; RGB como "Exact color: RGB r, g, b."; medidas em bullets; regras de NÃO dentro do bloco; termine com DECORATIVE ELEMENTS no lugar.
+- CAMERA: mesma posição, altura, orientação, perspectiva focal e campo de visão; sem fisheye, sem correção de perspectiva que mude a geometria.
+- PHOTOREALISM: qualidades físicas (GI, AO, sombras de contato, reflexos, vidro, texturas desta cena) e lista Avoid (HDR artificial, CGI, plástico, over-sharpening, bloom, saturação excessiva).
+- STRICT RESTRICTIONS: linhas "DO NOT ..." para geometria, adicionar/remover, móveis, decoração, câmera, materiais e cores; repita cada regra de NÃO.
+- FINAL CONSISTENCY: a única transformação é de SketchUp para fotografia; preserve tudo, melhore só o realismo fotográfico.
+
+PRINCÍPIOS DE PRECISÃO
+- Cada frase precisa mudar o resultado: nada de adjetivos vagos em materiais e luz; use dados físicos (material, acabamento, brilho, cor/RGB, medida, Kelvin, direção).
+- Um nome por elemento em todas as seções; posição explícita quando houver elementos parecidos.
+- Proibições concentradas em RESTRIÇÕES, sem repetir a mesma frase em várias seções.
+- Nunca descreva o resultado como render, 3D ou CGI: é sempre uma fotografia.
+- Respeite o limite de caracteres: corte primeiro repetições e listas genéricas, nunca materiais, RGB, nomes comerciais, medidas ou regras de NÃO.
+
+BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas)
+${ex}
+
+CENÁRIOS DE LUZ — INTERIOR
+${cen("INTERIOR")}
+
+CENÁRIOS DE LUZ — EXTERIOR
+${cen("EXTERIOR")}
+
+FORMATO DE SAÍDA, exatamente:
+===PT===
+(prompt em português)
+===EN===
+(o mesmo prompt em inglês, mesma estrutura e mesmos valores)`;
+}
 let libCat="Todos";
 function renderLib(){
   const cats=["Todos",...new Set(LIB.map(x=>x.c))];
@@ -1601,7 +1668,16 @@ function renderLib(){
       op.hidden=false;
       op.innerHTML=`<select id="ad_${k}" aria-label="Direção"><option value="frente">Frontal</option><option value="direita">Diagonal para a direita</option><option value="esquerda">Diagonal para a esquerda</option></select>`;
       const sel=op.querySelector("select"); const upd=()=>{ta.value=anim(sel.value)}; sel.onchange=upd; upd();
-    } else { ta.value=x.t; setImg(x.img); }
+    } else { ta.value=x.gem?gemText():x.t; setImg(x.img); }
+    if(x.gem){
+      const bt=document.createElement("button"); bt.className="btn ghost small"; bt.type="button"; bt.textContent="baixar .txt";
+      bt.onclick=async()=>{
+        const blob=new Blob([ta.value],{type:"text/plain;charset=utf-8"}), filename="gem-prompt-de-render-lais.txt";
+        if(cmp.dl){ try{ await cmp.dl.save({filename,data:blob}); toast("Arquivo salvo") }catch(e){ if(e?.code!=="cancelled") toast("Não foi possível salvar agora") } return }
+        const u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download=filename; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000);
+      };
+      d.querySelector(".actions").append(bt);
+    }
     const lk=d.querySelector(".lock"), lc=d.querySelector("input[type=checkbox]");
     if(x.lock){lk.hidden=false; lc.checked=true;}
     d.querySelector(".btn").onclick=async()=>{
