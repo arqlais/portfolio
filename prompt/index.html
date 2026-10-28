@@ -289,6 +289,40 @@ body.locked{overflow:hidden}
 .diffs .sev.baixa{background:var(--ok)}
 .diffs b{font-weight:600}
 
+/* mesmo ambiente */
+.slabel{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+.slabel small{font-weight:400}
+.refs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rtile{position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:var(--sand);border:1px solid var(--line)}
+.rtile img{width:100%;height:100%;object-fit:cover;display:block}
+.rtile .rn{position:absolute;left:6px;bottom:6px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:rgba(31,42,51,.72);color:#F5F2EE;font-size:11px;display:grid;place-items:center}
+.rtile .x{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(31,42,51,.72);color:#fff;cursor:pointer;font-size:15px;line-height:1}
+.rtile.add{display:grid;place-items:center;border:1.5px dashed var(--line);background:var(--paper);color:var(--muted);font:500 12px var(--body);cursor:pointer;text-align:center;padding:6px}
+.rtile.add:hover,.rtile.add.over{border-color:var(--rose);background:var(--rose-soft);color:var(--ink)}
+.sdrop{min-height:150px}
+.sdrop img{max-height:260px}
+.order{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.order li{display:flex;gap:10px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.order li.missing{border-style:dashed;opacity:.75}
+.order .num{width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-weight:600;font-size:12px;flex:none}
+.order .th{width:56px;height:42px;border-radius:8px;overflow:hidden;background:var(--sand);flex:none}
+.order .th img{width:100%;height:100%;object-fit:cover;display:block}
+.order .tx{min-width:0}
+.order b{font-weight:500;font-size:13px;display:block}
+.order small{display:block;color:var(--muted);font-size:11.5px}
+.types.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.types.two button{min-height:84px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;padding:12px 14px;gap:4px;font-size:13.5px;font-weight:600}
+.types.two button small{font-weight:400;color:var(--muted);font-size:12px;text-transform:none;line-height:1.4}
+@media (max-width:480px){.types.two{grid-template-columns:minmax(0,1fr)}}
+.newrows{display:flex;flex-direction:column;gap:8px}
+.newrows:empty{display:none}
+.nrow{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.7fr) 34px;gap:8px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper)}
+.nrow input{background:var(--card)}
+.nrow input:first-child{font-weight:600}
+.nrow .x{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;width:34px;height:44px;line-height:1;border-radius:10px}
+.nrow .x:hover{color:var(--warn);background:var(--rose-soft)}
+@media (max-width:640px){.nrow{grid-template-columns:minmax(0,1fr) 34px}.nrow .d{grid-column:1 / -1;grid-row:2}}
+
 /* tela de entrada */
 body.booting .wrap{visibility:hidden}
 body.gated .wrap{display:none}
@@ -446,6 +480,7 @@ textarea{padding:12px 14px}
     <div class="brand"><a class="mark" href="https://www.lais3d.com.br/" aria-label="laís · portfólio">laís<span>.</span></a><small>prompt de render</small></div>
     <nav class="tabs" role="tablist" aria-label="Seções">
       <button role="tab" id="tabGen" aria-selected="true">gerar</button>
+      <button role="tab" id="tabSame" aria-selected="false">mesmo ambiente</button>
       <button role="tab" id="tabLib" aria-selected="false">ajustes e pós</button>
       <button role="tab" id="tabCmp" aria-selected="false">comparar</button>
       <a href="https://www.lais3d.com.br/">portfólio ↗</a>
@@ -622,6 +657,73 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
         <div class="pbox">
           <div class="pbar"><b>Inglês</b><span class="count" id="cEn">0</span><button class="btn small ghost" id="copyEn">Copiar</button></div>
           <pre class="prompt" id="pEn"></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+  </div>
+
+  <div id="viewSame" hidden>
+  <div class="grid">
+    <aside class="board">
+      <section class="step">
+        <h2><span class="n">passo 1</span>Imagens da <em>cena</em></h2>
+        <div class="slabel">renders prontos do ambiente <small>(1 a 3)</small></div>
+        <div class="refs" id="sRefs"></div>
+        <input type="file" id="sRefFile" accept="image/jpeg,image/png,image/webp" multiple hidden>
+        <div class="slabel">print do novo ângulo</div>
+        <div class="drop sdrop" id="sDrop" tabindex="0" role="button" aria-label="Enviar o print do novo ângulo">
+          <div id="sDropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher · Ctrl+V também funciona</p></div>
+          <img id="sPrev" alt="Print do novo ângulo" hidden>
+        </div>
+        <input type="file" id="sPrintFile" accept="image/jpeg,image/png,image/webp" hidden>
+        <div class="actions">
+          <button class="btn ghost small" id="sUsePrint" type="button" hidden>usar o print do gerar</button>
+          <button class="btn ghost small" id="sClear" type="button">limpar tudo</button>
+        </div>
+      </section>
+      <section class="step">
+        <h2><span class="n">na sua ia de imagem</span>Envie <em>nesta ordem</em></h2>
+        <ol class="order" id="sOrder"></ol>
+        <p class="hint">O prompt cita as imagens pelo número. Se a ordem mudar, a IA confunde o print com a referência.</p>
+      </section>
+    </aside>
+
+    <main class="steps">
+      <section class="step">
+        <h2><span class="n">passo 2</span>Como <em>herdar</em> dos renders</h2>
+        <div class="types two" role="group" aria-label="Como herdar">
+          <button type="button" id="sOpt1" aria-pressed="true">herda a luz<small>Mesmo ensaio, mesmo minuto: só a câmera muda. O print vai primeiro.</small></button>
+          <button type="button" id="sOpt2" aria-pressed="false">copia o estilo<small>Replica luz, cores, materiais e acabamento dos renders. O print vai por último.</small></button>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2><span class="n">passo 3 · opcional</span>O que é <em>novo</em> nesta cena</h2>
+        <p class="hint">Elementos que aparecem neste ângulo e não aparecem nos renders prontos. A forma vem do print; o material, do que você escrever.</p>
+        <div class="newrows" id="sNew"></div>
+        <div class="actions">
+          <button class="btn ghost small" id="sAdd" type="button">+ elemento novo</button>
+          <button class="btn rose small" id="sDetect" type="button" disabled>detectar com ia</button>
+        </div>
+        <div class="status" id="sStatus"></div>
+        <label class="f">Observações desta cena (opcional, têm prioridade)
+          <textarea id="sNotes" rows="2" placeholder="Ex.: nesta cena a fita de LED do nicho fica desligada"></textarea>
+        </label>
+      </section>
+
+      <section class="step out">
+        <h2><span class="n">passo 4</span>Prompt da <em>nova cena</em></h2>
+        <p class="hint" id="sNeed">Anexe pelo menos um render pronto para montar o prompt.</p>
+        <div id="sOut" hidden class="out">
+          <div class="pbox">
+            <div class="pbar"><b>Português</b><span class="count" id="scPt"></span><button class="btn small" id="sCopyPt" type="button">Copiar</button></div>
+            <pre class="prompt" id="sPt"></pre>
+          </div>
+          <div class="pbox">
+            <div class="pbar"><b>Inglês</b><span class="count" id="scEn"></span><button class="btn small ghost" id="sCopyEn" type="button">Copiar</button></div>
+            <pre class="prompt" id="sEn"></pre>
+          </div>
         </div>
       </section>
     </main>
@@ -1016,7 +1118,7 @@ $("file").onchange=e=>setImage(e.target.files[0]);
 drop.ondragover=e=>{e.preventDefault();drop.classList.add("over")};
 drop.ondragleave=()=>drop.classList.remove("over");
 drop.ondrop=e=>{e.preventDefault();drop.classList.remove("over");setImage(e.dataTransfer.files[0])};
-document.addEventListener("paste",e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/"));if(!it)return;if(!$("viewCmp").hidden)dropCmp([it.getAsFile()]);else if(!$("viewGen").hidden)setImage(it.getAsFile())});
+document.addEventListener("paste",e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/"));if(!it)return;if(!$("viewSame").hidden){const f=it.getAsFile();same.print?addRefs([f]):setSamePrint(f)}else if(!$("viewCmp").hidden)dropCmp([it.getAsFile()]);else if(!$("viewGen").hidden)setImage(it.getAsFile())});
 $("clearImg").onclick=e=>{e.stopPropagation();imgFile=null;$("preview").hidden=true;$("dropEmpty").hidden=false;$("clearImg").hidden=true;$("file").value="";updateAnalyze()};
 
 /* ---------- status / erros ---------- */
@@ -1591,7 +1693,7 @@ Não adicionar luz artificial. Toda a iluminação deve parecer proveniente apen
  {c:"Iluminação",n:"Blue hour com referência",w:"Copiar o clima de uma foto de referência.",img:"Envie: 1º o render, 2º a foto de referência",lock:false,t:`Mudar o clima do ambiente para Blue hour e ligar as luzes artificiais [do perfil de LED do forro e do nicho] com temperatura de cor de 2700K.
 Manter a imagem do plano de fundo da janela a mesma, apenas mudar a cor.`},
  {c:"Iluminação",n:"Golden hour com referência",w:"Copiar o clima de uma foto de referência.",img:"Envie: 1º o render, 2º a foto de referência",lock:false,t:`Mude o clima dessa fotografia para Golden Hour.`},
- {c:"Mesmo ambiente",n:"Novo ângulo do mesmo ambiente",w:"Outra imagem do projeto mantendo luz e materiais iguais aos renders prontos.",same:true,lock:false},
+ {c:"Mesmo ambiente",n:"Novo ângulo do mesmo ambiente",w:"Versão rápida. A aba mesmo ambiente tem o passo a passo completo, com a ordem das imagens e os materiais novos.",same:true,lock:false},
  {c:"Humanizar",n:"Pessoas e pets",w:"Prompt simples, descrevendo só a ação.",lock:true,t:`Insira [uma mulher lavando as mãos de frente para o espelho / um cachorro da raça maltês deitado descansando no tapete].`},
  {c:"Humanizar",n:"Mulher andando com motion blur",w:"Pessoa passando casualmente, borrada pelo movimento.",lock:true,t:`Inserir uma mulher caminhando naturalmente na cena, integrada ao ambiente como fotografia arquitetônica profissional.
 Mulher em movimento real de caminhada.
@@ -1882,8 +1984,146 @@ function renderLib(){
     g.append(d);
   });
 }
-function showView(v){ const m={gen:"viewGen",lib:"viewLib",cmp:"viewCmp"}; Object.entries(m).forEach(([k,id])=>{$(id).hidden=k!==v}); [["gen","tabGen"],["lib","tabLib"],["cmp","tabCmp"]].forEach(([k,id])=>$(id).setAttribute("aria-selected",k===v)); $("hero").hidden=v!=="gen"; if(v!=="cmp"&&isFs()) closeFs(); if(v==="cmp") $("usePrint").hidden=!imgFile; window.scrollTo({top:0}); }
-$("tabGen").onclick=()=>showView("gen"); $("tabLib").onclick=()=>showView("lib"); $("tabCmp").onclick=()=>showView("cmp");
+/* ---------- mesmo ambiente: nova cena do mesmo projeto ---------- */
+const ORD_EN=["first","second","third","fourth"];
+function listEN(a){ return a.length>1?a.slice(0,-1).join(", ")+" and "+a.at(-1):a[0]; }
+function sameEnvEN(n,opt){
+  if(opt===1){ const r=listEN(ORD_EN.slice(1,n+1));
+    return `The first image (SketchUp screenshot) must look like a NEW PHOTOGRAPH of the SAME space already photographed before (${r} image${n>1?"s":""}).
+Treat all images as part of the same professional architectural photo shoot, captured in the same minute under the same natural lighting conditions.
+The lighting must NOT be recalculated or reinterpreted. It must be inherited from the original space.
+• Same light direction
+• Same intensity
+• Same exposure
+• Same white balance
+• Same shadow softness
+• Same contrast levels
+• Same atmosphere
+The time of day is fixed and cannot change.
+The sun position is fixed and cannot change.
+The photographic reading must remain identical.
+Only the camera viewpoint changes.
+Nothing else changes.
+Turn the screenshot into a photograph with absolute temporal continuity.`; }
+  const sk=ORD_EN[n], r=listEN(ORD_EN.slice(0,n));
+  return `Use the ${sk} image (SketchUp screenshot) as the absolute base for geometry, architecture, layout, framing and camera. Do NOT change anything in the project.
+Use the ${r} image${n>1?"s":""} as the mandatory visual and photographic reference.
+Replicate exactly the same render style as the ${r} image${n>1?"s":""}: lighting, exposure, white balance, materials, colors, contrast, color temperature, material realism, level of detail, microtextures, finish and atmosphere.
+The ${sk} image must look like another photograph of the SAME space, taken by the SAME photographer, on the SAME day, with the SAME camera and the SAME settings.
+Realistic PBR materials, wood with subtle grain variation, fabrics with natural texture, satin floor with soft reflection, metals with controlled shine.
+Soft, diffuse and balanced natural lighting, no hard shadows, no blown-out whites, no artificial HDR.
+Interior photography camera, 24–28mm equivalent lens, perfectly straight vertical lines, composition identical to the SketchUp screenshot.
+The final result must be indistinguishable from professional photography, consistent with the ${r} image${n>1?"s":""}, with no AI or generic render look.`;
+}
+function sameNewEN(txt,n,opt){
+  const items=String(txt||"").split("\n").map(x=>x.trim()).filter(Boolean); if(!items.length) return "";
+  const sk=opt===1?"first":ORD_EN[n];
+  return `\n\nNEW ELEMENTS IN THIS SCENE (they appear only in the ${sk} image, the screenshot; they do not exist in the reference images):\n${items.map(i=>"• "+i).join("\n")}\nFor these elements: geometry, position and quantity exactly as in the ${sk} image; material, color and finish exactly as described above (RGB, when given, is the exact color). They receive the same light, exposure, white balance and level of realism as the references, as if photographed in the same shoot. All other materials stay inherited from the references, with no change.`;
+}
+const same={refs:[],print:null,opt:1};
+function okImg(f){ return !!f&&/^image\/(jpeg|png|webp)$/.test(f.type) }
+function fileUrl(f){ return f._u||(f._u=URL.createObjectURL(f)) }
+function dropZone(el,onFiles){
+  el.addEventListener("dragover",e=>{ if([...(e.dataTransfer?.types||[])].includes("Files")){ e.preventDefault(); el.classList.add("over") } });
+  el.addEventListener("dragleave",()=>el.classList.remove("over"));
+  el.addEventListener("drop",e=>{ e.preventDefault(); el.classList.remove("over"); onFiles(e.dataTransfer.files) });
+}
+function addRefs(files){
+  const fs=[...(files||[])].filter(okImg); if(!fs.length){ toast("Use JPG, PNG ou WebP"); return }
+  const room=3-same.refs.length;
+  if(fs.length>room) toast(room?`Cabem só mais ${room} render(s)`:"Use no máximo 3 renders prontos");
+  same.refs.push(...fs.slice(0,room)); renderSame();
+}
+function setSamePrint(f){ if(!okImg(f)){ toast("Use JPG, PNG ou WebP"); return } same.print=f; renderSame(); }
+function sameOrder(){
+  const P={f:same.print,t:"print do novo ângulo",d:"base de geometria, câmera e enquadramento"};
+  const R=same.refs.map((f,i)=>({f,t:same.refs.length>1?`render pronto ${i+1}`:"render pronto",d:"referência de luz, cor e materiais"}));
+  if(!R.length) R.push({f:null,t:"render pronto",d:""});
+  return same.opt===1?[P,...R]:[...R,P];
+}
+function renderSame(){
+  const box=$("sRefs"); box.innerHTML="";
+  same.refs.forEach((f,i)=>{
+    const d=document.createElement("div"); d.className="rtile";
+    d.innerHTML='<img alt="" draggable="false"><span class="rn"></span><button class="x" type="button" aria-label="Remover este render">×</button>';
+    d.querySelector("img").src=fileUrl(f); d.querySelector(".rn").textContent=i+1;
+    d.querySelector(".x").onclick=()=>{ same.refs.splice(i,1); renderSame() };
+    box.append(d);
+  });
+  if(same.refs.length<3){
+    const a=document.createElement("button"); a.type="button"; a.className="rtile add";
+    a.textContent=same.refs.length?"+ outro render":"+ render pronto"; a.onclick=()=>$("sRefFile").click();
+    dropZone(a,addRefs); box.append(a);
+  }
+  $("sPrev").hidden=!same.print; $("sDropEmpty").hidden=!!same.print; if(same.print) $("sPrev").src=fileUrl(same.print);
+  $("sUsePrint").hidden=!imgFile||same.print===imgFile;
+  $("sOpt1").setAttribute("aria-pressed",same.opt===1); $("sOpt2").setAttribute("aria-pressed",same.opt===2);
+  const ol=$("sOrder"); ol.innerHTML="";
+  sameOrder().forEach((it,i)=>{
+    const li=document.createElement("li"); if(!it.f) li.className="missing";
+    li.innerHTML='<span class="num"></span><span class="th"></span><span class="tx"><b></b><small></small></span>';
+    li.querySelector(".num").textContent=(i+1)+"º";
+    if(it.f){ const im=document.createElement("img"); im.src=fileUrl(it.f); im.alt=""; li.querySelector(".th").append(im) }
+    li.querySelector("b").textContent=it.t; li.querySelector("small").textContent=it.f?it.d:"falta anexar";
+    ol.append(li);
+  });
+  $("sDetect").disabled=!(same.refs.length&&same.print);
+  sameBuild();
+}
+function addNew(el="",desc=""){
+  const d=document.createElement("div"); d.className="nrow";
+  d.innerHTML='<input type="text" aria-label="Elemento novo" placeholder="Elemento (ex.: painel do lavabo)"><input type="text" class="d" aria-label="Material do elemento" placeholder="Material, acabamento, cor ou RGB (ex.: carvalho ripado 4cm, acetinado, RGB 168,130,96)"><button class="x" type="button" aria-label="Remover elemento">×</button>';
+  const [a,b]=d.querySelectorAll("input"); a.value=el; b.value=desc;
+  d.querySelector(".x").onclick=()=>{ d.remove(); sameBuild() };
+  $("sNew").append(d); return a;
+}
+function newItems(){ return [...document.querySelectorAll("#sNew .nrow")].map(d=>{ const [a,b]=d.querySelectorAll("input"), e=a.value.trim(), m=b.value.replace(/\s*\(conferir\)\s*$/i,"").trim(); return e&&m?`${e}: ${m}`:e||m }).filter(Boolean); }
+function sameBuild(){
+  const n=same.refs.length;
+  $("sOut").hidden=!n; $("sNeed").hidden=!!n; if(!n) return;
+  const items=newItems().join("\n"), notes=$("sNotes").value.trim();
+  const pt=sameEnv(n,same.opt)+sameNew(items,n,same.opt)+(notes?`\n\nOBSERVAÇÕES DESTA CENA (têm prioridade sobre o resto):\n${notes}`:"");
+  const en=sameEnvEN(n,same.opt)+sameNewEN(items,n,same.opt)+(notes?`\n\nNOTES FOR THIS SCENE (they override everything else):\n${notes}`:"");
+  $("sPt").textContent=pt; $("sEn").textContent=en;
+  $("scPt").textContent=pt.length.toLocaleString("pt-BR")+" caracteres"; $("scEn").textContent=en.length.toLocaleString("pt-BR")+" caracteres";
+}
+$("sRefFile").onchange=e=>{ addRefs(e.target.files); e.target.value="" };
+$("sPrintFile").onchange=e=>{ setSamePrint(e.target.files[0]); e.target.value="" };
+$("sDrop").onclick=()=>$("sPrintFile").click();
+$("sDrop").onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("sPrintFile").click() } };
+dropZone($("sDrop"),fs=>setSamePrint([...fs].find(okImg)||fs[0]));
+$("sUsePrint").onclick=()=>{ if(imgFile) setSamePrint(imgFile) };
+$("sClear").onclick=()=>{ same.refs=[]; same.print=null; $("sNew").innerHTML=""; $("sNotes").value=""; status($("sStatus"),""); renderSame() };
+$("sOpt1").onclick=()=>{ same.opt=1; renderSame() }; $("sOpt2").onclick=()=>{ same.opt=2; renderSame() };
+$("sAdd").onclick=()=>addNew().focus();
+$("sNew").addEventListener("input",sameBuild); $("sNotes").addEventListener("input",sameBuild);
+$("sCopyPt").onclick=()=>copy("sPt"); $("sCopyEn").onclick=()=>copy("sEn");
+$("sDetect").onclick=async()=>{
+  const order=sameOrder(), pi=order.findIndex(x=>x.f===same.print)+1, refIdx=order.map((x,i)=>x.f!==same.print?i+1:0).filter(Boolean);
+  const prompt=`Você é especialista em visualização arquitetônica. As imagens ${refIdx.join(", ")} são renders prontos (fotografias finais) de um ambiente. A imagem ${pi} é o print do SketchUp de um NOVO ângulo do mesmo ambiente.
+Liste os elementos que aparecem no print (imagem ${pi}) e que NÃO aparecem em nenhum dos renders prontos, ou que aparecem neles só de forma parcial e pouco clara. Ignore o que já está bem visível nos renders: esses materiais serão herdados.
+Para cada elemento novo, escreva em uma linha o material provável: material, acabamento, cor e RGB aproximado lido do print, coerente com a linguagem e a paleta dos renders. Leia o SketchUp com cuidado: textura com veio = material natural; cor chapada = pintura, laca ou laminado; faixa amarela ou brilhante em nicho, sanca ou prateleira = LED.
+Marque "conferir": true quando não tiver certeza. Se não houver elementos novos, devolva a lista vazia.
+Formato JSON: {"novos":[{"elemento":"Painel do lavabo","descricao":"lâmina de carvalho natural, ripado vertical, acetinado, RGB aprox. 168,130,96","conferir":false}]}`;
+  const apply=r=>{
+    const list=Array.isArray(r?.novos)?r.novos:[];
+    const have=new Set([...document.querySelectorAll("#sNew .nrow input:first-child")].map(i=>i.value.trim().toLowerCase()));
+    let k=0; list.forEach(x=>{ const e=String(x.elemento||"").trim(); if(e&&!have.has(e.toLowerCase())){ addNew(e,String(x.descricao||"")+(x.conferir?" (conferir)":"")); k++ } });
+    sameBuild(); status($("sStatus"),k?`${k} elemento(s) novo(s) encontrados. Confira e ajuste os materiais.`:"Nenhum elemento novo: o prompt herda tudo dos renders.");
+  };
+  const imgs=order.map(x=>x.f);
+  if(!AI.mode||(AI.mode==="claude"&&imgs.length>pieceImgMax)){
+    manual({title:"detectar o que é novo",prompt:prompt+JSON_TAIL,attach:"anexe as imagens nesta ordem: "+order.map((x,i)=>`${i+1}º ${x.t}`).join(", "),onReply:t=>apply(parseJSON(t))});
+    return;
+  }
+  $("sDetect").disabled=true; status($("sStatus"),"Comparando o print com os renders…",true);
+  try{ apply(await aiJSON(prompt,{images:imgs,light:true})) }catch(e){ status($("sStatus"),errMsg(e),false,true) }
+  $("sDetect").disabled=!(same.refs.length&&same.print);
+};
+renderSame();
+
+function showView(v){ const m={gen:"viewGen",same:"viewSame",lib:"viewLib",cmp:"viewCmp"}; Object.entries(m).forEach(([k,id])=>{$(id).hidden=k!==v}); [["gen","tabGen"],["same","tabSame"],["lib","tabLib"],["cmp","tabCmp"]].forEach(([k,id])=>$(id).setAttribute("aria-selected",k===v)); $("hero").hidden=v!=="gen"; if(v!=="cmp"&&isFs()) closeFs(); if(v==="cmp") $("usePrint").hidden=!imgFile; if(v==="same") renderSame(); window.scrollTo({top:0}); }
+$("tabGen").onclick=()=>showView("gen"); $("tabSame").onclick=()=>showView("same"); $("tabLib").onclick=()=>showView("lib"); $("tabCmp").onclick=()=>showView("cmp");
 
 /* ---------- comparar ---------- */
 const cmp={a:null,b:null,aUrl:"",bUrl:"",mode:"drag",x:50,flip:false,dl:null};
