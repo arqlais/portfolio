@@ -289,21 +289,6 @@ body.locked{overflow:hidden}
 .diffs .sev.baixa{background:var(--ok)}
 .diffs b{font-weight:600}
 
-/* exemplos do método */
-.exfig{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:zoom-in;position:relative}
-.exfig img{display:block;width:100%;height:auto;max-height:240px;object-fit:contain;background:#fff}
-.exfig span{position:absolute;right:8px;bottom:8px;background:rgba(31,42,51,.72);color:#F5F2EE;font:500 10.5px var(--body);letter-spacing:.08em;padding:3px 9px;border-radius:999px;text-transform:lowercase}
-.exfig:hover{border-color:var(--rose)}
-.exslot:empty{display:none}
-.step.dark .exfig{border-color:var(--dark-line)}
-.exdlg{border:0;padding:0;background:transparent;max-width:min(96vw,1100px);max-height:96dvh;overflow:visible}
-.exdlg::backdrop{background:rgba(14,20,24,.82)}
-.exdlg img{display:block;max-width:min(96vw,1100px);max-height:86dvh;border-radius:12px;background:#fff;margin:0 auto}
-.exdlg p{color:#F2ECE6;text-align:center;font-size:13px;margin:10px 0 0}
-.exdlg form{position:absolute;top:-12px;right:-12px}
-.exdlg .x{width:40px;height:40px;border-radius:50%;border:0;background:#F2ECE6;color:#1F2A33;font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
-@media (max-width:600px){.exdlg form{top:6px;right:6px}}
-
 /* mesmo ambiente */
 .slabel{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.02em}
 .slabel small{font-weight:400}
@@ -575,7 +560,6 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
           <div class="chips" id="lightChips"></div>
         </div>
         <div class="preset" id="presetText"></div>
-        <div class="exslot" id="presetExSlot"></div>
         <div class="row2">
           <label class="f">De onde vem a luz natural<input type="text" id="lightDir" placeholder="Ex.: ao fundo, através da varanda"></label>
           <label class="f">Luz artificial
@@ -622,7 +606,6 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
           <div class="finebody">
             <div class="f quickonly">Cenário de luz
               <div class="chips" id="qChips"></div>
-              <div class="exslot" id="qPresetExSlot"></div>
             </div>
             <label class="f">Luzes artificiais (padrão: levemente ligadas e neutras)
               <select id="ledTemp">
@@ -703,7 +686,6 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
         <h2><span class="n">na sua ia de imagem</span>Envie <em>nesta ordem</em></h2>
         <ol class="order" id="sOrder"></ol>
         <p class="hint">O prompt cita as imagens pelo número. Se a ordem mudar, a IA confunde o print com a referência.</p>
-        <div class="exslot" id="sExSlot"></div>
       </section>
     </aside>
 
@@ -834,11 +816,6 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
   </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
-<dialog id="exDlg" class="exdlg" aria-label="Exemplo ampliado">
-  <form method="dialog"><button class="x" aria-label="Fechar">×</button></form>
-  <img id="exImg" alt="">
-  <p id="exCap"></p>
-</dialog>
 <dialog id="manual" class="manual" aria-labelledby="mTitle">
   <form method="dialog" class="mhd">
     <h2><span class="n">modo gratuito</span><span id="mTitle"></span></h2>
@@ -1013,19 +990,6 @@ $("aiBtn").onclick=()=>{
 $("aiModel").onchange=e=>{ G.model=e.target.value; lsSet(GMODEL,G.model); toast("Modelo trocado"); };
 $("aiOut").onclick=()=>{ lsSet(GKEY,""); lsSet(GMODEL,""); $("aiDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu. A chave foi apagada deste navegador."); };
 
-/* exemplos visuais do método (recortes do PDF, pasta exemplos/) */
-function exFig(page,label){
-  const b=document.createElement("button"); b.type="button"; b.className="exfig"; b.setAttribute("aria-label","Ver exemplo ampliado");
-  b.innerHTML='<img loading="lazy" alt=""><span></span>'; setEx(b,page,label);
-  b.onclick=()=>{ $("exImg").src=b.dataset.src; $("exCap").textContent=b.dataset.label; $("exDlg").showModal(); };
-  return b;
-}
-function setEx(b,page,label){
-  b.hidden=!page; if(!page) return;
-  const src=`exemplos/${page}.jpg`; b.dataset.src=src; b.dataset.label=label||"exemplo do método";
-  const im=b.querySelector("img"); if(im.getAttribute("src")!==src) im.src=src; im.alt="Exemplo: "+(label||"");
-  b.querySelector("span").textContent="exemplo · ampliar";
-}
 let manualCb=null, manualText="";
 function manual({title,prompt,attach,onReply}){
   manualText=prompt; manualCb=onReply;
@@ -1046,15 +1010,15 @@ $("mUse").onclick=()=>{
 const PRESETS = {
 INTERIOR: [
  {n:"Natural predominante + artificial", t:"Luz natural predominante entrando pelas aberturas existentes, suave e realista. Toda a iluminação artificial existente ligada, quente e visível sem dominar a luz natural. Mistura equilibrada de luz natural e artificial, fisicamente plausível."},
- {n:"Cortina translúcida + luz artificial",ex:"p02", t:"Luz natural principal entrando pela janela lateral, filtrada pela cortina translúcida, suave, difusa e natural. Temperatura da luz natural entre 5000K e 5400K, balanço neutro. Ligar obrigatoriamente todas as luzes artificiais já existentes no modelo, sem adicionar nenhuma nova. Luz artificial de intensidade baixa porém visível, contribuindo para profundidade e atmosfera. Equilibrar exposição interior/exterior: evitar janela estourada, evitar interior escuro, sombras suaves e naturais."},
- {n:"Cortina translúcida, muita luz",ex:"p03", t:"Luz natural de abertura lateral filtrada por cortina translúcida. Luz suave e difusa, sem sol direto. Sombras muito macias e espalhadas. Contraste baixo a médio. Exposição levemente elevada sem estourar brancos. Brancos neutros, sem dominante verde ou magenta. Temperatura entre 4800K e 5200K. Atmosfera clara, leve e arejada. Bounce light natural preenchendo as áreas opostas à janela. Sem hotspots, sem iluminação dramática, sem HDR exagerado."},
- {n:"Cortina translúcida, sem luz artificial",art:"off",ex:"p04", t:"Iluminação natural diurna entrando abundantemente pelas aberturas, suave e difusa, filtrada por cortina branca translúcida (sheer curtain), sem sol direto. Sombras muito macias e alongadas, sem bordas duras. Bounce light realista. Exposição equilibrada, janela sem áreas estouradas, contraste moderado, aparência editorial. White balance neutro, sem tonalidade amarela. Nada de HDR, nada de luz artificial ligada. GI realista; reflexos, refrações e sombras coerentes com a fonte de luz."},
- {n:"Persiana, luz abundante",ex:"p05", t:"Luz natural lateral vinda de janela real, filtrada pela persiana, com suavização natural, direção lateral clara e sombras extremamente suaves. Exterior levemente superexposto simulando céu claro, interior corretamente exposto, high dynamic range natural. Contraste suave, bounce neutro, sem luz artificial dominante. Simular câmera full-frame, lente 35mm, ISO baixo, balanço de branco neutro (~5200K), curva tonal natural, microcontraste realista."},
- {n:"Persiana + sol, sombra marcada",ex:"p06", t:"Luz solar direta atravessando persianas horizontais ou elementos vazados, criando padrões lineares de luz e sombra bem definidos sobre paredes, piso e mobiliário. Sombras com bordas relativamente marcadas, porém fisicamente realistas. Contraste médio-alto com detalhes preservados nas luzes e nas sombras. Temperatura levemente quente (4300K–4800K), balanço neutro sem verde ou magenta. Luz principal lateral criando volumetria. Leve rebatimento natural nas sombras."},
- {n:"Fim de tarde quente",ex:"p10", t:"Fotografia de final de tarde com luz natural dominante entrando pelas aberturas existentes, direção coerente com elas. Luz suave levemente quente, 4800K–5600K, sem feixes de sol duros. Gradiente suave no piso e nas paredes. Exterior levemente mais claro que o interior, nenhuma área estourada, HDR natural equilibrado. Rebote quente vindo da madeira e do piso, sem sombras pretas fechadas. Luz artificial existente apenas como complemento sutil (2700K–3000K), sem tornar a cena noturna. Preservar o calor natural da cena; não recalibrar o balanço de branco; não alterar horário nem direção da luz."},
- {n:"Sem luz natural",nat:false,art:"off",ex:"p07", t:"Iluminação indireta neutra, suave e difusa. Ambiente extremamente claro, sombras muito macias e alongadas, sem bordas duras. Bounce light realista. Exposição equilibrada, contraste moderado, aparência editorial. White balance neutro, sem tonalidade amarela. Nada de HDR, nada de luz artificial ligada. GI realista."},
- {n:"Sem luz natural, luz atrás da câmera",nat:false,ex:"p08", t:"Iluminação suave com direção frontal predominante, como fotografia profissional de interiores. Leve gradiente: área próxima à câmera um pouco mais iluminada, queda suave em direção ao fundo. Modelagem lateral extremamente sutil só para separar planos. Sombras suaves com gradiente sob os objetos. Rebatimento suave no teto e superfícies claras. Neutralizar dominantes quentes, brancos verdadeiramente neutros, ~5400K. Não representar nenhuma abertura física nem reflexos de fontes de luz."},
- {n:"Banheiro, luz lavada",ex:"p09", t:"Luz do dia difusa e filtrada vinda da abertura, suave e homogênea, sem contraste agressivo. Sombras suaves com bordas levemente difusas. Soft bounce das superfícies claras. Temperatura neutra levemente quente (4800K–5200K). Brancos absolutamente neutros, sem verde ou magenta. Sem estouro na janela. Atmosfera natural, elegante e silenciosa. Sem luz dramática, sem pôr do sol, sem blue hour, sem luz artificial dominante."},
+ {n:"Cortina translúcida + luz artificial", t:"Luz natural principal entrando pela janela lateral, filtrada pela cortina translúcida, suave, difusa e natural. Temperatura da luz natural entre 5000K e 5400K, balanço neutro. Ligar obrigatoriamente todas as luzes artificiais já existentes no modelo, sem adicionar nenhuma nova. Luz artificial de intensidade baixa porém visível, contribuindo para profundidade e atmosfera. Equilibrar exposição interior/exterior: evitar janela estourada, evitar interior escuro, sombras suaves e naturais."},
+ {n:"Cortina translúcida, muita luz", t:"Luz natural de abertura lateral filtrada por cortina translúcida. Luz suave e difusa, sem sol direto. Sombras muito macias e espalhadas. Contraste baixo a médio. Exposição levemente elevada sem estourar brancos. Brancos neutros, sem dominante verde ou magenta. Temperatura entre 4800K e 5200K. Atmosfera clara, leve e arejada. Bounce light natural preenchendo as áreas opostas à janela. Sem hotspots, sem iluminação dramática, sem HDR exagerado."},
+ {n:"Cortina translúcida, sem luz artificial",art:"off", t:"Iluminação natural diurna entrando abundantemente pelas aberturas, suave e difusa, filtrada por cortina branca translúcida (sheer curtain), sem sol direto. Sombras muito macias e alongadas, sem bordas duras. Bounce light realista. Exposição equilibrada, janela sem áreas estouradas, contraste moderado, aparência editorial. White balance neutro, sem tonalidade amarela. Nada de HDR, nada de luz artificial ligada. GI realista; reflexos, refrações e sombras coerentes com a fonte de luz."},
+ {n:"Persiana, luz abundante", t:"Luz natural lateral vinda de janela real, filtrada pela persiana, com suavização natural, direção lateral clara e sombras extremamente suaves. Exterior levemente superexposto simulando céu claro, interior corretamente exposto, high dynamic range natural. Contraste suave, bounce neutro, sem luz artificial dominante. Simular câmera full-frame, lente 35mm, ISO baixo, balanço de branco neutro (~5200K), curva tonal natural, microcontraste realista."},
+ {n:"Persiana + sol, sombra marcada", t:"Luz solar direta atravessando persianas horizontais ou elementos vazados, criando padrões lineares de luz e sombra bem definidos sobre paredes, piso e mobiliário. Sombras com bordas relativamente marcadas, porém fisicamente realistas. Contraste médio-alto com detalhes preservados nas luzes e nas sombras. Temperatura levemente quente (4300K–4800K), balanço neutro sem verde ou magenta. Luz principal lateral criando volumetria. Leve rebatimento natural nas sombras."},
+ {n:"Fim de tarde quente", t:"Fotografia de final de tarde com luz natural dominante entrando pelas aberturas existentes, direção coerente com elas. Luz suave levemente quente, 4800K–5600K, sem feixes de sol duros. Gradiente suave no piso e nas paredes. Exterior levemente mais claro que o interior, nenhuma área estourada, HDR natural equilibrado. Rebote quente vindo da madeira e do piso, sem sombras pretas fechadas. Luz artificial existente apenas como complemento sutil (2700K–3000K), sem tornar a cena noturna. Preservar o calor natural da cena; não recalibrar o balanço de branco; não alterar horário nem direção da luz."},
+ {n:"Sem luz natural",nat:false,art:"off", t:"Iluminação indireta neutra, suave e difusa. Ambiente extremamente claro, sombras muito macias e alongadas, sem bordas duras. Bounce light realista. Exposição equilibrada, contraste moderado, aparência editorial. White balance neutro, sem tonalidade amarela. Nada de HDR, nada de luz artificial ligada. GI realista."},
+ {n:"Sem luz natural, luz atrás da câmera",nat:false, t:"Iluminação suave com direção frontal predominante, como fotografia profissional de interiores. Leve gradiente: área próxima à câmera um pouco mais iluminada, queda suave em direção ao fundo. Modelagem lateral extremamente sutil só para separar planos. Sombras suaves com gradiente sob os objetos. Rebatimento suave no teto e superfícies claras. Neutralizar dominantes quentes, brancos verdadeiramente neutros, ~5400K. Não representar nenhuma abertura física nem reflexos de fontes de luz."},
+ {n:"Banheiro, luz lavada", t:"Luz do dia difusa e filtrada vinda da abertura, suave e homogênea, sem contraste agressivo. Sombras suaves com bordas levemente difusas. Soft bounce das superfícies claras. Temperatura neutra levemente quente (4800K–5200K). Brancos absolutamente neutros, sem verde ou magenta. Sem estouro na janela. Atmosfera natural, elegante e silenciosa. Sem luz dramática, sem pôr do sol, sem blue hour, sem luz artificial dominante."},
 ],
 EXTERIOR: [
  {n:"Fim de tarde, céu limpo", t:"Iluminação de fim de tarde, céu limpo, posição do sol fixa exatamente como na IMAGEM 1. Luz quente e baixa, sombras suaves e alongadas coerentes com o sol. Entorno neutro com mínima interferência visual."},
@@ -1120,10 +1084,8 @@ function renderChips(){
     list.forEach((p,i)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=p.n;
     b.setAttribute("aria-pressed",i===lightStyle);b.onclick=()=>{lightStyle=i;renderChips()};box.append(b)}); });
   if(typeof updateFineSum==="function"&&$("fineSum")) try{updateFineSum()}catch{}
-  const ps=lightStyle>=0?list[lightStyle]:null;
-  [$("presetEx"),$("qPresetEx")].forEach(b=>b&&setEx(b,ps?.ex,ps?`cenário de luz · ${ps.n}`:""));
-  if(!ps){$("presetText").textContent="Sem cenário: a luz segue só o seu texto.";return}
-  $("presetText").textContent=ps.t;
+  if(lightStyle<0){$("presetText").textContent="Sem cenário: a luz segue só o seu texto.";return}
+  $("presetText").textContent=list[lightStyle].t;
 }
 function renderExtras(){
   $("extras").innerHTML="";
@@ -1501,7 +1463,6 @@ $("mQuick").onclick=()=>setMode(true); $("mDetail").onclick=()=>setMode(false);
 let _m="q"; try{_m=localStorage.getItem("lais-render-modo")||"q"}catch{} setMode(_m!=="d");
 PIECE_PRESETS.forEach(([n,t])=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent="+ "+n;b.onclick=()=>addPiece(n,t);$("pieceChips").append(b)});
 $("addPiece").onclick=()=>addPiece();
-$("presetExSlot").append(Object.assign(exFig(),{id:"presetEx"})); $("qPresetExSlot").append(Object.assign(exFig(),{id:"qPresetEx"}));
 renderTypes(); renderView("keep"); renderChips(); renderExtras(); setRows(EXAMPLE); renderProjects();
 document.querySelectorAll(".mrow").forEach(d=>d.style.opacity=".7");
 $("mat").addEventListener("input",()=>{ if(exampleActive){exampleActive=false;document.querySelectorAll(".mrow").forEach(d=>d.style.opacity="")} });
@@ -1981,7 +1942,6 @@ FORMATO DE SAÍDA, exatamente:
 ===EN===
 (o mesmo prompt em inglês, mesma estrutura e mesmos valores)`;
 }
-const LIB_EX={"Pós no Magnific sem modificar":"p13","Trava de cor":"p20","Corrigir usando o print":"p23","Corrigir geometria e textura pelo print":"p23","Trocar cor de revestimento":"p22","Bancada em São Gabriel escovado":"p30","Mesmo revestimento, cores diferentes":"p21","Espelho borrado":"p29","Copiar a luz de uma foto de referência":"p12","Ligar luzes artificiais":"p31","Blue hour":"p32","Golden hour suave, sem sol direto":"p33","Golden hour com sol entrando":"p34","Blue hour com referência":"p35","Golden hour com referência":"p36","Pessoas e pets":"p26","Mulher andando com motion blur":"p24","Criança pulando na cama":"p25","Foto de detalhe do projeto":"p27","Mapa Random Color":"p28"};
 let libCat="Todos";
 function renderLib(){
   const cats=["Todos",...new Set(LIB.map(x=>x.c))];
@@ -1994,13 +1954,12 @@ function renderLib(){
     d.innerHTML=`<span class="cat"></span><h3></h3><p class="when"></p><div class="opts" hidden></div><div class="imgs" hidden></div><textarea id="lib_${k}" spellcheck="false" aria-label="Texto do prompt"></textarea><div class="actions"><button class="btn small">Copiar</button><label class="lock" hidden><input type="checkbox" id="lock_${k}"> incluir trava de cor</label></div>`;
     d.querySelector(".cat").textContent=x.c; d.querySelector("h3").textContent=x.n; d.querySelector(".when").textContent=x.w;
     const ta=d.querySelector("textarea"), im=d.querySelector(".imgs"), op=d.querySelector(".opts");
-    const fig=(LIB_EX[x.n]||x.same)?exFig(LIB_EX[x.n],x.n):null; if(fig) d.querySelector(".when").after(fig);
     const setImg=t=>{im.hidden=!t; im.textContent=t||""};
     if(x.same){
       op.hidden=false;
       op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
       const [sn,so]=op.querySelectorAll("select"), nw=op.querySelector("textarea");
-      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value)+sameNew(nw.value,+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value));setEx(fig,"p"+String((+so.value===1?13:16)+(+sn.value)).padStart(2,"0"),`${x.n} · opção 0${so.value} · ${sn.value} referência${+sn.value>1?"s":""}`)};
+      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value)+sameNew(nw.value,+sn.value,+so.value);setImg(sameEnvImgs(+sn.value,+so.value))};
       sn.onchange=upd; so.onchange=upd; nw.oninput=upd; upd();
     } else if(x.anim){
       op.hidden=false;
@@ -2109,8 +2068,6 @@ function renderSame(){
     ol.append(li);
   });
   $("sDetect").disabled=!(same.refs.length&&same.print);
-  if(!$("sEx")) $("sExSlot").append(Object.assign(exFig(),{id:"sEx"}));
-  const nn=Math.max(1,same.refs.length); setEx($("sEx"),"p"+String((same.opt===1?13:16)+nn).padStart(2,"0"),`mesmo ambiente · ${same.opt===1?"herda a luz":"copia o estilo"} · ${nn} referência${nn>1?"s":""}`);
   sameBuild();
 }
 function addNew(el="",desc=""){
