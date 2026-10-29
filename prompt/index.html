@@ -55,7 +55,9 @@ img{max-width:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.6;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
 .wrap{max-width:1200px;margin:0 auto}
-#viewLib,#viewCmp{padding-top:28px}
+#viewLib,#viewCmp,#viewSame{padding-top:28px}
+.kb{}.touch{display:none}
+@media (pointer:coarse){.kb{display:none}.touch{display:inline}}
 em{font-family:var(--display);font-style:italic;font-weight:300}
 
 /* nav */
@@ -88,6 +90,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
 .board{position:sticky;top:96px;display:flex;flex-direction:column;gap:16px}
 @media (max-width:880px){.board{position:static}}
+@media (max-width:880px){#viewGen .grid{display:flex;flex-direction:column;align-items:stretch}#viewGen .board{display:contents}#viewGen .board>.step{order:1}#viewGen .steps{order:2}#viewGen .board>.side{order:3}} /* celular: projetos salvos vão para o fim */
 .steps{display:flex;flex-direction:column;gap:18px;min-width:0}
 .step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .step h2{font-family:var(--display);font-size:28px;font-weight:300;margin:0;display:flex;flex-direction:column;gap:6px;line-height:1.05;text-wrap:balance}
@@ -181,7 +184,7 @@ pre.prompt{margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-hei
 .banner{background:var(--rose-soft);border-radius:var(--r-s);padding:12px 16px;font-size:13px;margin-bottom:18px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:13px;font-weight:500;z-index:20}
 
-.preset{font-size:12.5px;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:10px 12px;white-space:pre-line;max-height:150px;overflow:auto}
+.preset{margin:4px 0 0;font-size:12px;line-height:1.5;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:10px 12px;white-space:pre-line;max-height:150px;overflow:auto}
 .checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 @media (max-width:560px){.checks{grid-template-columns:minmax(0,1fr)}}
 .check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--paper);cursor:pointer;font-size:13px}
@@ -191,9 +194,7 @@ pre.prompt{margin:0;padding:16px;font-family:var(--mono);font-size:12px;line-hei
 .modebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
 .modebar .seg{min-width:min(100%,360px)}
 .readbox{font-size:13.5px;line-height:1.7;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-s);padding:14px 16px;white-space:pre-line;max-height:300px;overflow:auto}
-body.quick .detail{display:none!important}
-body:not(.quick) .quickonly{display:none!important}
-textarea#qText{min-height:250px;font-size:14px;background:var(--paper)}
+textarea#qText{min-height:150px;font-size:14px;background:var(--paper)}
 
 .fold{border-top:1px solid var(--line);padding-top:12px}
 .fold summary{cursor:pointer;font-weight:500;font-size:13px;list-style:none;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;text-transform:lowercase}
@@ -360,7 +361,7 @@ body.gated .wrap{display:none}
 @media (max-width:640px){.lrow{grid-template-columns:minmax(0,1fr) 34px}.lrow select{grid-row:2;grid-column:1 / -1}}
 .aibtn.upd{background:var(--rose);color:#fff;border-color:var(--rose)}
 .f .lt .sub{font-weight:400;color:var(--muted);letter-spacing:0}
-.lightbox{display:grid;gap:14px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.lightbox{display:grid;gap:14px}
 .rrow .sw{cursor:pointer}
 .cpick #cpSV{display:block;width:100%;height:auto;aspect-ratio:13/6;border-radius:12px;cursor:crosshair;touch-action:none}
 .cpick #cpHue{width:100%;margin:14px 0 4px;-webkit-appearance:none;appearance:none;height:14px;border-radius:999px;background:linear-gradient(90deg,red,#ff0,lime,cyan,blue,#f0f,red)}
@@ -550,7 +551,7 @@ textarea{padding:12px 14px}
         <h2><span class="n">passo 1</span>Print do <em>SketchUp</em></h2>
         <div class="types" role="group" aria-label="Tipo de projeto" id="types"></div>
         <div class="drop" id="drop" tabindex="0" role="button" aria-label="Enviar print">
-          <div id="dropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher · também dá pra colar com Ctrl+V</p></div>
+          <div id="dropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher<span class="kb"> · também dá pra colar com Ctrl+V</span><span class="touch"> · no iPad, foto ou arquivo</span></p></div>
           <img id="preview" alt="Print enviado" hidden>
         </div>
         <input type="file" id="file" accept="image/*,.heic,.heif" hidden>
@@ -570,19 +571,25 @@ textarea{padding:12px 14px}
     </aside>
 
     <main class="steps">
-      <section class="step quickonly">
-        <h2><span class="n">leitura do print</span>O que a IA <em>viu</em></h2>
+      <section class="step">
+        <h2><span class="n">passo 2 · confira</span>O que a IA <em>viu</em></h2>
         <p class="hint">Ficha do print, editável: corrija direto aqui. É ela que vai para o prompt. Itens com <b class="cfmark">conferir</b> são palpites da IA.</p>
         <div class="readview" id="qRead"><p class="hint">Envie o print e toque em analisar. É opcional.</p></div>
+      </section>
+
+      <section class="step">
+        <h2><span class="n">passo 3</span>Luz e <em>fundo</em></h2>
+        <p class="hint">Já vem no padrão (dia neutro, LED ~3500K, fundo automático). A análise escolhe a vista sozinha; mude só se quiser.</p>
         <div class="lightbox">
           <div class="f"><span class="lt">Cenário de luz <span class="sub">· padrão: dia neutro, nem quente nem frio</span></span>
             <div class="chips" id="qChips"></div>
+            <p class="preset" id="presetText"></p>
           </div>
           <div class="row2">
             <label class="f" id="viewWrap"><span class="lt"><span id="viewLabel">Vista pela janela</span> <span class="sub">· a análise já escolhe</span></span>
               <select id="view"></select>
             </label>
-            <label class="f"><span class="lt">Luzes artificiais <span class="sub">· padrão das decorativas; cada luminária tem a sua na ficha</span></span>
+            <label class="f"><span class="lt">Luzes artificiais <span class="sub">· padrão das decorativas</span></span>
               <select id="ledTemp">
                 <option value="3500" selected>Ligadas · branco neutro-quente (~3500K)</option>
                 <option value="3000">Ligadas · branco quente (~3000K)</option>
@@ -597,40 +604,12 @@ textarea{padding:12px 14px}
         </div>
       </section>
 
-      <section class="step quickonly">
-        <h2><span class="n">passo 2 · opcional</span>Especifique ou <em>altere</em></h2>
+      <section class="step">
+        <h2><span class="n">passo 4 · opcional</span>Especifique ou <em>altere</em></h2>
         <p class="hint">Escreva o que a leitura não pegou ou o que quer mudar: material, cor, RGB, acabamento, luminárias e o que NÃO é. Pode escrever corrido. O que você escrever aqui vence a ficha.</p>
         <div class="actions qtools"><button class="btn ghost small" id="qPick" type="button">conta-gotas · RGB do print</button><button class="btn ghost small" id="qColor" type="button">escolher cor · HEX ou RGB</button></div>
         <textarea id="qText" aria-label="Descrição do projeto" placeholder="piso porcelanato acetinado bege muito claro, paredes greige fosca rgb 209,202,194, teto da sala amadeirado Amendoa Natural exatamente como no print, painel da tv lambri ripas 10cm espaço 1cm marrom liso rgb 152,136,123 NAO é amadeirado, bancada quartzo branco polido, metais preto acetinado...
 luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fita de led em cima e embaixo da prateleira, spots no forro, arandela dourado acetinado em cima do sofá"></textarea>
-      </section>
-
-      <section class="step detail">
-        <h2><span class="n">passo 2</span>Materiais</h2>
-        <p class="hint">Corrija o que a análise preencheu.</p>
-        <div class="mhead"><span>Elemento</span><span>Material</span><span>Acabamento</span><span>Cor / RGB</span><span></span></div>
-        <div class="mat" id="mat"></div>
-        <div class="actions"><button class="btn ghost small" id="addRow">+ Adicionar elemento</button></div>
-      </section>
-
-      <section class="step detail">
-        <h2><span class="n">passo 3</span>Iluminação</h2>
-        <div class="f">Cenário de luz
-          <div class="chips" id="lightChips"></div>
-        </div>
-        <div class="preset" id="presetText"></div>
-        <div class="row2">
-          <label class="f">De onde vem a luz natural<input type="text" id="lightDir" placeholder="Ex.: ao fundo, através da varanda"></label>
-          <label class="f">Luz artificial
-            <select id="artOn"><option value="on">Toda ligada</option><option value="some">Só as listadas abaixo</option><option value="off">Desligada</option></select>
-          </label>
-        </div>
-        <label class="f">Luminárias (uma por linha)
-          <textarea id="lights" placeholder="fita de LED acima e abaixo da prateleira&#10;spots no forro amadeirado&#10;arandela de leitura acima do sofá, dourado acetinado"></textarea>
-        </label>
-        <label class="f">Observações (têm prioridade sobre o resto)
-          <textarea id="notes" rows="3" placeholder="Ex.: deixa elementos decorativos exatamente como no print"></textarea>
-        </label>
       </section>
 
       <section class="step">
@@ -642,7 +621,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
       </section>
 
       <section class="step dark">
-        <h2><span class="n">passo 3</span>Gerar o <em>prompt</em></h2>
+        <h2><span class="n">passo 5</span>Gerar o <em>prompt</em></h2>
         <div class="genrow">
           <label class="f">Onde vai usar
             <select id="dest">
@@ -717,7 +696,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
         <input type="file" id="sRefFile" accept="image/*,.heic,.heif" multiple hidden>
         <div class="slabel">print do novo ângulo</div>
         <div class="drop sdrop" id="sDrop" tabindex="0" role="button" aria-label="Enviar o print do novo ângulo">
-          <div id="sDropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher · Ctrl+V também funciona</p></div>
+          <div id="sDropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher<span class="kb"> · Ctrl+V também funciona</span></p></div>
           <img id="sPrev" alt="Print do novo ângulo" hidden>
         </div>
         <input type="file" id="sPrintFile" accept="image/*,.heic,.heif" hidden>
@@ -820,7 +799,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
             <figure><img id="sbsB" alt="Render final" draggable="false"><figcaption id="capB">render ia</figcaption></figure>
           </div>
         </div>
-        <p class="hint">Arraste na imagem, clique em qualquer ponto ou use as setas do teclado. F abre a tela cheia.</p>
+        <p class="hint"><span class="kb">Arraste na imagem, clique em qualquer ponto ou use as setas do teclado. F abre a tela cheia.</span><span class="touch">Arraste o dedo na imagem ou toque em qualquer ponto. Use tela cheia para ver maior.</span></p>
       </section>
 
       <aside class="board">
@@ -1185,36 +1164,6 @@ const EXTRAS = [
  {id:"same",on:false,n:"Mesmo revestimento em várias superfícies",d:"Evita tons diferentes do mesmo material",t:"Revestimentos idênticos devem ser tratados como uma única instância de material. Se o mesmo revestimento aparece em múltiplas superfícies ou refletido no espelho, mantém exatamente a mesma tonalidade, padrão e variação. Proibido variar tonalidade entre superfícies do mesmo material. Proibido interpretar reflexos como material diferente."},
  {id:"ceiling",on:false,n:"Forro liso sem trama",d:"Quando o forro sai com textura de tecido",t:"Forro de gesso pintado de branco, superfície predominantemente lisa, com imperfeições orgânicas muito sutis e não padronizadas. Remover completamente qualquer textura de trama, tecido ou padrão."},
 ];
-let exampleActive = true;
-
-const EXAMPLE = [
-  {elemento:"Piso",material:"Porcelanato grande formato",acabamento:"Acetinado",cor:"Bege muito claro",nota:""},
-  {elemento:"Paredes",material:"Pintura",acabamento:"Fosco",cor:"Greige RGB 209,202,194",nota:""},
-  {elemento:"Painel da TV",material:"Lambri ripado 10cm, espaço 1cm",acabamento:"Liso",cor:"Marrom RGB 152,136,123",nota:"NÃO é amadeirado, sem veio. Exatamente como no print"},
-];
-
-/* ---------- materiais ---------- */
-function addRow(r={}){
-  const d=document.createElement("div"); d.className="mrow";
-  const uid=Math.random().toString(36).slice(2,8);
-  d.innerHTML=`<label class="elem"><input type="text" id="e_${uid}" aria-label="Elemento" placeholder="Elemento"></label>
-  <input type="text" id="m_${uid}" aria-label="Material" placeholder="Material">
-  <input type="text" id="a_${uid}" aria-label="Acabamento" placeholder="Acabamento">
-  <span class="pkw"><input type="text" id="c_${uid}" aria-label="Cor ou RGB" placeholder="Cor / RGB"><button class="pk" type="button" title="Conta-gotas: pegar a cor no print" aria-label="Pegar a cor no print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg></button></span>
-  <button class="x" title="Remover" aria-label="Remover">×</button>
-  <input type="text" class="note" id="n_${uid}" aria-label="Observação" placeholder="Observação (opcional): ex. NÃO é madeira">`;
-  const ins=d.querySelectorAll("input");
-  ins[0].value=r.elemento||""; ins[1].value=r.material||""; ins[2].value=r.acabamento||""; ins[3].value=r.cor||""; ins[4].value=r.nota||"";
-  d.querySelector(".x").onclick=()=>d.remove();
-  d.querySelector(".pk").onclick=()=>pickColor(c=>{ const i=ins[3], v=i.value.replace(/\s*·?\s*RGB[\s\d,]*$/i,"").trim(); i.value=(v?v+" · ":"")+"RGB "+c.join(","); clearExample(); });
-  $("mat").append(d);
-}
-function rows(){
-  return [...document.querySelectorAll(".mrow")].map(d=>{const i=d.querySelectorAll("input");
-    return {elemento:i[0].value.trim(),material:i[1].value.trim(),acabamento:i[2].value.trim(),cor:i[3].value.trim(),nota:i[4].value.trim()}}).filter(r=>r.elemento);
-}
-function setRows(list){ $("mat").innerHTML=""; list.forEach(addRow); }
-
 /* ---------- chips / tipo ---------- */
 function renderChips(){
   const list=PRESETS[kind]; if(lightStyle>=list.length) lightStyle=0; if(lightStyle<-1) lightStyle=0;
@@ -1236,8 +1185,6 @@ function renderExtras(){
   $("sameMatWrap").hidden=!EXTRAS.find(e=>e.id==="same").on;
 }
 function setKind(k){ const prev=$("view").value; const changed=k!==kind; kind=k; renderView(changed?"keep":prev);
-  $("lightDir").placeholder=k==="EXTERIOR"?"Ex.: sol fixo como no print, vindo da esquerda":"Ex.: ao fundo, através da varanda";
-  $("lights").placeholder=k==="EXTERIOR"?"Ex.: só os balizadores do muro da fachada, luz quente suave":"fita de LED acima e abaixo da prateleira\nspots no forro amadeirado\narandela de leitura acima do sofá, dourado acetinado";
   renderChips(); }
 
 
@@ -1248,8 +1195,7 @@ function setImage(f){
   r.onload=()=>{ $("preview").src=r.result; $("preview").hidden=false; $("dropEmpty").hidden=true; $("clearImg").hidden=false; updateAnalyze(); };
   r.readAsDataURL(f);
 }
-function clearExample(){ if(exampleActive){ exampleActive=false; $("mat").innerHTML=""; } }
-function updateAnalyze(){ $("analyze").disabled=AI.mode?!(imgFile&&imgOK):false; $("analyze").textContent=(!document.body.classList.contains("quick")&&!exampleActive&&rows().length)?"Analisar e completar elementos":"Analisar print"; }
+function updateAnalyze(){ $("analyze").disabled=AI.mode?!(imgFile&&imgOK):false; $("analyze").textContent=getRead()?"Analisar de novo":"Analisar print"; }
 const drop=$("drop");
 drop.onclick=()=>$("file").click();
 drop.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("file").click()}};
@@ -1276,9 +1222,7 @@ function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTime
 
 /* ---------- análise do print ---------- */
 $("analyze").onclick=async()=>{
-  clearExample();
-  if(quickMode()) $("mat").innerHTML="";
-  const existing=rows();
+  const existing=[];
   $("analyze").disabled=true; status($("aStatus"),"Lendo o print com atenção… pode levar até um minuto",true);
   const prompt=`Você é especialista em visualização arquitetônica e materiais de acabamento. A imagem anexada é a IMAGEM 1: um print do SketchUp de um projeto do tipo "${TYPES.find(x=>x[0]===tipo)[1]}" (${kind}). Ele vai virar fotografia por IA, e a sua leitura vira a base do prompt, então precisão vale mais que quantidade.
 Analise somente o que está visível e responda em português do Brasil.
@@ -1306,14 +1250,9 @@ Formato JSON:
 {"ambiente":"ex.: banheiro social","luzNatural":"janela à esquerda, luz difusa","fundo":"exterior claro e esbranquiçado pela janela","vista":"keep","luminarias":[{"luz":"spots embutidos no forro","tipo":"geral"},{"luz":"fita linear oculta no nicho do box","tipo":"decorativa"}],"objetos":["2 frascos âmbar no nicho do box"],"vazios":["prateleiras do nicho ao lado do vaso"],"materiais":[{"elemento":"Revestimento porcelanato","onde":"parede da pia, parede do box e piso","material":"Porcelanato marmorizado","acabamento":"Acetinado, placas grandes","cor":"Branco com veios cinza","rgb":"","conferir":false},{"elemento":"Parede do vaso","onde":"parede ao fundo","material":"Pintura","acabamento":"Fosco","cor":"Verde sálvia","rgb":"168,180,160","conferir":false}]}`;
   const apply=data=>{
     const mats=Array.isArray(data?.materiais)?data.materiais:[];
-    const have=new Set(existing.map(r=>r.elemento.toLowerCase()));
-    if(!existing.length) $("mat").innerHTML="";
-    let added=0; mats.forEach(m=>{const el=String(m.elemento||"").trim(); if(el&&!have.has(el.toLowerCase())){addRow({elemento:el,material:String(m.material||""),acabamento:String(m.acabamento||""),cor:String(m.cor||"")+(m.rgb?" · RGB "+m.rgb:""),nota:m.onde?"onde: "+String(m.onde):""});added++}});
-    if(!$("lightDir").value && data?.luzNatural) $("lightDir").value=String(data.luzNatural);
     if(data?.vista && VIEWS[kind].some(v=>v[0]===data.vista)){ $("view").value=data.vista; updateFineSum(); if(data.vista==="print") toast("O print já tem fundo: ele será mantido no render"); }
-    if(!$("lights").value.trim() && Array.isArray(data?.luminarias)) $("lights").value=data.luminarias.map(l=>lumObj(l).luz).join("\n");
-        renderRead(data,mats);
-    status($("aStatus"),`${data?.ambiente?String(data.ambiente)+" · ":""}${added} elemento(s) identificados.`);
+    renderRead(data,mats); updateAnalyze();
+    status($("aStatus"),`${data?.ambiente?String(data.ambiente)+" · ":""}${mats.length} material(is) e ${(data?.luminarias||[]).length} luminária(s) identificados. Confira a ficha.`);
   };
   if(!AI.mode){
     $("analyze").disabled=false; status($("aStatus"),"");
@@ -1435,7 +1374,7 @@ function readingText(){
 function quickMode(){ return document.body.classList.contains("quick"); }
 function curPreset(){ return lightStyle>=0?PRESETS[kind][lightStyle]:null; }
 function ledRule(quick){
-  const ps=curPreset(), v=$("ledTemp").value, art=quick?"on":$("artOn").value;
+  const ps=curPreset(), v=$("ledTemp").value, art="on";
   const who=quick?"padrão da usuária quando o texto dela não disser outra coisa; se o texto dela falar das luzes, o texto vence":"padrão fixo da usuária";
   if(v==="off"||art==="off") return "LUZ ARTIFICIAL: todas as luminárias DESLIGADAS, sem nenhum brilho de LED. Só a luz do cenário.";
   if(ps?.art==="off") return `LUZ ARTIFICIAL: DESLIGADA, porque o cenário escolhido ("${ps.n}") é sem luz artificial. Nenhuma luminária acesa, nenhum brilho de LED.`;
@@ -1509,8 +1448,8 @@ const NEG_BATH=[
   [/banqueta|banco/i,"banquinhos","stools"]];
 function negList(){
   const r=getRead()||{}, {vazios,...rest}=r; // áreas vazias e frases com "sem"/"não" não contam como presença
-  const src=[JSON.stringify(rest),$("qText").value,$("notes").value,$("lights").value,JSON.stringify(rows())].join("\n").replace(/\b(sem|n[aã]o tem|nenhum[a]?|without|no)\s+[^,;.\n"]*/gi," ");
-  if(!getRead()&&!rows().length) return null; // sem leitura não dá para saber o que existe
+  const src=[JSON.stringify(rest),$("qText").value].join("\n").replace(/\b(sem|n[aã]o tem|nenhum[a]?|without|no)\s+[^,;.\n"]*/gi," ");
+  if(!getRead()) return null; // sem leitura não dá para saber o que existe
   const bath=/banheir|lavabo|su[ií]te|box|chuveiro|cuba|vaso sanit/i.test(src);
   const list=[...NEG_ALL,...(bath?NEG_BATH:[])].filter(([re])=>!re.test(src)).map(([,pt,en])=>({pt,en}));
   if(!/(embaixo|sob|abaixo)\s+(d[oa]s?\s+)?(gabinete|bancada|arm[aá]rio|m[oó]ve|cama|sof[aá])/i.test(src)) list.push({pt:"LED ou luz embaixo de gabinetes, bancadas e móveis suspensos",en:"LED or light under cabinets, counters or floating furniture"});
@@ -1566,31 +1505,6 @@ BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
 ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
 TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.6)+" caracteres (~"+Math.round(size*0.6/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO e todos os materiais"}`;
 }
-function buildBrief(){
-  const r=rows(), size=$("size").value;
-  const art={on:"Toda a iluminação artificial LIGADA",some:"Somente as luminárias listadas LIGADAS",off:"Iluminação artificial DESLIGADA"}[$("artOn").value];
-  const vsel=$("view").value, vname=$("view").selectedOptions[0]?.textContent||"";
-  const viewTxt=vsel==="keep"?(kind==="INTERIOR"?"fundo automático: o fundo do SketchUp é provisório. Azul chapado é o céu padrão do programa e NÃO deve ser reproduzido: pelas aberturas aparece um exterior claro, difuso e levemente estourado, coerente com a luz natural que entra (ex.: banheiro: claridade esbranquiçada). Só manter uma paisagem se o print tiver uma imagem de fundo específica. O fundo nunca é o foco nem chama atenção":"céu automático: o azul chapado do SketchUp é provisório; gerar céu real e discreto coerente com o cenário de luz e o horário. Entorno exatamente como no print; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara, sem detalhes que chamem atenção":"entorno neutro com mínima interferência visual; só o céu pode ganhar realismo"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a altura e a luz da cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}. O entorno pode ser enriquecido SOMENTE nas áreas vazias além do projeto; o projeto arquitetônico continua 100% travado`);
-  const atmo=$("atmo").value;
-  return `TIPO DE PROJETO: ${TYPES.find(x=>x[0]===tipo)[1]} (${kind})${tipo==="planta"?" — planta humanizada vista de cima: manter escala, paredes, layout e mobiliário exatamente como no print, com sombras suaves de luz vinda do alto e texturas fotorrealistas":""}${tipo==="urb"?" — projeto urbanístico: preservar traçado, calçadas, mobiliário urbano, vegetação e volumes exatamente":""}
-${kind==="INTERIOR"?"VISTA PELA JANELA":"ENTORNO"}: ${viewTxt}
-ATMOSFERA: ${atmo?ATMO[atmo]+" (a atmosfera ajusta só o clima fotográfico; nunca muda materiais, cores ou o cenário de luz)":"neutra, seguir só o cenário de luz"}
-PROPORÇÃO DE SAÍDA: ${$("ratio").value==="print"?"a mesma do print (IMAGE 1)":$("ratio").value+" (se a ferramenta tiver seletor de proporção, usar ele; não esticar nem distorcer a geometria)"}
-${lightStyle>=0?`CENÁRIO DE LUZ (bloco de referência do método, usar fielmente e adaptar às aberturas desta cena): ${PRESETS[kind][lightStyle].n} — ${PRESETS[kind][lightStyle].t}`:"CENÁRIO DE LUZ: seguir só as especificações abaixo"}
-ILUMINAÇÃO: luz natural vem de = ${$("lightDir").value||"manter exatamente como na IMAGEM 1"}; ${art}.
-${ledRule(false)}
-LUMINÁRIAS:
-${$("lights").value.trim()||"(manter as existentes na IMAGEM 1)"}
-MATERIAIS (elemento | material | acabamento | cor | observação):
-${r.map(x=>`- ${x.elemento} | ${x.material} | ${x.acabamento} | ${x.cor} | ${x.nota}`).join("\n")||"(seguir o print)"}
-BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
-${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
-RGB: os informados valem exatamente. Cores sólidas sem RGB (pintura, laca, laminado liso, tecido liso) recebem um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); materiais com textura natural (madeira, pedra, mármore) não recebem RGB inventado: descrever tom e veio "exactly matching the appearance shown in IMAGE 1". Elementos com "onde:" listando várias superfícies são o MESMO material em todas.
-${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
-DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}${negBrief()}
-TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.6)+" caracteres (~"+Math.round(size*0.6/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
-}
-
 const DEST={
  magnific:"- Destino Magnific/Nano Banana: comece com as três linhas de peso: (KEEP GEOMETRY IDENTICAL:2.0) (NO REDESIGN:2.0) (STRICT GEOMETRY PRESERVATION:2.0) em linhas separadas; no português: (MANTER GEOMETRIA IDÊNTICA:2.0) (NÃO REDESENHAR:2.0) (PRESERVAÇÃO RIGOROSA DA GEOMETRIA:2.0).",
  gemini:"- Destino Gemini / AI Studio (Nano Banana direto): NÃO use a sintaxe de peso com parênteses. Comece com uma linha em caixa alta: KEEP GEOMETRY IDENTICAL. NO REDESIGN. STRICT GEOMETRY PRESERVATION. Chame o print de \"the attached image (IMAGE 1)\".",
@@ -1664,12 +1578,10 @@ function showPrompts(text){
 }
 $("gen").onclick=async()=>{
   const quick=quickMode();
-  if(quick && !$("qText").value.trim() && !getRead() && !imgFile){toast("Envie o print (e analise) ou escreva os materiais no passo 2");return}
-  if(!quick && exampleActive){toast("Analise um print ou edite os materiais de exemplo primeiro");return}
-  if(!quick && !rows().length && !$("notes").value.trim()){toast("Preencha os materiais ou os detalhes extras");return}
+  if(!$("qText").value.trim() && !getRead() && !imgFile){toast("Envie o print (e analise) ou escreva os materiais no passo 4");return}
   if(!AI.mode){
     const withPics=pieces().filter(p=>p.img).length;
-    const prompt=MASTER(quick?buildQuickBrief():buildBrief())+"\n\nA IMAGEM 1 (print do SketchUp) está anexada nesta conversa."+(withPics?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":"");
+    const prompt=MASTER(buildQuickBrief())+"\n\nA IMAGEM 1 (print do SketchUp) está anexada nesta conversa."+(withPics?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":"");
     manual({title:"gerar o prompt",prompt,attach:"anexe o print do SketchUp"+(withPics?` e depois as ${withPics} foto(s) das peças, na ordem da lista`:""),onReply:t=>{
       if(!t.includes("===PT===")||!t.includes("===EN===")) throw {code:"manual_format"};
       $("outSec").hidden=false; showPrompts(t); addNegLines(); { const l=$("size").value==="full"?0:+$("size").value; if(l) hardFit(l); }
@@ -1685,7 +1597,7 @@ $("gen").onclick=async()=>{
   const opts={signal:genCtl.signal,effort:"high",onText:({text})=>{showPrompts(text);status($("gStatus"),"Escrevendo…",true)}};
   if(imgOK){ const ims=[]; if(imgFile) ims.push(imgFile); pieces().forEach(p=>{ if(p.img && ims.length<pieceImgMax) ims.push(p.img) }); if(ims.length) opts.images=ims; }
   try{
-    const {text,truncated}=await aiText(MASTER(quick?buildQuickBrief():buildBrief())+(opts.images?(imgFile?"\n\nA IMAGEM 1 (print) está anexada para conferência dos elementos.":"")+(opts.images.length>(imgFile?1:0)?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":""):""),opts);
+    const {text,truncated}=await aiText(MASTER(buildQuickBrief())+(opts.images?(imgFile?"\n\nA IMAGEM 1 (print) está anexada para conferência dos elementos.":"")+(opts.images.length>(imgFile?1:0)?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":""):""),opts);
     showPrompts(text);
     let fixed=false;
     const lim=$("size").value==="full"?0:+$("size").value;
@@ -1729,15 +1641,15 @@ function renderProjects(){
   if(!l.length){box.innerHTML='<p class="hint">Nenhum projeto salvo ainda.</p>';return}
   l.forEach((p,i)=>{const d=document.createElement("div");d.className="proj";
     d.innerHTML=`<div style="min-width:0;display:flex;flex-direction:column"><span></span><small></small></div><div class="actions"><button class="btn small">Carregar</button><button class="btn ghost small" aria-label="Excluir">×</button></div>`;
-    d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${p.qText?" · texto salvo":" · "+p.rows.length+" materiais"}`;
+    d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${" · "+((p.read?.materiais||p.rows||[]).length)+" materiais"}${p.qText?" · com texto":""}`;
     const [lb,db]=d.querySelectorAll("button");
-    lb.onclick=()=>{exampleActive=false;if(p.read)renderRead(p.read,p.read.materiais);else if(p.rows?.length)renderRead({luminarias:(p.lights||"").split("\n").filter(Boolean),luzNatural:p.lightDir||""},p.rows.map(r=>({elemento:r.elemento,material:[r.material,r.acabamento].filter(Boolean).join(", "),cor:r.cor,onde:r.nota})));lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("viewTxt").value=p.viewTxt||"";$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3500";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
+    lb.onclick=()=>{if(p.read)renderRead(p.read,p.read.materiais);else if(p.rows?.length)renderRead({luminarias:(p.lights||"").split("\n").filter(Boolean),luzNatural:p.lightDir||""},p.rows.map(r=>({elemento:r.elemento,material:[r.material,r.acabamento].filter(Boolean).join(", "),cor:r.cor,onde:r.nota})));lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("viewTxt").value=p.viewTxt||"";$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3500";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
     db.onclick=()=>{if(db.dataset.c){const a=loadAll();a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
     box.append(d)});
 }
 $("saveProj").onclick=()=>{
   const nome=$("projName").value.trim(); if(!nome){toast("Dê um nome ao projeto");return}
-  const p={nome,kind,tipo,quick:quickMode(),read:getRead(),qText:$("qText").value,ledTemp:$("ledTemp").value,pieces:pieces().map(x=>({nome:x.nome,desc:x.desc})),view:$("view").value,atmo:$("atmo").value,dest:$("dest").value,ratio:$("ratio").value,rows:rows(),lightStyle,extras:EXTRAS.filter(x=>x.on).map(x=>x.id),sameMat:$("sameMat").value,viewTxt:$("viewTxt").value,lightDir:$("lightDir").value,artOn:$("artOn").value,lights:$("lights").value,notes:$("notes").value};
+  const p={nome,kind,tipo,read:getRead(),qText:$("qText").value,ledTemp:$("ledTemp").value,pieces:pieces().map(x=>({nome:x.nome,desc:x.desc})),view:$("view").value,atmo:$("atmo").value,dest:$("dest").value,ratio:$("ratio").value,lightStyle,extras:EXTRAS.filter(x=>x.on).map(x=>x.id),sameMat:$("sameMat").value,viewTxt:$("viewTxt").value};
   const l=loadAll().filter(x=>x.nome!==nome); l.unshift(p);
   toast(saveAll(l)?"Projeto salvo neste navegador":"Não foi possível salvar neste navegador"); renderProjects();
 };
@@ -1756,15 +1668,11 @@ function setMode(){ document.body.classList.add("quick") } // uma aba só: ficha
 setMode();
 PIECE_PRESETS.forEach(([n,t])=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent="+ "+n;b.onclick=()=>addPiece(n,t);$("pieceChips").append(b)});
 $("addPiece").onclick=()=>addPiece();
-renderTypes(); renderView("keep"); renderChips(); renderExtras(); setRows(EXAMPLE); renderProjects();
-document.querySelectorAll(".mrow").forEach(d=>d.style.opacity=".7");
-$("mat").addEventListener("input",()=>{ if(exampleActive){exampleActive=false;document.querySelectorAll(".mrow").forEach(d=>d.style.opacity="")} });
+renderTypes(); renderView("keep"); renderChips(); renderExtras(); renderProjects();
 $("analyze").hidden=true; $("gen").disabled=true;
 connectAI();
-$("mat").addEventListener("input",updateAnalyze);
 </script>
 
-<script>$("addRow").onclick=()=>{clearExample();addRow();updateAnalyze()};</script>
 
 <script>
 const LOCK=`Do not change global color grading.
@@ -2035,7 +1943,7 @@ Não adicionar luz artificial. Toda a iluminação deve parecer proveniente apen
  {c:"Iluminação",n:"Blue hour com referência",w:"Copiar o clima de uma foto de referência.",img:"Envie: 1º o render, 2º a foto de referência",lock:false,t:`Mudar o clima do ambiente para Blue hour e ligar as luzes artificiais [do perfil de LED do forro e do nicho] com temperatura de cor de 2700K.
 Manter a imagem do plano de fundo da janela a mesma, apenas mudar a cor.`},
  {c:"Iluminação",n:"Golden hour com referência",w:"Copiar o clima de uma foto de referência.",img:"Envie: 1º o render, 2º a foto de referência",lock:false,t:`Mude o clima dessa fotografia para Golden Hour.`},
- {c:"Mesmo ambiente",n:"Novo ângulo do mesmo ambiente",w:"Versão rápida. A aba mesmo ambiente tem o passo a passo completo, com a ordem das imagens e os materiais novos.",same:true,lock:false},
+ {c:"Mesmo ambiente",n:"Novo ângulo do mesmo ambiente",w:"Tem uma aba própria, com até 4 renders, ordem das imagens (print primeiro ou por último) e os materiais novos da cena.",same:true,lock:false},
  {c:"Humanizar",n:"Pessoas e pets",w:"Prompt simples, descrevendo só a ação.",lock:true,t:`Insira [uma mulher lavando as mãos de frente para o espelho / um cachorro da raça maltês deitado descansando no tapete].`},
  {c:"Humanizar",n:"Mulher andando com motion blur",w:"Pessoa passando casualmente, borrada pelo movimento.",lock:true,t:`Inserir uma mulher caminhando naturalmente na cena, integrada ao ambiente como fotografia arquitetônica profissional.
 Mulher em movimento real de caminhada.
@@ -2319,11 +2227,9 @@ function renderLib(){
     const ta=d.querySelector("textarea"), im=d.querySelector(".imgs"), op=d.querySelector(".opts");
     const setImg=t=>{im.hidden=!t; im.textContent=t||""};
     if(x.same){
-      op.hidden=false;
-      op.innerHTML=`<select id="sn_${k}" aria-label="Referências"><option value="1">1 render de referência</option><option value="2">2 renders</option><option value="3">3 renders</option><option value="4">4 renders</option></select><select id="so_${k}" aria-label="Versão"><option value="1">Opção 01 · herda a luz</option><option value="2">Opção 02 · copia o estilo</option><option value="3">Os dois · luz e materiais</option></select><select id="sp_${k}" aria-label="Ordem"><option value="auto">Ordem do método</option><option value="first">Print primeiro</option><option value="last">Print por último</option></select><label class="f newmat">Materiais que só aparecem nesta cena (um por linha, opcional)<textarea id="snew_${k}" rows="3" placeholder="Ex.: Painel do lavabo: lâmina natural de carvalho, ripado vertical 4cm, acetinado, RGB 168,130,96&#10;Bancada do lavabo: quartzo branco polido"></textarea></label>`;
-      const [sn,so,sp]=op.querySelectorAll("select"), nw=op.querySelector("textarea"), fst=()=>sp.value==="auto"?+so.value!==2:sp.value==="first";
-      const upd=()=>{ta.value=sameEnv(+sn.value,+so.value,fst())+sameNew(nw.value,+sn.value,+so.value,fst())+sameRules(+sn.value,+so.value,fst());setImg(sameEnvImgs(+sn.value,+so.value,fst()))};
-      sn.onchange=upd; so.onchange=upd; sp.onchange=upd; nw.oninput=upd; upd();
+      ta.hidden=true; const a=d.querySelector(".actions"); a.innerHTML="";
+      const bt=document.createElement("button"); bt.className="btn small"; bt.type="button"; bt.textContent="abrir a aba mesmo ambiente"; bt.onclick=()=>{ showView("same"); scrollTo(0,0) };
+      a.append(bt); g.append(d); return;
     } else if(x.anim){
       op.hidden=false;
       op.innerHTML=`<select id="ad_${k}" aria-label="Direção"><option value="frente">Frontal</option><option value="direita">Diagonal para a direita</option><option value="esquerda">Diagonal para a esquerda</option></select>`;
