@@ -1,5 +1,5 @@
 ---
-# Portfólio em PDF — folha única de 1080px, curta, no visual do site e do orçamento.
+# Portfólio em PDF: folha única de 1080px, resumida, com a identidade do site.
 # Usa os dados do site (_data/) e vira PDF com ferramentas/gerar-pdf.mjs.
 # Visualize em /portfolio-pdf/.
 permalink: /portfolio-pdf/
@@ -10,13 +10,21 @@ permalink: /portfolio-pdf/
 {%- assign sv = site.data.servicos -%}
 {%- assign pf = site.data.portfolio -%}
 {%- assign pj = site.data.projetos -%}
+{%- assign cp = site.data.comparar -%}
+{%- assign cf = site.data.como_funciona -%}
 {%- capture wa -%}https://api.whatsapp.com/send?phone={{ g.whatsapp_numero }}&text={{ 'Olá, Laís! Vi seu portfólio e quero conversar sobre um projeto.' | url_encode | replace: '+', '%20' }}{%- endcapture -%}
+{%- assign msg_orc = pdf.orcamento.mensagem | default: 'Olá, Laís! Vi seu portfólio e quero um orçamento de render.' -%}
+{%- capture wa_orc -%}https://api.whatsapp.com/send?phone={{ g.whatsapp_numero }}&text={{ msg_orc | url_encode | replace: '+', '%20' }}{%- endcapture -%}
 {%- capture insta -%}https://www.instagram.com/{{ g.instagram_usuario }}{%- endcapture -%}
 {%- assign site_url = 'https://www.lais3d.com.br' -%}
 {%- assign fotos = pf.imagens | where_exp: "i", "i.pdf != 'nao'" -%}
-{%- assign qtd = pdf.galeria.quantidade | default: 11 | plus: 0 -%}
+{%- assign fotos_vray = fotos | where_exp: "i", "i.tipo != 'ia'" -%}
+{%- assign fotos_ia = fotos | where_exp: "i", "i.tipo == 'ia'" -%}
+{%- assign qtd = pdf.galeria.quantidade | default: 15 | plus: 0 -%}
 {%- if fotos.size < qtd %}{% assign mostradas = fotos.size %}{% else %}{% assign mostradas = qtd %}{% endif -%}
+{%- comment -%} 16 espaços na grade (4 × 4): 15 renders + o cartão "+N no site". {%- endcomment -%}
 {%- assign restantes = pf.imagens.size | minus: mostradas -%}
+{%- assign faixa = pdf.faixa | default: inicio.faixa_rolante -%}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -27,51 +35,77 @@ permalink: /portfolio-pdf/
 <link rel="stylesheet" href="{{ '/assets/css/pdf.css' | relative_url }}">
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-cubo" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></symbol>
-  <symbol id="i-ia" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
-  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></symbol>
-  <symbol id="i-globo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/></symbol>
-  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-9 5.7a2 2 0 0 1-2 0L2 7"/></symbol>
-  <symbol id="i-insta" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></symbol>
-  <symbol id="i-seta" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-  <symbol id="i-comparar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/><path d="m8 10-2 2 2 2M16 10l2 2-2 2"/></symbol>
-</svg>
 <main class="folha">
 
-  <div class="barra"><span>{{ pdf.capa.barra | escape }}</span><span>{{ pdf.capa.ano }}</span></div>
+  <header class="topo">
+    <div class="topo-linha"><span class="eyebrow">{{ pdf.capa.barra | escape }}</span><span class="ano">{{ pdf.capa.ano | escape }}</span></div>
+    {%- if pdf.capa.titulo %}<h1 class="marca">{% include destaque.html texto=pdf.capa.titulo %}</h1>{% endif %}
+  </header>
 
   {%- if pdf.secoes.sobre != false %}
-  <header class="hero">
-    <div class="foto"><img src="{{ pdf.capa.foto | default: inicio.foto | relative_url }}" alt=""{% include enquadramento.html e=pdf.capa.foto_enquadramento %}></div>
+  <section class="hero">
+    <div class="hero-foto"><img src="{{ pdf.capa.foto | default: inicio.foto | relative_url }}" alt=""{% include enquadramento.html e=pdf.capa.foto_enquadramento %}></div>
     <div class="hero-texto">
-      <h1>{{ pdf.apresentacao.saudacao | escape }}</h1>
-      {{ pdf.apresentacao.texto | markdownify }}
-      <div class="chips">{% for s in sv.softwares %}<span>{{ s | escape }}</span>{% endfor %}</div>
+      <span class="script saudacao">{{ pdf.apresentacao.saudacao | escape }}</span>
+      {{ pdf.apresentacao.texto | markdownify | replace: '<strong>', '<b>' | replace: '</strong>', '</b>' }}
+      <div class="hero-botoes">
+        <a class="btn btn-primary" href="{{ wa_orc }}">{% include icone.html nome="whatsapp" %}{{ pdf.orcamento.botao | default: 'pedir orçamento de render' | escape }}</a>
+        <a class="btn btn-ghost" href="{{ site_url }}">{{ pdf.encerramento.botao_site | default: 'abrir o site' | escape }}{% include icone.html nome="seta" %}</a>
+      </div>
     </div>
-  </header>
-  <div class="creds">
+  </section>
+  <div class="selos">
     {%- for s in pdf.apresentacao.selos limit: 3 %}
-    <div class="cred"><span class="ic">{% include icone.html nome=s.icone %}</span><p><b>{{ s.titulo | escape }}</b>{{ s.texto | escape }}</p></div>
+    <div class="selo"><span class="ic">{% include icone.html nome=s.icone %}</span><div><h4>{{ s.titulo | escape }}</h4><p>{{ s.texto | escape }}</p></div></div>
     {%- endfor %}
   </div>
   {%- endif %}
 
+  {%- if pdf.secoes.faixa != false and faixa.size > 0 %}
+  <div class="faixa">{% for item in faixa %}<span>{{ item | escape }}</span>{% endfor %}</div>
+  {%- endif %}
+
+  {%- if pdf.secoes.numeros != false and inicio.numeros.size > 0 %}
+  <div class="numeros">
+    {%- for n in inicio.numeros limit: 4 %}
+    <div class="numero"><b>{{ n.numero }}<span>{{ n.sufixo | escape }}</span></b><small>{{ n.legenda | escape }}</small></div>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+
+  {%- if pdf.secoes.servicos != false and sv.servicos.size > 0 %}
+  <section class="sec">
+    <div class="cabeca"><div><span class="eyebrow">{{ pdf.servicos.chamada | default: sv.chamada | escape }}</span><h2>{% include destaque.html texto=pdf.servicos.titulo %}</h2></div></div>
+    <div class="servicos">
+      {%- for x in sv.servicos limit: 6 %}
+      <div class="servico"><span class="ic">{% include icone.html nome=x.icone %}</span><div><h4>{{ x.titulo | escape }}</h4><p>{{ x.texto | escape }}</p></div></div>
+      {%- endfor %}
+    </div>
+  </section>
+  {%- endif %}
+
   {%- if pdf.secoes.portfolio != false and fotos.size > 0 %}
   <section class="sec">
-    <div class="head"><span class="eyebrow">{{ pdf.galeria.chamada | escape }}</span><h2>{% include destaque.html texto=pdf.galeria.titulo %}</h2></div>
+    <div class="cabeca">
+      <div><span class="eyebrow">{{ pdf.galeria.chamada | escape }}</span><h2>{% include destaque.html texto=pdf.galeria.titulo %}</h2></div>
+      <div class="legenda-tipos"><span class="tag">V-Ray</span><span class="tag ia">IA</span></div>
+    </div>
     <div class="galeria">
-      {%- for f in fotos limit: qtd %}
-      <figure class="card">
-        <div class="moldura"><img src="{{ f.imagem | relative_url }}" alt=""{% include enquadramento.html e=f.enquadramento %}></div>
-        <figcaption><span>Projeto<b>{{ f.projeto | escape }}</b></span>{% if f.tipo == 'ia' %}<em class="tipo ia"><svg class="i"><use href="#i-ia"/></svg>IA</em>{% else %}<em class="tipo"><svg class="i"><use href="#i-cubo"/></svg>V-RAY</em>{% endif %}</figcaption>
-      </figure>
-      {%- endfor %}
+      {%- if pdf.galeria.intercalar != false %}
+        {%- assign n = 0 %}
+        {%- for k in (0..200) %}
+          {%- if n < qtd and fotos_vray[k] %}{% assign f = fotos_vray[k] %}{% include pdf-render.html f=f %}{% assign n = n | plus: 1 %}{% endif %}
+          {%- if n < qtd and fotos_ia[k] %}{% assign f = fotos_ia[k] %}{% include pdf-render.html f=f %}{% assign n = n | plus: 1 %}{% endif %}
+          {%- if n >= qtd %}{% break %}{% endif %}
+        {%- endfor %}
+      {%- else %}
+        {%- for f in fotos limit: qtd %}{% include pdf-render.html f=f %}{% endfor %}
+      {%- endif %}
       {%- if restantes > 0 %}
-      <a class="card mais-site" href="{{ site_url }}/#portfolio">
+      <a class="mais" href="{{ site_url }}/#portfolio">
         <span class="mais-num">+{{ restantes }}</span>
         <span class="mais-txt">renders no site</span>
-        <span class="mais-link">ver todos <svg class="i"><use href="#i-seta"/></svg></span>
+        <span class="mais-link">ver todos {% include icone.html nome="seta" %}</span>
       </a>
       {%- endif %}
     </div>
@@ -79,25 +113,49 @@ permalink: /portfolio-pdf/
   {%- endif %}
 
   {%- if pdf.secoes.botao_site != false %}
-  <a class="cta-site" href="{{ pdf.botao_site.link | default: site_url }}">
-    <span class="cta-ic"><svg class="i"><use href="#i-comparar"/></svg></span>
-    <span class="cta-txt"><b>{% include destaque.html texto=pdf.botao_site.titulo %}</b>{{ pdf.botao_site.texto | escape }}</span>
-    <span class="btn claro">{{ pdf.botao_site.botao | escape }}<svg class="i"><use href="#i-seta"/></svg></span>
-  </a>
+  <section class="comparar">
+    <div class="comparar-topo">
+      <div>
+        <span class="eyebrow claro">{{ pdf.botao_site.chamada | escape }}</span>
+        <h2>{% include destaque.html texto=pdf.botao_site.titulo %}</h2>
+        <p>{{ pdf.botao_site.texto | escape }}</p>
+      </div>
+      <a class="btn btn-accent" href="{{ pdf.botao_site.link | default: site_url }}">{{ pdf.botao_site.botao | escape }}{% include icone.html nome="seta" %}</a>
+    </div>
+    {%- if cp.comparacoes.size > 0 %}
+    <div class="cmps">
+      {%- for c in cp.comparacoes limit: 3 %}
+      <a class="cmp-card" href="{{ pdf.botao_site.link | default: site_url }}">
+        <div class="cmp">
+          <img src="{{ c.imagem_ia | relative_url }}" alt="">
+          <img class="cmp-print" src="{{ c.imagem_print | relative_url }}" alt="">
+          <span class="cmp-linha"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 7-5 5 5 5M15 7l5 5-5 5"/></svg></i></span>
+          <span class="cmp-lbl l">print</span><span class="cmp-lbl r">IA</span>
+        </div>
+        <span class="cmp-cap">{{ c.ambiente | escape }}</span>
+      </a>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+  </section>
   {%- endif %}
 
-  {%- if pdf.secoes.projetos != false %}
-  <section class="sec alt">
-    <div class="head"><span class="eyebrow">{{ pdf.casos.chamada | escape }}</span><h2>{% include destaque.html texto=pdf.casos.titulo %}</h2></div>
-    <div class="casos n{{ pj.projetos.size }}">
+  {%- if pdf.secoes.projetos != false and pj.projetos.size > 0 %}
+  <section class="sec casos-sec">
+    <div class="cabeca"><div><span class="eyebrow">{{ pdf.casos.chamada | escape }}</span><h2>{% include destaque.html texto=pdf.casos.titulo %}</h2>{% if pdf.casos.texto %}<p>{{ pdf.casos.texto | escape }}</p>{% endif %}</div></div>
+    <div class="casos">
       {%- for c in pj.projetos %}
-      <article class="caso">
+      <article class="caso{% cycle '', ' inverso' %}">
         <div class="caso-img"><img src="{{ c.imagem | relative_url }}" alt="{{ c.descricao_alt | escape }}"></div>
         <div class="caso-txt">
-          <small>{{ c.categoria | escape }}</small>
+          <div class="caso-topo"><span class="eyebrow">{{ c.categoria | escape }}</span><span class="num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span></div>
           <h3>{% include destaque.html texto=c.titulo %}</h3>
-          {%- assign quem = c.ficha | first %}
-          {%- if quem %}<p>{{ quem.rotulo | escape }} · <b>{{ quem.valor | escape }}</b></p>{% endif %}
+          <p>{{ c.texto_servico | default: c.texto | escape }}</p>
+          <dl class="ficha">
+            {%- for f in c.ficha limit: 3 %}
+            <div><dt>{{ f.rotulo | escape }}</dt><dd>{{ f.valor | escape }}</dd></div>
+            {%- endfor %}
+          </dl>
         </div>
       </article>
       {%- endfor %}
@@ -105,18 +163,36 @@ permalink: /portfolio-pdf/
   </section>
   {%- endif %}
 
+  {%- if pdf.secoes.como_funciona != false and cf.etapas.size > 0 %}
+  <section class="sec">
+    <div class="cabeca"><div><span class="eyebrow">{{ cf.chamada | escape }}</span><h2>{% include destaque.html texto=cf.titulo %}</h2></div></div>
+    <ol class="etapas">
+      {%- for e in cf.etapas limit: 4 %}
+      <li><span class="passo">{{ forloop.index }}</span><h4>{{ e.titulo | escape }}</h4><p>{{ e.texto | escape }}</p></li>
+      {%- endfor %}
+    </ol>
+    {%- if sv.softwares.size > 0 %}
+    <div class="softwares"><span class="eyebrow">{{ pdf.softwares_chamada | default: 'softwares que utilizo' | escape }}</span><div class="chips">{% for x in sv.softwares %}<span>{{ x | escape }}</span>{% endfor %}</div></div>
+    {%- endif %}
+  </section>
+  {%- endif %}
+
   <section class="final">
-    <h2>{{ pdf.encerramento.titulo | escape }}</h2>
-    <p>{{ pdf.encerramento.texto | escape }}</p>
-    <div class="final-botoes">
-      <a class="btn claro" href="{{ wa }}"><svg class="i"><use href="#i-msg"/></svg>{{ pdf.encerramento.botao | escape }}</a>
-      <a class="btn contorno" href="{{ site_url }}"><svg class="i"><use href="#i-globo"/></svg>{{ pdf.encerramento.botao_site | escape }}</a>
-    </div>
-    <div class="contatos">
-      <a href="{{ wa }}"><svg class="i"><use href="#i-msg"/></svg>{{ g.whatsapp_exibicao | escape }}</a>
-      <a href="{{ site_url }}"><svg class="i"><use href="#i-globo"/></svg>lais3d.com.br</a>
-      <a href="mailto:{{ g.email }}"><svg class="i"><use href="#i-mail"/></svg>{{ g.email }}</a>
-      <a href="{{ insta }}"><svg class="i"><use href="#i-insta"/></svg>@{{ g.instagram_usuario | escape }}</a>
+    <div class="final-box">
+      <span class="script">{{ pdf.encerramento.frase | escape }}</span>
+      {%- if pdf.encerramento.titulo %}<h2>{{ pdf.encerramento.titulo | escape }}</h2>{% endif %}
+      <p>{{ pdf.encerramento.texto | escape }}</p>
+      <div class="final-botoes">
+        <a class="btn btn-accent" href="{{ wa_orc }}">{% include icone.html nome="whatsapp" %}{{ pdf.orcamento.botao | default: 'pedir orçamento de render' | escape }}</a>
+        <a class="btn btn-contorno" href="{{ wa }}">{{ pdf.encerramento.botao | escape }}</a>
+        <a class="btn btn-contorno" href="{{ site_url }}">{{ pdf.encerramento.botao_site | escape }}{% include icone.html nome="seta" %}</a>
+      </div>
+      <div class="contatos">
+        <a href="{{ wa }}">{% include icone.html nome="whatsapp" %}{{ g.whatsapp_exibicao | escape }}</a>
+        <a href="mailto:{{ g.email }}">{% include icone.html nome="email" %}{{ g.email }}</a>
+        <a href="{{ insta }}">{% include icone.html nome="instagram" %}@{{ g.instagram_usuario | escape }}</a>
+        <a href="{{ site_url }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>lais3d.com.br</a>
+      </div>
     </div>
   </section>
 </main>

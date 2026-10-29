@@ -1,45 +1,66 @@
-# Portfólio em PDF (folha única, 1080px de largura). Curto de propósito: o site vai junto.
+# Portfólio em PDF (folha única, 1080px de largura, altura conforme o conteúdo).
 # Renders e estudos de caso vêm das seções "portfólio" e "estudos de caso" do site.
 arquivo: "portfolio-lais-vieira.pdf"
 capa:
-  barra: "portfólio · laís vieira"
+  barra: "renderização · modelagem · detalhamento"
   ano: "2026"
+  titulo: "portfólio *laís*"
   foto: "/assets/img/perfil-alta.jpg"
 apresentacao:
   saudacao: "muito prazer!"
   texto: |-
     Sou **Laís**, designer gráfica e estudante de Arquitetura e Urbanismo (10º período). Cuido da **produção visual e técnica** de arquitetos, designers e construtoras: renderização em V-Ray e IA, modelagem 3D, detalhamento e projeto executivo.
 
-    Aqui está uma seleção dos meus trabalhos. O site completo vai junto — com o antes e depois **print × IA**.
+    Aqui está uma seleção dos meus trabalhos. O site completo vai junto, com o antes e depois **print × IA**.
   selos:
     - icone: "formatura"
       titulo: "bacharel em design gráfico"
       texto: "Arquitetura e Urbanismo — 10º período"
     - icone: "medalha"
       titulo: "múltiplos cursos"
-      texto: "renderização, modelagem e detalhamento"
+      texto: "renderização · modelagem · detalhamento"
     - icone: "maleta"
       titulo: "experiência em escritório"
       texto: "2 anos de estágio + freelancer"
+orcamento:
+  botao: "pedir orçamento de render"
+  mensagem: "Olá, Laís! Vi seu portfólio e quero um orçamento de render."
+faixa:
+  - "renderização"
+  - "modelagem 3d"
+  - "detalhamento"
+  - "projeto executivo"
+  - "personalização de documentos"
+servicos:
+  chamada: "o que eu faço"
+  titulo: "serviços para o seu *projeto*"
 galeria:
   chamada: "trabalhos"
   titulo: "portfólio de *renders*"
-  quantidade: 11
+  quantidade: 15
+  intercalar: true
+botao_site:
+  chamada: "print × IA"
+  titulo: "do print ao *render final*"
+  texto: "o mesmo ambiente antes e depois. no site você arrasta o marcador e compara cada detalhe."
+  botao: "comparar no site"
+  link: "https://www.lais3d.com.br/#compare"
 casos:
   chamada: "estudos de caso"
-  titulo: "do papel à *entrega técnica*"
-botao_site:
-  titulo: "quer ver o *antes e depois*?"
-  texto: "no site você arrasta e compara o print simples com o render final feito com IA."
-  botao: "comparar print × IA no site"
-  link: "https://www.lais3d.com.br/#compare"
+  titulo: "do *papel* à entrega técnica"
+  texto: "o que eu faço, etapa por etapa: da planta humanizada ao detalhe que vai para a obra."
 encerramento:
-  titulo: "vamos conversar?"
-  texto: "Me envie o projeto e as referências — retorno com prazo e valor fechado."
-  botao: "falar no WhatsApp"
+  frase: "vamos conversar?"
+  titulo: "me conta sobre o seu projeto"
+  texto: "Me envie o projeto e as referências: retorno com prazo e valor fechado."
+  botao: "falar no whatsapp"
   botao_site: "abrir o site"
 secoes:
   sobre: true
+  faixa: true
+  numeros: true
+  servicos: true
   portfolio: true
   botao_site: true
   projetos: true
+  como_funciona: true

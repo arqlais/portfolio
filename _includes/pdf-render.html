@@ -1,0 +1,5 @@
+{%- comment -%} Um render da galeria do portfólio em PDF (4:5, com projeto e tipo). {%- endcomment -%}
+<figure>
+  <div class="moldura"><img src="{{ include.f.imagem | relative_url }}" alt=""{% include enquadramento.html e=include.f.enquadramento %}></div>
+  <figcaption><span>{{ include.f.projeto | escape }}</span>{% if include.f.tipo == 'ia' %}<em class="tag ia">IA</em>{% else %}<em class="tag">V-Ray</em>{% endif %}</figcaption>
+</figure>
