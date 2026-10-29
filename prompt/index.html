@@ -1407,6 +1407,35 @@ function ctxView(){
   const v=vsel==="keep"?(kind==="INTERIOR"?"fundo automático: o fundo do SketchUp é provisório. Azul chapado é o céu padrão do programa e NÃO deve ser reproduzido: pelas aberturas aparece um exterior claro, difuso e levemente estourado, coerente com a luz natural que entra (ex.: banheiro: claridade esbranquiçada). Só manter uma paisagem se o print tiver uma imagem de fundo específica. O fundo nunca é o foco nem chama atenção":"céu automático: o azul chapado do SketchUp é provisório; gerar céu real e discreto coerente com o cenário de luz e o horário. Entorno exatamente como no print; não criar entorno fictício"):vsel==="neutral"?(kind==="INTERIOR"?"vista externa neutra e clara":"entorno neutro com mínima interferência visual"):(kind==="INTERIOR"?`pela janela vê-se: ${vname}, realista e coerente com a cena, sem alterar esquadrias nem vidro`:`entorno: ${vname}, só nas áreas vazias além do projeto; o projeto continua 100% travado`);
   return `${kind==="INTERIOR"?"VISTA PELA JANELA":"ENTORNO"}: ${v}\nATMOSFERA: ${atmo?ATMO[atmo]+" (só o clima fotográfico; nunca muda materiais nem cores)":"neutra"}`;
 }
+/* ---------- lista negativa: o que a IA de imagem costuma inventar e NÃO está na ficha ---------- */
+const NEG_ALL=[
+  [/planta|vaso com|folhagem|vegeta/i,"plantas e vasos","plants or vases"],
+  [/quadro|tela decorativa/i,"quadros","wall art"],
+  [/tapete/i,"tapetes","rugs or mats"],
+  [/almofada|manta/i,"almofadas e mantas","cushions or throws"],
+  [/livro|revista/i,"livros e objetos decorativos","books or decor objects"],
+  [/vela|difusor/i,"velas e difusores","candles or diffusers"],
+  [/cortina|persiana/i,"cortinas e persianas","curtains or blinds"]];
+const NEG_BATH=[
+  [/ducha de m[aã]o|chuveirinho|hand ?shower|ducha manual/i,"ducha de mão / chuveirinho no box","hand shower in the shower area"],
+  [/vidro|box de vidro|blindex/i,"box ou painel de vidro","glass shower screen or glass panel"],
+  [/toalha/i,"toalhas","towels"],
+  [/frasco|sabonete|shampoo|produto/i,"frascos e produtos","bottles or toiletries"],
+  [/janela|basculante|vitr[oô]/i,"janelas","windows"],
+  [/lixeira/i,"lixeira","trash bin"],
+  [/banqueta|banco/i,"banquinhos","stools"]];
+function negList(){
+  const r=getRead()||{}, {vazios,...rest}=r; // áreas vazias e frases com "sem"/"não" não contam como presença
+  const src=[JSON.stringify(rest),$("qText").value,$("notes").value,$("lights").value,JSON.stringify(rows())].join("\n").replace(/\b(sem|n[aã]o tem|nenhum[a]?|without|no)\s+[^,;.\n"]*/gi," ");
+  if(!getRead()&&!rows().length) return null; // sem leitura não dá para saber o que existe
+  const bath=/banheir|lavabo|su[ií]te|box|chuveiro|cuba|vaso sanit/i.test(src);
+  const list=[...NEG_ALL,...(bath?NEG_BATH:[])].filter(([re])=>!re.test(src)).map(([,pt,en])=>({pt,en}));
+  if(!/(embaixo|sob|abaixo)\s+(d[oa]s?\s+)?(gabinete|bancada|arm[aá]rio|m[oó]ve|cama|sof[aá])/i.test(src)) list.push({pt:"LED ou luz embaixo de gabinetes, bancadas e móveis suspensos",en:"LED or light under cabinets, counters or floating furniture"});
+  return list.length?list:null;
+}
+function negBrief(){ const l=negList(); return l?`\nNÃO EXISTEM NESTA CENA (lista gerada pela ficha; copie LITERALMENTE em PRIORIDADES/TOP PRIORITIES e em RESTRIÇÕES como "NÃO ADICIONAR"/"DO NOT ADD"): ${l.map(x=>x.pt).join("; ")}.`:"" }
+function negLine(lang){ const l=negList(); if(!l) return ""; return lang==="en"?`DO NOT ADD (not in IMAGE 1): ${l.map(x=>x.en).join(", ")}.`:`NÃO ADICIONAR (não existem na IMAGEM 1): ${l.map(x=>x.pt).join(", ")}.` }
+function addNegLines(){ for(const [id,lang] of [["pPt","pt"],["pEn","en"]]){ const t=$(id).textContent, line=negLine(lang); if(t&&line&&!t.includes(line)) $(id).textContent=t.trimEnd()+"\n\n"+line; } const lim=$("size").value==="full"?Infinity:+$("size").value; [["cEn","pEn"],["cPt","pPt"]].forEach(([c,pid])=>{const t=$(pid).textContent;$(c).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(c).classList.toggle("over",t.length>lim)}); }
 function buildQuickBrief(){
   const size=$("size").value;
   const ps=lightStyle>=0?PRESETS[kind][lightStyle]:null;
@@ -1425,7 +1454,7 @@ ${ps?`CENÁRIO DE LUZ (referência do método; o texto dela vence se conflitar):
 ${ctxView()}
 PROPORÇÃO DE SAÍDA: ${$("ratio").value==="print"?"a mesma do print (IMAGE 1)":$("ratio").value}
 FICHA DO PRINT (lida pela IA e conferida pela usuária; vale como especificação dela, mas o TEXTO DA USUÁRIA vence se conflitar; itens "palpite da IA, não conferido" são só apoio):
-${readingText()||"(não analisado; olhe a IMAGEM 1 anexada, se houver)"}
+${readingText()||"(não analisado; olhe a IMAGEM 1 anexada, se houver)"}${negBrief()}
 
 TEXTO DA USUÁRIA (fonte principal, prioridade máxima):
 ${$("qText").value.trim()||"(vazio: ela não quis especificar nada além da ficha; siga a FICHA DO PRINT e a IMAGEM 1)"}
@@ -1456,7 +1485,7 @@ BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
 ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
 RGB: os informados valem exatamente. Cores sólidas sem RGB (pintura, laca, laminado liso, tecido liso) recebem um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); materiais com textura natural (madeira, pedra, mármore) não recebem RGB inventado: descrever tom e veio "exactly matching the appearance shown in IMAGE 1". Elementos com "onde:" listando várias superfícies são o MESMO material em todas.
 ${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
-DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}
+DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}${negBrief()}
 TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.7)+" caracteres (~"+Math.round(size*0.7/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
 }
 
@@ -1541,7 +1570,7 @@ $("gen").onclick=async()=>{
     const prompt=MASTER(quick?buildQuickBrief():buildBrief())+"\n\nA IMAGEM 1 (print do SketchUp) está anexada nesta conversa."+(withPics?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":"");
     manual({title:"gerar o prompt",prompt,attach:"anexe o print do SketchUp"+(withPics?` e depois as ${withPics} foto(s) das peças, na ordem da lista`:""),onReply:t=>{
       if(!t.includes("===PT===")||!t.includes("===EN===")) throw {code:"manual_format"};
-      $("outSec").hidden=false; showPrompts(t);
+      $("outSec").hidden=false; showPrompts(t); addNegLines();
       const lim=$("size").value==="full"?0:+$("size").value, over=lim&&($("pPt").textContent.length>lim||$("pEn").textContent.length>lim);
       status($("gStatus"),over?`Passou de ${lim.toLocaleString("pt-BR")} caracteres. No mesmo chat, peça: "encurte cada prompt para no máximo ${Math.round(lim*.85).toLocaleString("pt-BR")} caracteres, mantendo todos os materiais, RGB, medidas e regras de NÃO, no mesmo formato" e cole a nova resposta.`:"Pronto. Copie e cole na sua IA de imagem.",false,!!over);
       $("outSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
@@ -1569,6 +1598,7 @@ $("gen").onclick=async()=>{
       }
       [["cEn","pEn"],["cPt","pPt"]].forEach(([c,pid])=>{const t=$(pid).textContent;$(c).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(c).classList.toggle("over",t.length>lim)});
     }
+    addNegLines();
     const still=lim && ($("pPt").textContent.length>lim || $("pEn").textContent.length>lim);
     status($("gStatus"),truncated?"O texto foi cortado. Escolha um tamanho menor e gere de novo.":still?"Ainda passou do limite. Gere de novo ou escolha um tamanho menor.":fixed?"Pronto, ajustado ao limite de caracteres. Copie e cole na sua IA.":"Pronto. Copie e cole na sua IA.",false,truncated||still);
     $("outSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
@@ -1695,7 +1725,7 @@ function sameNew(txt,n,opt,first=opt!==2){ // materiais que só aparecem na cena
 function sameRules(n,opt,first=opt!==2){ // regras fixas que o texto do PDF não cobre
   const pk=first?"primeira":ORD[n];
   return `\n\nREGRAS FIXAS (valem acima de tudo):
-• Geometria: a ${pk} imagem (print) é a verdade absoluta; a foto se sobrepõe a ela linha por linha. Nada adicionado, removido ou movido (nem duchas, nichos, janelas, plantas ou objetos que não estejam no print). As referências servem só para luz e materiais, nunca para objetos ou layout: frascos, toalhas, plantas e decoração das referências só aparecem se estiverem no print. Áreas vazias no print continuam vazias.
+• Geometria: a ${pk} imagem (print) é a verdade absoluta; a foto se sobrepõe a ela linha por linha. Nada adicionado, removido ou movido (nem ducha de mão/chuveirinho, box de vidro, LED embaixo de móveis, nichos, janelas, plantas ou objetos que não estejam no print). As referências servem só para luz e materiais, nunca para objetos ou layout: frascos, toalhas, plantas e decoração das referências só aparecem se estiverem no print. Áreas vazias no print continuam vazias.
 • Superfícies que não aparecem nas referências seguem ELEMENTOS NOVOS ou, sem descrição, a cor e o material do print. Nenhum material vira outro.
 • Fotografia real: nitidez de câmera profissional, microcontraste natural, sombras de contato definidas. Sem névoa, sem raios de luz volumétricos, sem glow, sem aspecto pintado ou sonhador.
 • Materiais: polido com brilho alto e reflexos nítidos da janela, dos LEDs e dos metais; tecidos existentes com trama real; metais com reflexo real; rejunte fino e alinhado.
@@ -1705,7 +1735,7 @@ function sameRules(n,opt,first=opt!==2){ // regras fixas que o texto do PDF não
 function sameRulesEN(n,opt,first=opt!==2){
   const pk=first?"first":ORD_EN[n];
   return `\n\nFIXED RULES (they override everything):
-• Geometry: the ${pk} image (screenshot) is the absolute truth; the photo overlays it line by line. Nothing added, removed or moved (no showers, niches, windows, plants or objects that are not in the screenshot). The references are only for light and materials, never for objects or layout: bottles, towels, plants and decor from the references only appear if they are in the screenshot. Empty areas in the screenshot stay empty.
+• Geometry: the ${pk} image (screenshot) is the absolute truth; the photo overlays it line by line. Nothing added, removed or moved (no hand showers, glass shower screens, LED under furniture, niches, windows, plants or objects that are not in the screenshot). The references are only for light and materials, never for objects or layout: bottles, towels, plants and decor from the references only appear if they are in the screenshot. Empty areas in the screenshot stay empty.
 • Surfaces not visible in the references follow NEW ELEMENTS or, without a description, the screenshot color and material. No material turns into another.
 • Real photograph: professional camera sharpness, natural micro-contrast, defined contact shadows. No haze, no volumetric light rays, no glow, no painterly or dreamy look.
 • Materials: polished = high gloss with sharp reflections of the window, LEDs and metals; existing fabrics with real weave; metals with real reflections; thin aligned grout.
