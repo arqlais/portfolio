@@ -343,6 +343,8 @@ body.gated .wrap{display:none}
 .gatebox .mark span{color:var(--rose)}
 .gatebox h1{margin:0;font-family:var(--body);font-weight:700;font-size:34px;letter-spacing:-.025em;line-height:1.05}
 .gatebox form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.gatebox form#gateLogin{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:6px}#gateLogin .btn{width:100%;justify-content:center}
+#gateKeyStep .fold{margin-top:14px}
 .gatebox .fold{border-top:1px solid var(--line)}
 .gsteps{margin:10px 0 6px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13px}
 .gsteps a,.gatebox a{color:var(--ink)}
@@ -520,14 +522,20 @@ textarea{padding:12px 14px}
     <div class="mark">laís<span>.</span></div>
     <span class="kicker">acesso restrito · ferramenta do estúdio</span>
     <h1>prompt de <em>render</em></h1>
-    <p class="hint">Para entrar, cole a sua chave gratuita do Gemini. Ela fica salva só neste navegador e não vai para o site.</p>
+    <form id="gateLogin" class="contaform card-in" hidden>
+      <label class="f">E-mail<input type="email" id="gateEmail" autocomplete="username" placeholder="voce@email.com" required></label>
+      <label class="f"><span class="lt">Senha <button class="linkbtn mini" id="gateEsqueci" type="button">esqueci a senha</button></span><input type="password" id="gateSenha" autocomplete="current-password" required></label>
+      <button class="btn" type="submit">entrar</button>
+    </form>
+    <div id="gateKeyStep">
+    <p class="hint" id="gateKeyHint">Para entrar, cole a sua chave gratuita do Gemini. Ela fica salva só neste navegador e não vai para o site.</p>
     <form id="gateForm"><input type="password" id="gateKey" aria-label="Chave do Gemini" placeholder="chave do Gemini (começa com AIza…)" autocomplete="off" spellcheck="false"><button class="btn" type="submit">entrar</button></form>
-    <div class="status" id="gateStatus"></div>
-    <p class="gateor" id="gateConta" hidden>ou <button type="button" class="linkbtn" id="gateContaBtn">entre com a sua conta</button> e a chave vem sozinha</p>
     <details class="fold"><summary>como pegar a chave grátis</summary>
       <ol class="gsteps"><li>Entre em <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> com a sua conta Google.</li><li>Clique em <b>Create API key</b> (criar chave) e copie.</li><li>Cole aqui e clique em entrar. É de graça e não pede cartão.</li></ol>
       <p class="hint">No plano gratuito o Google pode usar o que você envia para melhorar os produtos dele.</p>
     </details>
+    </div>
+    <div class="status" id="gateStatus"></div>
   </div>
 </div>
 <dialog id="contaDlg" class="manual" aria-labelledby="contaTitle">
@@ -538,8 +546,7 @@ textarea{padding:12px 14px}
     <form id="contaForm" class="contaform card-in">
       <label class="f">E-mail<input type="email" id="contaEmail" autocomplete="username" placeholder="voce@email.com" required></label>
       <label class="f"><span class="lt">Senha <button class="linkbtn mini" id="contaEsqueci" type="button">esqueci a senha</button></span><input type="password" id="contaSenha" autocomplete="current-password" placeholder="mínimo 6 caracteres" minlength="6" required></label>
-      <div class="inrow"><button class="btn" type="submit">entrar</button><button class="btn ghost" id="contaCriar" type="button">criar conta</button></div>
-      <p class="hint small">Primeira vez? Escreva e-mail e senha e toque em <b>criar conta</b>. Nos outros aparelhos, use os mesmos e toque em <b>entrar</b>.</p>
+      <div class="inrow"><button class="btn" type="submit">entrar</button><button class="btn ghost" id="contaCriar" type="button" hidden>criar conta</button></div>
     </form>
   </div>
   <div class="actions">
@@ -938,7 +945,11 @@ async function connectAI0(){
   if(sample){ AI.mode="claude"; const lim=await sample.limits().catch(()=>null); imgOK=!!lim?.images; pieceImgMax=lim?.images?.maxCount||1; }
   else{
     imgOK=true; pieceImgMax=6;
-    if(SITE){ $("contaBtn").hidden=false; $("gateConta").hidden=false; contaUI("off"); try{ await Promise.race([contaInit(),new Promise(r=>setTimeout(r,6000))]); if(CONTA.user) await Promise.race([contaSync(),new Promise(r=>setTimeout(r,6000))]) }catch{} }
+    if(SITE){ $("contaBtn").hidden=false; contaUI("off");
+      CONTA.ok=await Promise.race([contaInit().then(()=>true),new Promise(r=>setTimeout(()=>r(false),8000))]).catch(()=>false); // Firebase fora do ar: não tranca você do lado de fora
+      if(CONTA.ok&&!contaDona()){ if(CONTA.user) await CONTA.auth.signOut(); showGate(); return }
+      if(CONTA.user) await Promise.race([contaSync(),new Promise(r=>setTimeout(r,6000))]).catch(()=>{});
+    }
     const k=lsGet(GKEY);
     if(!k){ showGate(); return }
     try{ await enterGemini(k,{quiet:true}); return }
@@ -965,6 +976,16 @@ function contaInit(){ // carrega o Firebase e devolve quando souber se já há a
   })();
   return CONTA.ready;
 }
+const DONAS=["arq.laisav@gmail.com"]; // quem pode usar o site; para liberar outra pessoa, acrescente o e-mail aqui
+function contaDona(){ return !!CONTA.user&&DONAS.includes(String(CONTA.user.email||"").toLowerCase()) }
+$("gateLogin").onsubmit=async e=>{ e.preventDefault(); status($("gateStatus"),"Entrando…",true);
+  try{ await contaInit(); await CONTA.auth.signInWithEmailAndPassword($("gateEmail").value.trim(),$("gateSenha").value); $("gateSenha").value="";
+    if(!contaDona()){ await CONTA.auth.signOut(); showGate("Este e-mail não tem acesso a esta ferramenta."); return }
+    await contaSync().catch(()=>{}); const k=lsGet(GKEY);
+    if(k){ try{ await enterGemini(k); status($("gateStatus"),"") }catch(err){ showGate(errMsg(err)) } } else showGate();
+  }catch(err){ status($("gateStatus"),AUTH_MSG[err?.code]||"Não deu para entrar agora. Tente de novo.",false,true) } };
+$("gateEsqueci").onclick=async()=>{ const em=$("gateEmail").value.trim(); if(!em){ status($("gateStatus"),"Escreva seu e-mail e toque de novo em esqueci a senha.",false,true); return }
+  try{ await contaInit(); await CONTA.auth.sendPasswordResetEmail(em); status($("gateStatus"),"Mandei um e-mail para você criar uma senha nova.") }catch(err){ status($("gateStatus"),AUTH_MSG[err?.code]||"Não deu agora. Tente de novo.",false,true) } };
 const contaRef=()=>CONTA.db.doc(`users/${CONTA.user.uid}/prompt/dados`);
 function mergeProj(a,b,dead){
   const m=new Map(); [...a,...b].forEach(p=>{ if(!p?.nome) return; const o=m.get(p.nome); if(!o||(p.salvo||0)>(o.salvo||0)) m.set(p.nome,p) });
@@ -999,7 +1020,7 @@ function contaWatch(){ // ao vivo: o que você salvar no iPad aparece no computa
 }
 function contaSoon(ms=1200){ if(!SITE||!CONTA.user) return; clearTimeout(CONTA.t); CONTA.t=setTimeout(()=>contaSync().catch(()=>{}),ms) }
 const AUTH_MSG={"auth/unauthorized-domain":"Falta liberar este site no Firebase do Lâmpada (só uma vez). Siga os 3 passos abaixo.","auth/popup-closed-by-user":"O login foi fechado antes de terminar.","auth/network-request-failed":"Sem internet agora. Tente de novo.",
-  "auth/invalid-credential":"E-mail ou senha não conferem. Primeira vez? Toque em criar conta.","auth/wrong-password":"Senha incorreta.","auth/user-not-found":"Não existe conta com esse e-mail.","auth/operation-not-allowed":"Login por e-mail e senha não está ligado no Firebase; use o Google.","auth/too-many-requests":"Muitas tentativas. Espere um pouco.","auth/email-already-in-use":"Já existe conta com esse e-mail: toque em entrar (ou em esqueci a senha).","auth/weak-password":"Senha fraca: use pelo menos 6 caracteres.","auth/invalid-email":"E-mail inválido."};
+  "auth/invalid-credential":"E-mail ou senha não conferem.","auth/wrong-password":"Senha incorreta.","auth/user-not-found":"Não existe conta com esse e-mail.","auth/operation-not-allowed":"Login por e-mail e senha não está ligado no Firebase; use o Google.","auth/too-many-requests":"Muitas tentativas. Espere um pouco.","auth/email-already-in-use":"Já existe conta com esse e-mail: toque em entrar (ou em esqueci a senha).","auth/weak-password":"Senha fraca: use pelo menos 6 caracteres.","auth/invalid-email":"E-mail inválido."};
 function contaUI(st,e){
   if(!SITE) return; CONTA.st=st; const ok=st==="ok", u=CONTA.user;
   $("contaLbl").textContent=ok?"conta ✓":st==="sync"?"sincronizando…":u?"conta !":"entrar";
@@ -1012,7 +1033,7 @@ function contaUI(st,e){
 }
 async function contaOpen(){ $("contaDlg").showModal(); contaUI(CONTA.st); try{ await contaInit() }catch{ contaUI("err") } }
 async function contaAfterLogin(){ $("contaDlg").close(); toast("Conta conectada"); await contaSync().catch(()=>{}); const k=lsGet(GKEY); if(k&&!G.key){ try{ await enterGemini(k) }catch(err){ showGate(errMsg(err)) } } }
-$("contaBtn").onclick=contaOpen; $("gateContaBtn").onclick=contaOpen;
+$("contaBtn").onclick=contaOpen;
 $("contaForm").onsubmit=async e=>{ e.preventDefault();
   try{ await contaInit(); await CONTA.auth.signInWithEmailAndPassword($("contaEmail").value.trim(),$("contaSenha").value); $("contaSenha").value=""; await contaAfterLogin() }catch(err){ contaUI("err",err) } };
 $("contaCriar").onclick=async()=>{ const em=$("contaEmail").value.trim(), pw=$("contaSenha").value;
@@ -1021,7 +1042,7 @@ $("contaCriar").onclick=async()=>{ const em=$("contaEmail").value.trim(), pw=$("
 $("contaEsqueci").onclick=async()=>{ const em=$("contaEmail").value.trim(); if(!em){ status($("contaStatus"),"Escreva seu e-mail acima e toque de novo em esqueci a senha.",false,true); return }
   try{ await contaInit(); await CONTA.auth.sendPasswordResetEmail(em); status($("contaStatus"),"Mandei um e-mail para você criar uma senha nova.") }catch(err){ contaUI("err",err) } };
 $("contaSync").onclick=()=>contaSync().then(()=>toast("Sincronizado")).catch(()=>{});
-$("contaOut").onclick=async()=>{ CONTA.unsub?.(); CONTA.unsub=null; await CONTA.auth?.signOut(); CONTA.on=false; contaUI("off"); toast("Você saiu da conta neste aparelho") };
+$("contaOut").onclick=async()=>{ CONTA.unsub?.(); CONTA.unsub=null; await CONTA.auth?.signOut(); CONTA.on=false; contaUI("off"); $("contaDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu da conta neste aparelho."); };
 /* ---------- Gemini (chave gratuita do Google AI Studio, salva só neste navegador) ---------- */
 const GBASE="https://generativelanguage.googleapis.com/v1beta/", GKEY="lais-gemini-chave", GMODEL="lais-gemini-modelo";
 const G={key:"",model:"",models:[]};
@@ -1132,9 +1153,12 @@ async function gemGenerate(prompt,{images,signal,onText,json,light}={}){
   throw last;
 }
 function lockOut(){ lsSet(GKEY,""); G.key=""; AI.mode=null; showGate("A chave não foi aceita pelo Google. Confira e cole de novo."); }
-function showGate(msg){
+function showGate(msg){ // no site: primeiro o login (só o e-mail da dona); depois, se faltar, a chave do Gemini
   document.body.classList.add("gated"); $("gate").hidden=false; $("aiBtn").hidden=true;
-  status($("gateStatus"),msg||"",false,!!msg); setTimeout(()=>$("gateKey").focus(),50);
+  const login=SITE&&CONTA.ok!==false&&!contaDona();
+  $("gateLogin").hidden=!login; $("gateKeyStep").hidden=login;
+  if(!login&&CONTA.user) $("gateKeyHint").textContent="Conta conectada. Agora cole a sua chave gratuita do Gemini; ela fica guardada na conta e aparece sozinha nos outros aparelhos.";
+  status($("gateStatus"),msg||"",false,!!msg); setTimeout(()=>$(login?"gateEmail":"gateKey").focus(),50);
 }
 const GOFF="lais-gemini-fora";
 function offList(){ try{ return JSON.parse(lsGet(GOFF)||"[]") }catch{ return [] } }
