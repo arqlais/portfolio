@@ -516,7 +516,7 @@ textarea{padding:12px 14px}
     <p class="hint">Para entrar, cole a sua chave gratuita do Gemini. Ela fica salva só neste navegador e não vai para o site.</p>
     <form id="gateForm"><input type="password" id="gateKey" aria-label="Chave do Gemini" placeholder="chave do Gemini (começa com AIza…)" autocomplete="off" spellcheck="false"><button class="btn" type="submit">entrar</button></form>
     <div class="status" id="gateStatus"></div>
-    <p class="gateor" id="gateConta" hidden>ou <button type="button" class="linkbtn" id="gateContaBtn">entre com a sua conta (Google)</button> e a chave vem sozinha</p>
+    <p class="gateor" id="gateConta" hidden>ou <button type="button" class="linkbtn" id="gateContaBtn">entre com a sua conta</button> e a chave vem sozinha</p>
     <details class="fold"><summary>como pegar a chave grátis</summary>
       <ol class="gsteps"><li>Entre em <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> com a sua conta Google.</li><li>Clique em <b>Create API key</b> (criar chave) e copie.</li><li>Cole aqui e clique em entrar. É de graça e não pede cartão.</li></ol>
       <p class="hint">No plano gratuito o Google pode usar o que você envia para melhorar os produtos dele.</p>
@@ -528,13 +528,15 @@ textarea{padding:12px 14px}
   <p class="hint">Mesma conta do Lâmpada (Firebase, grátis). Conectada, a página guarda os projetos salvos e a chave do Gemini só para você, e eles aparecem no computador, no iPad e no celular.</p>
   <div class="status" id="contaStatus"></div>
   <div id="contaIn" class="contaform">
-    <button class="btn" id="contaGoogle" type="button">entrar com Google</button>
-    <details class="fold"><summary>entrar com e-mail e senha</summary>
-      <form id="contaForm" class="contaform">
-        <input type="email" id="contaEmail" autocomplete="username" placeholder="seu e-mail" required>
-        <input type="password" id="contaSenha" autocomplete="current-password" placeholder="senha" required>
-        <button class="btn" type="submit">entrar</button>
-      </form>
+    <form id="contaForm" class="contaform">
+      <span class="lt"><b>E-mail e senha</b> <span class="sub">· funciona já, sem configurar nada</span></span>
+      <input type="email" id="contaEmail" autocomplete="username" placeholder="seu e-mail" required>
+      <input type="password" id="contaSenha" autocomplete="current-password" placeholder="senha (mínimo 6 caracteres)" minlength="6" required>
+      <div class="actions"><button class="btn" type="submit">entrar</button><button class="btn ghost" id="contaCriar" type="button">criar conta</button><button class="linkbtn" id="contaEsqueci" type="button">esqueci a senha</button></div>
+    </form>
+    <details class="fold"><summary>ou entrar com Google</summary>
+      <p class="hint">O Google só funciona aqui depois de liberar o site no Firebase (passo a passo abaixo, se aparecer o aviso).</p>
+      <button class="btn ghost" id="contaGoogle" type="button">entrar com Google</button>
     </details>
   </div>
   <ol class="gsteps" id="contaSetup" hidden>
@@ -1002,12 +1004,12 @@ function contaWatch(){ // ao vivo: o que você salvar no iPad aparece no computa
 }
 function contaSoon(ms=1200){ if(!SITE||!CONTA.user) return; clearTimeout(CONTA.t); CONTA.t=setTimeout(()=>contaSync().catch(()=>{}),ms) }
 const AUTH_MSG={"auth/unauthorized-domain":"Falta liberar este site no Firebase do Lâmpada (só uma vez). Siga os 3 passos abaixo.","auth/popup-closed-by-user":"O login foi fechado antes de terminar.","auth/network-request-failed":"Sem internet agora. Tente de novo.",
-  "auth/invalid-credential":"E-mail ou senha não conferem.","auth/wrong-password":"Senha incorreta.","auth/user-not-found":"Não existe conta com esse e-mail.","auth/operation-not-allowed":"Login por e-mail e senha não está ligado no Firebase; use o Google.","auth/too-many-requests":"Muitas tentativas. Espere um pouco."};
+  "auth/invalid-credential":"E-mail ou senha não conferem. Primeira vez? Toque em criar conta.","auth/wrong-password":"Senha incorreta.","auth/user-not-found":"Não existe conta com esse e-mail.","auth/operation-not-allowed":"Login por e-mail e senha não está ligado no Firebase; use o Google.","auth/too-many-requests":"Muitas tentativas. Espere um pouco.","auth/email-already-in-use":"Já existe conta com esse e-mail: toque em entrar (ou em esqueci a senha).","auth/weak-password":"Senha fraca: use pelo menos 6 caracteres.","auth/invalid-email":"E-mail inválido."};
 function contaUI(st,e){
   if(!SITE) return; CONTA.st=st; const ok=st==="ok", u=CONTA.user;
   $("contaLbl").textContent=ok?"conta ✓":st==="sync"?"sincronizando…":u?"conta !":"entrar";
   $("contaDot").style.background=ok?"":"var(--warn)";
-  const msg=ok?`Conectada como ${u.email||u.displayName||"você"}. Projetos e chave do Gemini sincronizados.`:st==="sync"?"Sincronizando…":st==="domain"?AUTH_MSG["auth/unauthorized-domain"]:st==="err"?(AUTH_MSG[e?.code]||(u?"Não consegui falar com a nuvem agora. Os projetos continuam salvos neste aparelho.":"Não deu para entrar agora. Tente de novo.")):"Entre com a mesma conta Google do Lâmpada.";
+  const msg=ok?`Conectada como ${u.email||u.displayName||"você"}. Projetos e chave do Gemini sincronizados.`:st==="sync"?"Sincronizando…":st==="domain"?AUTH_MSG["auth/unauthorized-domain"]:st==="err"?(AUTH_MSG[e?.code]||(u?"Não consegui falar com a nuvem agora. Os projetos continuam salvos neste aparelho.":"Não deu para entrar agora. Tente de novo.")):"Entre com e-mail e senha (ou crie a conta na hora). Vale a mesma conta em todos os aparelhos.";
   status($("contaStatus"),msg,st==="sync",st==="err"||st==="domain");
   $("contaIn").hidden=!!u; $("contaSetup").hidden=st!=="domain";
   $("contaSync").hidden=!u; $("contaOut").hidden=!u;
@@ -1021,6 +1023,11 @@ $("contaGoogle").onclick=async()=>{ try{ await contaInit(); const pr=new firebas
   await contaAfterLogin(); }catch(e){ if(e?.code!=="auth/cancelled-popup-request") contaUI(e?.code==="auth/unauthorized-domain"?"domain":"err",e) } };
 $("contaForm").onsubmit=async e=>{ e.preventDefault();
   try{ await contaInit(); await CONTA.auth.signInWithEmailAndPassword($("contaEmail").value.trim(),$("contaSenha").value); $("contaSenha").value=""; await contaAfterLogin() }catch(err){ contaUI("err",err) } };
+$("contaCriar").onclick=async()=>{ const em=$("contaEmail").value.trim(), pw=$("contaSenha").value;
+  if(!em||pw.length<6){ status($("contaStatus"),"Escreva o e-mail e uma senha com pelo menos 6 caracteres.",false,true); return }
+  try{ await contaInit(); await CONTA.auth.createUserWithEmailAndPassword(em,pw); $("contaSenha").value=""; await contaAfterLogin() }catch(err){ contaUI("err",err) } };
+$("contaEsqueci").onclick=async()=>{ const em=$("contaEmail").value.trim(); if(!em){ status($("contaStatus"),"Escreva seu e-mail acima e toque de novo em esqueci a senha.",false,true); return }
+  try{ await contaInit(); await CONTA.auth.sendPasswordResetEmail(em); status($("contaStatus"),"Mandei um e-mail para você criar uma senha nova.") }catch(err){ contaUI("err",err) } };
 $("contaSync").onclick=()=>contaSync().then(()=>toast("Sincronizado")).catch(()=>{});
 $("contaOut").onclick=async()=>{ CONTA.unsub?.(); CONTA.unsub=null; await CONTA.auth?.signOut(); CONTA.on=false; contaUI("off"); toast("Você saiu da conta neste aparelho") };
 /* ---------- Gemini (chave gratuita do Google AI Studio, salva só neste navegador) ---------- */
