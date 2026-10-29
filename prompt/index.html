@@ -220,6 +220,8 @@ textarea#qText{min-height:150px;font-size:14px;background:var(--paper)}
 
 /* library */
 .libhead{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.projio{margin-top:10px}.hint.small{font-size:12px;margin-top:6px}
+.libsearch{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.libsearch input{flex:1 1 280px;max-width:520px}
 .libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px;align-items:start}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .card .cat{font-size:11px;letter-spacing:.14em;text-transform:lowercase;color:var(--rose-deep);font-weight:500}
@@ -567,6 +569,8 @@ textarea{padding:12px 14px}
         <p class="hint">Para outro ângulo, carregue e troque só o print.</p>
         <div class="actions"><input type="text" id="projName" placeholder="Ex.: Apto Moema · sala"><button class="btn small" id="saveProj">Salvar</button></div>
         <div class="projects" id="projList"></div>
+        <div class="actions projio"><button class="btn ghost small" id="projExp" type="button">exportar projetos</button><button class="btn ghost small" id="projImp" type="button">importar</button><input type="file" id="projFile" accept=".json,application/json" hidden></div>
+        <p class="hint small">Os projetos ficam só neste aparelho. Para levar do computador pro iPad: exporte, salve no iCloud/Drive e importe no outro.</p>
       </section>
     </aside>
 
@@ -760,6 +764,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
   <div id="viewLib" hidden>
     <div class="libhead">
       <p class="hint">Prompts prontos: ajuste o texto no card, copie e cole na sua IA. O primeiro card monta um Gem do Gemini com todo o método.</p>
+      <div class="libsearch"><input type="search" id="libQ" placeholder="Buscar: espelho, blue hour, trocar cor, pessoas, fachada…" aria-label="Buscar prompt"><span class="hint" id="libN"></span></div>
       <div class="chips" id="libCats"></div>
     </div>
     <div class="libgrid" id="libGrid"></div>
@@ -810,6 +815,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
             <button class="btn ghost small" id="usePrint" type="button" hidden>usar o print do passo 1</button>
             <div class="slot" id="slotB"><div class="th" id="thB"></div><div class="info"><b>Imagem final</b><small id="infB">nenhuma · pode soltar aqui</small></div><button class="btn ghost small" id="pickB" type="button">escolher</button></div>
             <input type="file" id="fileA" accept="image/*,.heic,.heif" hidden>
+            <input type="file" id="fileAB" accept="image/*,.heic,.heif" multiple hidden>
             <input type="file" id="fileB" accept="image/*,.heic,.heif" hidden>
           </div>
           <div class="actions">
@@ -1654,6 +1660,19 @@ $("saveProj").onclick=()=>{
   toast(saveAll(l)?"Projeto salvo neste navegador":"Não foi possível salvar neste navegador"); renderProjects();
 };
 
+$("projExp").onclick=async()=>{
+  const l=loadAll(); if(!l.length){ toast("Nenhum projeto salvo ainda"); return }
+  const blob=new Blob([JSON.stringify({app:"prompt-de-render-lais",v:1,projetos:l},null,1)],{type:"application/json"}), filename=`projetos-prompt-de-render-${new Date().toISOString().slice(0,10)}.json`;
+  if(cmp.dl){ try{ await cmp.dl.save({filename,data:blob}); toast("Arquivo salvo") }catch(e){ if(e?.code!=="cancelled") toast("Não foi possível salvar agora") } return }
+  const u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download=filename; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000); toast(`${l.length} projeto(s) exportado(s)`);
+};
+$("projImp").onclick=()=>$("projFile").click();
+$("projFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return;
+  try{ const j=JSON.parse(await f.text()), inc=(Array.isArray(j)?j:j.projetos||[]).filter(p=>p&&p.nome);
+    if(!inc.length) throw 0;
+    const names=new Set(inc.map(p=>p.nome)), l=[...inc,...loadAll().filter(p=>!names.has(p.nome))];
+    toast(saveAll(l)?`${inc.length} projeto(s) importado(s)`:"Não foi possível salvar neste navegador"); renderProjects();
+  }catch{ toast("Arquivo inválido: use o .json exportado aqui") } };
 /* ---------- início ---------- */
 /* ---------- aviso de versão nova: compara a página publicada com a carregada ---------- */
 (()=>{ if(!/^https?:$/.test(location.protocol)) return;
@@ -2214,12 +2233,18 @@ FORMATO DE SAÍDA, exatamente:
 (o mesmo prompt em inglês, mesma estrutura e mesmos valores)`;
 }
 let libCat="Todos";
+document.addEventListener("input",e=>{ if(e.target.id==="libQ") renderLib() });
 function renderLib(){
   const cats=["Todos",...new Set(LIB.map(x=>x.c))];
   $("libCats").innerHTML="";
   cats.forEach(c=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c;b.setAttribute("aria-pressed",c===libCat);b.onclick=()=>{libCat=c;renderLib()};$("libCats").append(b)});
   const g=$("libGrid"); g.innerHTML="";
-  LIB.filter(x=>libCat==="Todos"||x.c===libCat).forEach((x,i)=>{
+  const norm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+  const q=norm($("libQ").value).split(/\s+/).filter(Boolean);
+  const shown=LIB.filter(x=>(libCat==="Todos"||x.c===libCat)&&q.every(w=>norm([x.c,x.n,x.w,x.t].join(" ")).includes(w)));
+  $("libN").textContent=shown.length===1?"1 prompt":`${shown.length} prompts`;
+  if(!shown.length) g.innerHTML='<p class="hint">Nada encontrado. Tente outra palavra ou a categoria Todos.</p>';
+  shown.forEach((x,i)=>{
     const k=LIB.indexOf(x);
     const d=document.createElement("article"); d.className="card";
     d.innerHTML=`<span class="cat"></span><h3></h3><p class="when"></p><div class="opts" hidden></div><div class="imgs" hidden></div><textarea id="lib_${k}" spellcheck="false" aria-label="Texto do prompt"></textarea><div class="actions"><button class="btn small">Copiar</button><label class="lock" hidden><input type="checkbox" id="lock_${k}"> incluir trava de cor</label></div>`;
@@ -2453,7 +2478,7 @@ function renderCmp(){
   setX(cmp.x);
 }
 function setX(p){ p=Math.max(0,Math.min(100,p)); cmp.x=p; $("stage").style.setProperty("--x",p+"%"); $("stage").setAttribute("aria-valuenow",Math.round(p)); }
-function pickNext(){ $(!cmp.a?"fileA":"fileB").click(); }
+function pickNext(){ $(!cmp.a&&!cmp.b?"fileAB":!cmp.a?"fileA":"fileB").click(); } // vazio: escolhe as duas de uma vez (1ª = print, 2ª = render)
 function cmpMode(m){ cmp.mode=m; renderCmp(); }
 (function(){
   const st=$("stage"); let pid=null;
@@ -2487,7 +2512,7 @@ async function dropCmp(files,target){
   el.addEventListener("drop",e=>{ e.preventDefault(); el.classList.remove("over"); dropCmp(e.dataTransfer.files,target) });
 });
 $("pickA").onclick=()=>$("fileA").click(); $("pickB").onclick=()=>$("fileB").click();
-$("fileA").onchange=e=>{setCmp("a",e.target.files[0]);e.target.value=""}; $("fileB").onchange=e=>{setCmp("b",e.target.files[0]);e.target.value=""};
+$("fileAB").onchange=e=>{dropCmp(e.target.files);e.target.value=""}; $("fileA").onchange=e=>{setCmp("a",e.target.files[0]);e.target.value=""}; $("fileB").onchange=e=>{setCmp("b",e.target.files[0]);e.target.value=""};
 $("usePrint").onclick=()=>{ if(imgFile) setCmp("a",imgFile) };
 $("cmpDrag").onclick=$("fsDrag").onclick=()=>cmpMode("drag");
 $("cmpSide").onclick=$("fsSide").onclick=()=>cmpMode("side");
