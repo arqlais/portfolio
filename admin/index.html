@@ -43,7 +43,9 @@
   <div id="tela-painel" class="painel" hidden>
     <header class="topo">
       <a class="marca" href="/" target="_blank" rel="noopener"><b>laís</b><span>.</span> <small>painel</small></a>
+      <span class="status" id="status-publicacao" role="status" hidden></span>
       <div class="topo-acoes">
+        <button class="btn btn-ghost btn-sm" id="botao-historico" type="button" title="versões salvas e restaurar">histórico</button>
         <a class="btn btn-ghost btn-sm" href="/" target="_blank" rel="noopener">ver site ↗</a>
         <button class="btn btn-ghost btn-sm" id="botao-sair" type="button">sair</button>
       </div>
@@ -59,6 +61,8 @@
     <div class="barra-salvar" id="barra-salvar" hidden>
       <span id="barra-texto">alterações não salvas</span>
       <div>
+        <button class="icone-btn claro" id="botao-desfazer" type="button" title="desfazer (Ctrl+Z)" aria-label="desfazer">↶</button>
+        <button class="icone-btn claro" id="botao-refazer" type="button" title="refazer (Ctrl+Shift+Z)" aria-label="refazer">↷</button>
         <button class="btn btn-ghost btn-sm" id="botao-descartar" type="button">descartar</button>
         <button class="btn btn-primary btn-sm" id="botao-salvar" type="button">salvar e publicar</button>
       </div>
@@ -84,6 +88,31 @@
     </div>
   </div>
 
+  <!-- Biblioteca de imagens -->
+  <div class="modal" id="modal-biblioteca" hidden>
+    <div class="modal-caixa modal-larga">
+      <h2>escolher <span class="script">imagem</span></h2>
+      <p class="modal-dica">envie uma foto do aparelho ou reaproveite uma imagem que já está no site.</p>
+      <div class="bib-topo">
+        <button class="btn btn-primary btn-sm" id="bib-enviar" type="button">enviar do aparelho</button>
+        <input type="search" id="bib-busca" placeholder="buscar pelo nome do arquivo…">
+      </div>
+      <div class="opcoes bib-pastas" id="bib-pastas"></div>
+      <div class="bib-grade" id="bib-grade"></div>
+      <div class="modal-acoes"><span class="espaco"></span><button class="btn btn-ghost btn-sm" id="bib-cancelar" type="button">cancelar</button></div>
+    </div>
+  </div>
+
+  <!-- Histórico de versões -->
+  <div class="modal" id="modal-historico" hidden>
+    <div class="modal-caixa">
+      <h2>histórico de <span class="script">versões</span></h2>
+      <p class="modal-dica">cada vez que você salva, uma versão fica guardada. restaurar carrega o conteúdo daquela versão no painel — nada vai para o ar até você clicar em “salvar e publicar”.</p>
+      <div class="hist-lista" id="hist-lista"></div>
+      <div class="modal-acoes"><span class="espaco"></span><button class="btn btn-ghost btn-sm" id="hist-fechar" type="button">fechar</button></div>
+    </div>
+  </div>
+
   <!-- Pré-visualização do orçamento -->
   <div class="modal-previa" id="modal-previa" hidden>
     <div class="previa-topo">
@@ -100,6 +129,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
   <script src="vendor/liquid.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
   <script src="orcamento/render.js"></script>
   <script src="painel.js"></script>
 </body>

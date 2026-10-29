@@ -3,11 +3,13 @@ titulo: "do *papel* à entrega técnica"
 texto: "cinco frentes de trabalho que mostram como cada etapa contribui para um projeto claro, do conceito à execução."
 projetos:
   - imagem: "/assets/img/cases/planta-baixa.webp"
+    imagem_pdf: "/assets/img/cases/extras/planta.webp"
     descricao_alt: "Planta baixa humanizada"
     legenda: "Planta baixa humanizada — Projeto: Letícia Guedes"
     categoria: "diagramação de prancha"
     titulo: "planta baixa *humanizada*"
     texto: "humanizei essa planta baixa pro projeto da Letícia, deixando os ambientes mais visuais e realistas pra facilitar a leitura antes da entrega final."
+    texto_servico: "A planta baixa humanizada facilita a compreensão do projeto ao torná-lo mais visual e realista, ajudando o cliente a entender melhor o espaço e tomar decisões com mais segurança. Além disso, melhora a comunicação e valoriza a apresentação."
     ficha:
       - rotulo: "projeto"
         valor: "Letícia Guedes"
@@ -18,11 +20,16 @@ projetos:
       - rotulo: "softwares que podemos utilizar"
         valor: "Sketchup · IA · AutoCAD"
   - imagem: "/assets/img/cases/corte.webp"
+    imagem_pdf: "/assets/img/cases/extras/corte-a.webp"
     descricao_alt: "Corte humanizado — prancha de arquitetura de interiores"
     legenda: "Corte humanizado — Projeto: Laís A. Vieira"
     categoria: "documentação técnica"
     titulo: "corte *humanizado*"
     texto: "esse corte é de um projeto autoral meu, onde quis mostrar a relação de alturas e profundidade entre os ambientes de forma mais visual."
+    texto_servico: "Cortes e isométricas humanizadas tornam o projeto mais claro e didático, mostrando alturas, volumes e profundidade de forma visual e realista. Eles ajudam a entender melhor o espaço, enxergar detalhes construtivos e se conectar com o projeto com mais facilidade."
+    extras:
+      - imagem: "/assets/img/cases/extras/corte-prancha.jpg"
+        legenda: "prancha completa — cortes e isométricas"
     ficha:
       - rotulo: "projeto"
         valor: "Laís A. Vieira"
@@ -38,11 +45,16 @@ projetos:
       "y": 6.3
       zoom: 1.77
   - imagem: "/assets/img/cases/executivo.webp"
+    imagem_pdf: "/assets/img/cases/extras/executivo-planta.jpg"
     descricao_alt: "Prancha de projeto executivo"
     legenda: "Projeto executivo — Projeto: Prazark Arquitetura"
     categoria: "projeto executivo"
     titulo: "do conceito à *execução*"
     texto: "reuni os detalhamentos técnicos desse projeto executivo pra Prazark Arquitetura, com as medidas e especificações que a equipe de obra precisava pra executar sem erros."
+    texto_servico: "O projeto executivo é essencial para transformar a ideia em obra, reunindo todos os detalhamentos técnicos necessários para a execução correta. Ele garante clareza para os profissionais, evita erros e retrabalhos, e assegura que o resultado final siga exatamente o que foi planejado."
+    extras:
+      - imagem: "/assets/img/cases/extras/executivo-vistas.jpg"
+        legenda: "vistas elétrica e hidráulica — cozinha"
     ficha:
       - rotulo: "projeto"
         valor: "Prazark Arquitetura"
@@ -58,11 +70,13 @@ projetos:
       "y": 52.3
       zoom: 1.53
   - imagem: "/assets/img/cases/detalhamento.webp"
+    imagem_pdf: "/assets/img/cases/extras/detalhamento-prancha.jpg"
     descricao_alt: "Prancha de detalhamento de marcenaria"
     legenda: "Detalhamentos — Projeto: Daniele Rossi"
     categoria: "detalhamento"
     titulo: "precisão em cada *detalhe*"
     texto: "esse detalhamento foi feito pro projeto da Daniele, especificando medidas, materiais e acabamentos de marcenaria pra evitar erros na produção."
+    texto_servico: "O detalhamento de marcenaria, serralheria, marmoraria ou outro garante que cada elemento seja executado com precisão, definindo medidas, materiais e acabamentos. Ele evita erros na produção, facilita a comunicação com os fornecedores e assegura um resultado final fiel ao projeto."
     ficha:
       - rotulo: "projeto"
         valor: "Daniele Rossi"
@@ -78,11 +92,13 @@ projetos:
       "y": 6.7
       zoom: 1.19
   - imagem: "/assets/img/cases/modelagem.webp"
+    imagem_pdf: "/assets/img/cases/extras/modelagem-iso.webp"
     descricao_alt: "Modelagem 3D isométrica de apartamento"
     legenda: "Modelagem 3D — Projeto: Barlô Arquitetura"
     categoria: "modelagem 3d"
     titulo: "ideias que ganham *forma*"
     texto: "essa modelagem 3D isométrica foi feita pro projeto da Barlô Arquitetura, pra dar uma visão geral do apartamento antes da execução da obra."
+    texto_servico: "A modelagem 3D é a etapa em que as ideias e o projeto começam a ganhar forma. Ela permite que o cliente visualize os espaços antes da execução da obra, facilitando o entendimento do projeto, a tomada de decisões e a identificação de possíveis ajustes ainda na fase de planejamento."
     ficha:
       - rotulo: "projeto"
         valor: "Barlô Arquitetura"

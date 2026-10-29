@@ -1,0 +1,313 @@
+---
+# Portfólio em PDF (folhas A4). É montado com os mesmos dados do site (_data/) e
+# convertido em PDF por ferramentas/gerar-pdf.mjs. Visualize em /portfolio-pdf/.
+permalink: /portfolio-pdf/
+---
+{%- assign g = site.data.geral -%}
+{%- assign pdf = site.data.pdf -%}
+{%- assign inicio = site.data.inicio -%}
+{%- assign sv = site.data.servicos -%}
+{%- assign pq = site.data.para_quem -%}
+{%- assign cf = site.data.como_funciona -%}
+{%- assign cp = site.data.comparar -%}
+{%- assign pf = site.data.portfolio -%}
+{%- assign pj = site.data.projetos -%}
+{%- assign cu = site.data.cursos -%}
+{%- capture wa -%}https://api.whatsapp.com/send?phone={{ g.whatsapp_numero }}{%- endcapture -%}
+{%- capture wa_msg -%}{{ wa }}&text={{ 'Olá, Laís! Vi seu portfólio e quero conversar sobre um projeto.' | url_encode | replace: '+', '%20' }}{%- endcapture -%}
+{%- capture insta -%}https://www.instagram.com/{{ g.instagram_usuario }}{%- endcapture -%}
+{%- assign horas = 0 -%}{%- for c in cu.cursos -%}{%- assign horas = horas | plus: c.horas -%}{%- endfor -%}
+{%- assign fotos_pdf = pf.imagens | where_exp: "i", "i.pdf != 'nao'" -%}
+{%- assign por_pagina = pdf.fotos_por_pagina | default: 9 -%}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Portfólio — {{ g.nome | escape }}</title>
+<link rel="stylesheet" href="{{ '/assets/css/pdf.css' | relative_url }}">
+</head>
+<body>
+
+{%- comment -%} ================= CAPA ================= {%- endcomment %}
+<section class="pagina capa">
+  <div class="capa-topo"><span class="linha"></span><span class="ano">{{ pdf.capa.ano }}</span></div>
+  <h1 class="capa-titulo"><span class="leve">{{ pdf.capa.titulo | escape }}</span> <span class="script">{{ pdf.capa.destaque | escape }}</span></h1>
+  <p class="capa-sub">{{ pdf.capa.subtitulo | escape }}</p>
+  <div class="capa-foto"><img src="{{ pdf.capa.foto | default: inicio.foto | relative_url }}" alt=""{% include enquadramento.html e=pdf.capa.foto_enquadramento %}></div>
+  <div class="faixa">
+    {%- for f in pdf.faixa %}<span>{{ f | escape }}</span>{% endfor -%}
+  </div>
+  <div class="capa-contato">
+    <a href="{{ wa_msg }}">{% include icone.html nome="whatsapp" %}{{ g.whatsapp_exibicao | escape }}</a>
+    <a href="mailto:{{ g.email }}">{% include icone.html nome="email" %}{{ g.email }}</a>
+    <a href="{{ insta }}">{% include icone.html nome="instagram" %}@{{ g.instagram_usuario | escape }}</a>
+    <a href="https://www.lais3d.com.br">www.lais3d.com.br</a>
+  </div>
+</section>
+
+{%- comment -%} ================= SOBRE ================= {%- endcomment %}
+{%- if pdf.secoes.sobre %}
+<section class="pagina sobre" data-secao="sobre">
+  {%- assign destaque_img = fotos_pdf | first %}
+  <div class="sobre-banner">
+    <img src="{{ destaque_img.imagem | relative_url }}" alt=""{% include enquadramento.html e=destaque_img.enquadramento %}>
+    <div class="sobre-banner-texto">
+      <span class="script">{{ inicio.destaque_frase | escape }}</span>
+      <strong>{{ inicio.destaque_titulo | escape }}</strong>
+    </div>
+  </div>
+  <div class="sobre-corpo">
+    <div class="sobre-texto">
+      <span class="script saudacao">{{ pdf.apresentacao.saudacao | escape }}</span>
+      {{ pdf.apresentacao.texto | markdownify }}
+    </div>
+    <ul class="selos">
+      {%- for s in pdf.apresentacao.selos %}
+      <li><span class="ic">{% include icone.html nome=s.icone %}</span><div><b>{{ s.titulo | escape }}</b><small>{{ s.texto | escape }}</small></div></li>
+      {%- endfor %}
+    </ul>
+  </div>
+  <div class="amostra">
+    {%- for f in fotos_pdf offset: 1 limit: 4 %}
+    <div class="foto"><img src="{{ f.imagem | relative_url }}" alt=""{% include enquadramento.html e=f.enquadramento %}></div>
+    {%- endfor %}
+    <span class="amostra-legenda">alguns trabalhos recentes — veja a seleção completa nas próximas páginas</span>
+  </div>
+  <div class="numeros">
+    {%- for n in inicio.numeros %}
+    <div><strong>{{ n.numero }}{{ n.sufixo | escape }}</strong><span>{{ n.legenda | escape }}</span></div>
+    {%- endfor %}
+    <div><strong>{{ horas }}h</strong><span>de cursos de especialização</span></div>
+  </div>
+  {% include pdf-rodape.html %}
+</section>
+{%- endif %}
+
+{%- comment -%} ================= SERVIÇOS ================= {%- endcomment %}
+{%- if pdf.secoes.servicos %}
+<section class="pagina servicos" data-secao="serviços">
+  <header class="cabeca">
+    <span class="chamada">{{ sv.chamada | escape }}</span>
+    <h2>{% include destaque.html texto=sv.titulo %}</h2>
+    <p>{{ sv.texto | escape }}</p>
+  </header>
+  <div class="cartoes-servico">
+    {%- for s in sv.servicos %}
+    <article><span class="ic">{% include icone.html nome=s.icone %}</span><h3>{{ s.titulo | escape }}</h3><p>{{ s.texto | escape }}</p></article>
+    {%- endfor %}
+  </div>
+  <header class="cabeca menor">
+    <span class="chamada">{{ pq.chamada | escape }}</span>
+    <h2>{% include destaque.html texto=pq.titulo %}</h2>
+  </header>
+  <div class="publicos">
+    {%- for p in pq.publicos %}
+    <article>
+      <span class="etiqueta">{{ p.etiqueta | escape }}</span>
+      <h3>{{ p.titulo | escape }}</h3>
+      <p>{{ p.texto | escape }}</p>
+      <ul>{% for i in p.itens %}<li>{% include icone.html nome="check" %}{{ i | escape }}</li>{% endfor %}</ul>
+    </article>
+    {%- endfor %}
+  </div>
+  {% include pdf-rodape.html %}
+</section>
+{%- endif %}
+
+{%- comment -%} ================= DIFERENCIAIS + COMO FUNCIONA ================= {%- endcomment %}
+{%- if pdf.secoes.diferenciais or pdf.secoes.como_funciona %}
+<section class="pagina metodo" data-secao="como trabalho">
+  {%- if pdf.secoes.diferenciais %}
+  <header class="cabeca">
+    <span class="chamada">diferenciais</span>
+    <h2>{% include destaque.html texto=pdf.diferenciais.titulo %}</h2>
+  </header>
+  <div class="diferenciais">
+    {%- for d in pdf.diferenciais.itens %}
+    <article><span class="num">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="ic">{% include icone.html nome=d.icone %}</span><h3>{{ d.titulo | escape }}</h3><p>{{ d.texto | escape }}</p></article>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+  {%- if pdf.secoes.como_funciona %}
+  <header class="cabeca menor">
+    <span class="chamada">{{ cf.chamada | escape }}</span>
+    <h2>{% include destaque.html texto=cf.titulo %}</h2>
+    <p>{{ cf.texto | escape }}</p>
+  </header>
+  <ol class="etapas">
+    {%- for e in cf.etapas %}
+    <li><span class="num">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><h3>{{ e.titulo | escape }}</h3><p>{{ e.texto | escape }}</p></li>
+    {%- endfor %}
+  </ol>
+  <a class="faixa-cta" href="{{ wa_msg }}"><span>{{ sv.botao | escape }}</span><b>{% include icone.html nome="whatsapp" %} {{ g.whatsapp_exibicao | escape }}</b></a>
+  {%- endif %}
+  {% include pdf-rodape.html %}
+</section>
+{%- endif %}
+
+{%- comment -%} ================= V-RAY × IA ================= {%- endcomment %}
+{%- if pdf.secoes.comparar and cp.comparacoes.size > 0 %}
+<section class="pagina comparar" data-secao="V-Ray × IA">
+  <header class="cabeca">
+    <span class="chamada">{{ cp.chamada | escape }}</span>
+    <h2>do print ao <span class="script">render final</span></h2>
+    <p>{{ cp.texto | replace: 'nas imagens abaixo, arraste o marcador pra ver', 'abaixo,' | escape }}</p>
+  </header>
+  <div class="modalidades">
+    <div><span class="lbl escuro">V-Ray</span><p>{{ cp.vray_texto | escape }}</p></div>
+    <div><span class="lbl claro">IA</span><p>{{ cp.ia_texto | escape }}</p></div>
+  </div>
+  <div class="pares">
+    {%- for c in cp.comparacoes limit: 3 %}
+    <figure>
+      <div class="par-img"><img src="{{ c.imagem_print | relative_url }}" alt=""{% include enquadramento.html e=c.enquadramento %}><span class="lbl claro">print</span></div>
+      <div class="par-img"><img src="{{ c.imagem_ia | relative_url }}" alt=""{% include enquadramento.html e=c.enquadramento %}><span class="lbl escuro">IA</span></div>
+      <figcaption><b>{{ c.ambiente | escape }}</b>{% if c.credito %}<small>{{ c.credito | escape }}</small>{% endif %}</figcaption>
+    </figure>
+    {%- endfor %}
+  </div>
+  {% include pdf-rodape.html %}
+</section>
+{%- endif %}
+
+{%- comment -%} ================= PORTFÓLIO (galeria em páginas) ================= {%- endcomment %}
+{%- if pdf.secoes.portfolio and fotos_pdf.size > 0 %}
+{%- for item in fotos_pdf %}
+{%- assign resto = forloop.index0 | modulo: por_pagina %}
+{%- if resto == 0 %}
+<section class="pagina galeria" data-secao="portfólio">
+  {%- if forloop.first %}
+  <header class="cabeca">
+    <span class="chamada">{{ pf.chamada | escape }}</span>
+    <h2>{% include destaque.html texto=pf.titulo %}</h2>
+    <p>{{ pf.texto | escape }}</p>
+  </header>
+  {%- endif %}
+  <div class="grade{% if forloop.first %} com-cabeca{% endif %}">
+{%- endif %}
+    <figure>
+      <div class="foto"><img src="{{ item.imagem | relative_url }}" alt="" loading="eager"{% include enquadramento.html e=item.enquadramento %}></div>
+      <figcaption><span>{{ item.projeto | escape }}</span><em>{% if item.tipo == 'ia' %}IA{% else %}V-Ray{% endif %}</em></figcaption>
+    </figure>
+{%- assign fim = forloop.index | modulo: por_pagina %}
+{%- if forloop.last and fim != 0 %}
+    <a class="grade-cta" href="{{ wa_msg }}">
+      <span class="script">quer imagens assim</span>
+      <strong>para o seu projeto?</strong>
+      <p>me conte sobre o projeto e o prazo — eu cuido da produção e você recebe tudo pronto para apresentar.</p>
+      <b>{% include icone.html nome="whatsapp" %} {{ g.whatsapp_exibicao | escape }}</b>
+    </a>
+{%- endif %}
+{%- if fim == 0 or forloop.last %}
+  </div>
+  {% include pdf-rodape.html %}
+</section>
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+
+{%- comment -%} ================= ESTUDOS DE CASO (uma página cada) ================= {%- endcomment %}
+{%- if pdf.secoes.projetos %}
+{%- for c in pj.projetos %}
+<section class="pagina caso{% if c.extras.size > 0 %} com-extras{% endif %}" data-secao="{{ pj.chamada | escape }}">
+  <header class="caso-cabeca">
+    <span class="chamada">{{ c.categoria | escape }}</span>
+    <h2>{% include destaque.html texto=c.titulo %}</h2>
+  </header>
+  <div class="caso-info">
+    <dl class="ficha">
+      {%- for f in c.ficha %}
+      <div><dt>{{ f.rotulo | escape }}</dt><dd>{{ f.valor | escape }}</dd></div>
+      {%- endfor %}
+    </dl>
+    <div class="caso-textos">
+      <p class="caso-texto">{{ c.texto | escape }}</p>
+      {%- if c.texto_servico %}
+      <p class="caso-porque"><b>por que isso importa</b>{{ c.texto_servico | escape }}</p>
+      {%- endif %}
+    </div>
+  </div>
+  <div class="caso-imagem"><img src="{{ c.imagem_pdf | default: c.imagem | relative_url }}" alt="{{ c.descricao_alt | escape }}"></div>
+  {%- if c.extras.size > 0 %}
+  <div class="caso-extras n{{ c.extras.size }}">
+    {%- for e in c.extras limit: 3 %}
+    <figure><img src="{{ e.imagem | relative_url }}" alt=""><figcaption>{{ e.legenda | escape }}</figcaption></figure>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+  {% include pdf-rodape.html %}
+</section>
+{%- endfor %}
+{%- endif %}
+
+{%- comment -%} ================= FORMAÇÃO ================= {%- endcomment %}
+{%- if pdf.secoes.formacao %}
+<section class="pagina formacao" data-secao="{{ cu.chamada | escape }}">
+  <header class="cabeca">
+    <span class="chamada">{{ cu.chamada | escape }}</span>
+    <h2>{% include destaque.html texto=cu.titulo %}</h2>
+    <p>{{ cu.texto | escape }}</p>
+  </header>
+  <div class="formacao-resumo">
+    <div><strong>{{ cu.cursos.size }}</strong><span>cursos</span></div>
+    <div><strong>{{ horas }}h</strong><span>de formação</span></div>
+    <div><strong>{{ sv.softwares.size }}</strong><span>softwares</span></div>
+  </div>
+  <div class="cursos">
+    {%- for c in cu.cursos %}
+    <article><div><b>{{ c.nome | escape }}</b><small>{{ c.escola | escape }}</small></div><span>{{ c.horas }}h</span></article>
+    {%- endfor %}
+  </div>
+  <h3 class="sub">softwares que utilizo</h3>
+  <div class="softwares">{% for s in sv.softwares %}<span>{{ s | escape }}</span>{% endfor %}</div>
+  <div class="selos-linha">
+    {%- for s in pdf.apresentacao.selos %}
+    <div><span class="ic">{% include icone.html nome=s.icone %}</span><b>{{ s.titulo | escape }}</b><small>{{ s.texto | escape }}</small></div>
+    {%- endfor %}
+  </div>
+  {% include pdf-rodape.html %}
+</section>
+{%- endif %}
+
+{%- comment -%} ================= ENCERRAMENTO ================= {%- endcomment %}
+<section class="pagina final">
+  <span class="script final-titulo">{{ pdf.encerramento.titulo | escape }}</span>
+  <p class="final-texto">{{ pdf.encerramento.texto | escape }}</p>
+  <a class="botao" href="{{ wa_msg }}">{% include icone.html nome="whatsapp" %} {{ pdf.encerramento.botao | escape }}</a>
+  <div class="final-qr">
+    <div class="qr" data-qr="{{ wa_msg }}"></div>
+    <small>aponte a câmera para<br>abrir o WhatsApp</small>
+  </div>
+  <div class="final-contatos">
+    <a href="{{ wa_msg }}"><small>WhatsApp</small>{{ g.whatsapp_exibicao | escape }}</a>
+    <a href="mailto:{{ g.email }}"><small>e-mail</small>{{ g.email }}</a>
+    <a href="{{ insta }}"><small>Instagram</small>@{{ g.instagram_usuario | escape }}</a>
+    <a href="https://www.lais3d.com.br"><small>site</small>www.lais3d.com.br</a>
+  </div>
+  <span class="final-marca"><b>{{ g.marca | escape }}</b><i>.</i></span>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+  // Numeração das páginas ("03 / 15") e QR code do WhatsApp.
+  (function () {
+    var paginas = document.querySelectorAll('.pagina');
+    var total = String(paginas.length).padStart(2, '0');
+    paginas.forEach(function (p, i) {
+      var n = p.querySelector('.pg-num');
+      if (n) n.textContent = (p.dataset.secao ? p.dataset.secao + '  ·  ' : '') + String(i + 1).padStart(2, '0') + ' / ' + total;
+    });
+    document.querySelectorAll('[data-qr]').forEach(function (el) {
+      if (!window.qrcode) return;
+      var qr = qrcode(0, 'M');
+      qr.addData(el.getAttribute('data-qr'));
+      qr.make();
+      el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    });
+    document.documentElement.classList.add('pronto');
+  })();
+</script>
+</body>
+</html>
