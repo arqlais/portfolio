@@ -352,6 +352,12 @@ body.gated .wrap{display:none}
 .pickbar{max-width:1100px}
 #pickCv{display:block;max-width:100%;border-radius:10px;cursor:crosshair;touch-action:none;background:var(--sand)}
 .f>.lt{display:block;line-height:1.35}
+.rlums{display:grid;gap:8px}
+.lrow{display:grid;grid-template-columns:minmax(0,1fr) 210px 34px;gap:8px;align-items:center}
+.lrow input,.lrow select{height:40px;background:var(--card)}
+.lrow .x{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;height:40px;border-radius:10px}
+.lrow .x:hover{color:var(--warn);background:var(--rose-soft)}
+@media (max-width:640px){.lrow{grid-template-columns:minmax(0,1fr) 34px}.lrow select{grid-row:2;grid-column:1 / -1}}
 .aibtn.upd{background:var(--rose);color:#fff;border-color:var(--rose)}
 .f .lt .sub{font-weight:400;color:var(--muted);letter-spacing:0}
 .lightbox{display:grid;gap:14px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
@@ -576,7 +582,7 @@ textarea{padding:12px 14px}
             <label class="f" id="viewWrap"><span class="lt"><span id="viewLabel">Vista pela janela</span> <span class="sub">· a análise já escolhe</span></span>
               <select id="view"></select>
             </label>
-            <label class="f"><span class="lt">Luzes artificiais <span class="sub">· padrão ~3500K</span></span>
+            <label class="f"><span class="lt">Luzes artificiais <span class="sub">· padrão das decorativas; cada luminária tem a sua na ficha</span></span>
               <select id="ledTemp">
                 <option value="3500" selected>Ligadas · branco neutro-quente (~3500K)</option>
                 <option value="3000">Ligadas · branco quente (~3000K)</option>
@@ -1283,7 +1289,7 @@ Como ler o SketchUp:
 - Em revestimentos em placas (porcelanato, cerâmica, ladrilho, pastilha, pedra em placas), escreva no acabamento o tamanho aproximado das peças, a paginação (alinhada, amarrada, espinha, vertical/horizontal) e o rejunte (fino, cor provável).
 - Olhe CADA superfície separadamente: cada parede visível (diga qual: parede da janela, do fundo, da esquerda, atrás da bancada…), piso, teto, bancadas, frentes de marcenaria. Compare cor, textura, desenho e paginação entre elas. Se forem o MESMO material, devolva UM item e liste todas as superfícies em "onde". Se forem diferentes, um item por superfície, com a posição em "onde".
 - RGB só quando a cor exata importa e a cor é sólida: pinturas, lacas, laminados e tecidos lisos, metais e vidros coloridos. Leia numa área bem iluminada, sem sombra e sem reflexo. Para madeira, pedra, mármore, porcelanato com desenho e outros materiais com textura, deixe "rgb" vazio e descreva tom e veio.
-- Faixas amarelas ou muito brilhantes em nichos, sancas, prateleiras, forros e espelhos são só a indicação de LED no SketchUp: liste como luminária (LED de luz neutra), nunca como material amarelo nem luz amarela. Para cada uma diga o formato (fita linear contínua, perfil linear, spot, pendente), a posição exata e o sentido (ex.: "fita linear vertical na lateral interna do nicho do box", "fita linear horizontal embaixo da espelheira"). Fita em nicho, sanca ou atrás de espelho costuma ser embutida e oculta: diga "fita oculta" e qual superfície ela banha de luz (ex.: "fita linear vertical oculta no canto interno esquerdo do nicho, banhando o fundo do nicho"). Liste SÓ onde há faixa amarela ou luminária no print; nunca deduza LED embaixo de gabinetes, bancadas, rodapés ou espelhos sem faixa amarela ali.
+- Faixas amarelas ou muito brilhantes em nichos, sancas, prateleiras, forros e espelhos são só a indicação de LED no SketchUp: liste como luminária (LED de luz neutra), nunca como material amarelo nem luz amarela. Cada luminária é um objeto {"luz","tipo"}: "tipo" é "geral" (spots, perfis e plafons que iluminam o ambiente) ou "decorativa" (fitas em nichos, sancas, espelhos e prateleiras, arandelas, pendentes, abajures). Em "luz" diga o formato (fita linear contínua, perfil linear, spot, pendente), a posição exata e o sentido (ex.: "fita linear vertical na lateral interna do nicho do box", "fita linear horizontal embaixo da espelheira"). Fita em nicho, sanca ou atrás de espelho costuma ser embutida e oculta: diga "fita oculta" e qual superfície ela banha de luz (ex.: "fita linear vertical oculta no canto interno esquerdo do nicho, banhando o fundo do nicho"). Liste SÓ onde há faixa amarela ou luminária no print; nunca deduza LED embaixo de gabinetes, bancadas, rodapés ou espelhos sem faixa amarela ali.
 - Vidros de box, divisórias e janelas: incolor (extra clear) por padrão, salvo se o print mostrar outra cor clara. Diga quantos painéis de vidro existem e onde (ex.: "1 painel fixo + 1 porta de correr entre box e vaso"). Se a área de banho NÃO tiver vidro no print (box aberto, só ralo), inclua em "vazios": "box aberto, sem vidro".
 - Cada elemento tem o seu material: marcenaria ripada, frentes e gabinetes são marcenaria (laca, laminado, madeira) na cor do print ou da usuária, nunca a pedra das cubas ou bancadas vizinhas.
 - Fundo: azul chapado atrás das aberturas é o céu padrão do SketchUp, provisório; não é material nem a cor do céu. Em "fundo" diga o que fica coerente com o ambiente: em interiores, exterior claro e difuso de onde vem a luz (ex.: banheiro: claridade esbranquiçada pela janela). Só descreva uma paisagem se o print tiver uma imagem de fundo específica. Em "vista" escolha uma destas chaves: ${VIEWS[kind].map(v=>v[0]).join(", ")} ("keep" = automático, coerente com o ambiente). Se o print JÁ TIVER uma imagem de fundo de verdade (foto ou textura de paisagem, prédios, vegetação, céu com nuvens; qualquer coisa que não seja azul chapado ou branco), escolha "print" e descreva essa imagem em "fundo" em poucas palavras (ex.: "foto de prédios baixos e céu claro"). Escolha outra chave só se fizer sentido sem fundo no print.
@@ -1295,9 +1301,9 @@ Como ler o SketchUp:
 - OBJETOS: em "objetos" liste TODO objeto solto e decoração visível (frascos, toalhas, plantas, vasos, livros, quadros, almofadas, tapetes, cestos, papel higiênico, lixeira, duchas, acessórios), cada um com a quantidade exata e a posição (ex.: "3 frascos âmbar na prateleira do nicho do box"). Conte com cuidado. Se não houver nenhum, devolva [].
 - VAZIOS: em "vazios" liste as superfícies que estão VAZIAS no print e assim devem continuar (ex.: "prateleiras do nicho ao lado do vaso", "bancada da pia", "parede do box sem ducha de mão"). Olhe nichos, prateleiras, bancadas, paredes e piso. Para todo móvel suspenso (gabinete, bancada, armário) SEM faixa amarela embaixo, inclua em "vazios": "vão embaixo de [móvel]: sem LED, só sombra natural".
 - Seja honesto: se não tiver certeza, marque "conferir": true (sem explicar a dúvida no texto).
-- Escreva CURTO, para leitura rápida: "elemento" com até 4 palavras; "material" com até 5 palavras (só o mais provável, sem listar alternativas); "acabamento" com até 6 palavras; "onde" com as superfícies, curto; "cor" só o nome do tom; cada luminária com até 8 palavras; "luzNatural" com uma frase curta.
+- Escreva CURTO, para leitura rápida: "elemento" com até 4 palavras; "material" com até 5 palavras (só o mais provável, sem listar alternativas); "acabamento" com até 6 palavras; "onde" com as superfícies, curto; "cor" só o nome do tom; cada luminária com até 10 palavras; "luzNatural" com uma frase curta.
 Formato JSON:
-{"ambiente":"ex.: banheiro social","luzNatural":"janela à esquerda, luz difusa","fundo":"exterior claro e esbranquiçado pela janela","vista":"keep","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"LED branco neutro-quente ~3500K","objetos":["2 frascos âmbar no nicho do box"],"vazios":["prateleiras do nicho ao lado do vaso"],"materiais":[{"elemento":"Revestimento porcelanato","onde":"parede da pia, parede do box e piso","material":"Porcelanato marmorizado","acabamento":"Acetinado, placas grandes","cor":"Branco com veios cinza","rgb":"","conferir":false},{"elemento":"Parede do vaso","onde":"parede ao fundo","material":"Pintura","acabamento":"Fosco","cor":"Verde sálvia","rgb":"168,180,160","conferir":false}]}`;
+{"ambiente":"ex.: banheiro social","luzNatural":"janela à esquerda, luz difusa","fundo":"exterior claro e esbranquiçado pela janela","vista":"keep","luminarias":[{"luz":"spots embutidos no forro","tipo":"geral"},{"luz":"fita linear oculta no nicho do box","tipo":"decorativa"}],"objetos":["2 frascos âmbar no nicho do box"],"vazios":["prateleiras do nicho ao lado do vaso"],"materiais":[{"elemento":"Revestimento porcelanato","onde":"parede da pia, parede do box e piso","material":"Porcelanato marmorizado","acabamento":"Acetinado, placas grandes","cor":"Branco com veios cinza","rgb":"","conferir":false},{"elemento":"Parede do vaso","onde":"parede ao fundo","material":"Pintura","acabamento":"Fosco","cor":"Verde sálvia","rgb":"168,180,160","conferir":false}]}`;
   const apply=data=>{
     const mats=Array.isArray(data?.materiais)?data.materiais:[];
     const have=new Set(existing.map(r=>r.elemento.toLowerCase()));
@@ -1305,8 +1311,7 @@ Formato JSON:
     let added=0; mats.forEach(m=>{const el=String(m.elemento||"").trim(); if(el&&!have.has(el.toLowerCase())){addRow({elemento:el,material:String(m.material||""),acabamento:String(m.acabamento||""),cor:String(m.cor||"")+(m.rgb?" · RGB "+m.rgb:""),nota:m.onde?"onde: "+String(m.onde):""});added++}});
     if(!$("lightDir").value && data?.luzNatural) $("lightDir").value=String(data.luzNatural);
     if(data?.vista && VIEWS[kind].some(v=>v[0]===data.vista)){ $("view").value=data.vista; updateFineSum(); if(data.vista==="print") toast("O print já tem fundo: ele será mantido no render"); }
-    if(!$("lights").value.trim() && Array.isArray(data?.luminarias)) $("lights").value=data.luminarias.map(String).join("\n");
-        if(data) data.temperatura=ledLabel(); // a cor da luz não aparece no print: sempre o padrão escolhido (3500K)
+    if(!$("lights").value.trim() && Array.isArray(data?.luminarias)) $("lights").value=data.luminarias.map(l=>lumObj(l).luz).join("\n");
         renderRead(data,mats);
     status($("aStatus"),`${data?.ambiente?String(data.ambiente)+" · ":""}${added} elemento(s) identificados.`);
   };
@@ -1333,18 +1338,18 @@ function updateFineSum(){
 }
 ["view","atmo","ratio","size","dest","ledTemp"].forEach(id=>document.addEventListener("change",e=>{if(e.target.id===id)updateFineSum()}));
 let readText="";
-function ledLabel(){ const v=$("ledTemp").value; return {3500:"LED branco neutro-quente ~3500K",3000:"LED branco quente ~3000K",neutral:"LED neutro ~3500–4000K",2700:"LED bem quente ~2700K",cool:"LED branco frio ~4500K",off:"luzes artificiais desligadas"}[v]||"LED ~3500K" }
-document.addEventListener("change",e=>{ if(e.target.id==="ledTemp"){ const i=document.querySelector('#qRead [data-k="temperatura"]'); if(i) i.value=ledLabel(); } });
+
 function renderRead(data,mats){
   const box=$("qRead"); box.innerHTML="";
   const f=document.createElement("div"); f.className="rform";
   f.innerHTML=`<div class="rgrid">
     <label class="f">Ambiente<input type="text" data-k="ambiente"></label>
     <label class="f">Luz natural<input type="text" data-k="luzNatural"></label>
-    <label class="f">Fundo e vista das aberturas<input type="text" data-k="fundo"></label>
-    <label class="f">Luz artificial<input type="text" data-k="temperatura"></label>
   </div>
-  <label class="f"><span class="lt">Luminárias <span class="sub">· uma por linha, com formato e posição</span></span><textarea data-k="luminarias" rows="3"></textarea></label>
+  <label class="f">Fundo e vista das aberturas<input type="text" data-k="fundo"></label>
+  <div class="f"><span class="lt">Luminárias <span class="sub">· formato e posição de cada uma, com a temperatura (gerais costumam ser 4000K; decorativas 3500K ou 3000K)</span></span></div>
+  <div class="rlums" id="rLums"></div>
+  <div class="actions"><button type="button" class="btn ghost small" id="rLumAdd">+ luminária</button></div>
   <div class="rgrid">
     <label class="f"><span class="lt">Objetos e decoração <span class="sub">· só estes, com quantidade</span></span><textarea data-k="objetos" rows="3" placeholder="Ex.: 3 frascos âmbar no nicho do box"></textarea></label>
     <label class="f"><span class="lt">Áreas vazias <span class="sub">· continuam vazias</span></span><textarea data-k="vazios" rows="3" placeholder="Ex.: prateleiras ao lado do vaso"></textarea></label>
@@ -1354,11 +1359,31 @@ function renderRead(data,mats){
   <div class="actions"><button type="button" class="btn ghost small" id="rAdd">+ material</button><button type="button" class="btn ghost small" id="rCopy">copiar leitura</button></div>`;
   box.append(f);
   f.querySelectorAll("[data-k]").forEach(i=>{ const v=data?.[i.dataset.k]; i.value=Array.isArray(v)?v.map(String).join("\n"):String(v||""); });
+  (Array.isArray(data?.luminarias)?data.luminarias:[]).forEach(l=>addLumRow(l));
+  $("rLumAdd").onclick=()=>addLumRow({}).querySelector("input").focus();
   (mats||[]).forEach(m=>addReadRow(m));
   $("rAdd").onclick=()=>addReadRow({}).querySelector("input").focus();
   $("rCopy").onclick=async()=>{ try{ await navigator.clipboard.writeText(readingText()); toast("Leitura copiada") }catch{ toast("Não foi possível copiar") } };
   f.querySelectorAll("textarea").forEach(ta=>{ const fit=()=>{ ta.style.height="auto"; ta.style.height=ta.scrollHeight+2+"px" }; ta.oninput=fit; requestAnimationFrame(fit); });
   updConf();
+}
+const TEMPS=[["4000K","4000K · geral, neutra"],["3500K","3500K · neutra-quente"],["3000K","3000K · quente"],["2700K","2700K · bem quente"],["4500K","4500K · fria"],["off","desligada"]];
+function lumObj(l){ // aceita texto antigo ("spots · 4000K") ou {luz,temp,tipo}
+  if(l&&typeof l==="object") return {luz:String(l.luz||l.nome||""),temp:String(l.temp||"").replace(/\s/g,"").toUpperCase(),tipo:String(l.tipo||"")};
+  const t=String(l||""), m=t.match(/[·:,-]?\s*(\d{4})\s*K\b/i); return {luz:t.replace(/[·:,-]?\s*~?\d{4}\s*K\b/i,"").trim(),temp:m?m[1]+"K":"",tipo:""};
+}
+function defTemp(o){ // sem temperatura: gerais 4000K, decorativas no padrão escolhido
+  if(/off|deslig/i.test(o.temp)) return "off";
+  if(/^\d{4}K$/.test(o.temp)) return o.temp;
+  const geral=o.tipo==="geral"||(!o.tipo&&/spot|perfil|plafon|trilho|painel|embutid|forro|teto/i.test(o.luz)&&!/sanca|nicho|fita|arandela|pendente|abajur|espelho/i.test(o.luz));
+  const v=$("ledTemp").value; return geral?"4000K":({3500:"3500K",3000:"3000K",2700:"2700K",cool:"4500K",neutral:"3500K",off:"off"}[v]||"3500K");
+}
+function addLumRow(l){
+  const o=lumObj(l), d=document.createElement("div"); d.className="lrow";
+  d.innerHTML=`<input type="text" class="ll" aria-label="Luminária" placeholder="Ex.: fita linear oculta no nicho do box"><select class="lt2" aria-label="Temperatura">${TEMPS.map(([v,n])=>`<option value="${v}">${n}</option>`).join("")}</select><button class="x" type="button" aria-label="Remover luminária">×</button>`;
+  d.querySelector(".ll").value=o.luz; d.querySelector(".lt2").value=defTemp(o);
+  d.querySelector(".x").onclick=()=>d.remove();
+  $("rLums").append(d); return d;
 }
 function addReadRow(m){
   const lc=v=>{ v=String(v||"").trim(); return v?v[0].toLowerCase()+v.slice(1):"" };
@@ -1388,7 +1413,8 @@ function updConf(){
 }
 function getRead(){
   const f=document.querySelector("#qRead .rform"); if(!f) return null;
-  const o={}; f.querySelectorAll("[data-k]").forEach(i=>o[i.dataset.k]=/^(luminarias|objetos|vazios)$/.test(i.dataset.k)?i.value.split("\n").map(x=>x.trim()).filter(Boolean):i.value.trim());
+  const o={}; f.querySelectorAll("[data-k]").forEach(i=>o[i.dataset.k]=/^(objetos|vazios)$/.test(i.dataset.k)?i.value.split("\n").map(x=>x.trim()).filter(Boolean):i.value.trim());
+  o.luminarias=[...f.querySelectorAll(".lrow")].map(d=>({luz:d.querySelector(".ll").value.trim(),temp:d.querySelector(".lt2").value})).filter(x=>x.luz);
   o.materiais=[...f.querySelectorAll(".rrow")].map(d=>({elemento:d.querySelector(".re").value.trim(),onde:d.querySelector(".ro").value.trim(),material:d.querySelector(".rm").value.trim(),cor:d.querySelector(".rc").value.trim(),rgb:(c=>c?c.join(","):d.querySelector(".rg").value.trim())(parseColor(d.querySelector(".rg").value)),conferir:d.classList.contains("unsure")})).filter(m=>m.elemento||m.material);
   return o;
 }
@@ -1398,8 +1424,7 @@ function readingText(){
   if(r.ambiente) L.push(`Ambiente: ${r.ambiente}`);
   if(r.luzNatural) L.push(`Luz natural: ${r.luzNatural}`);
   if(r.fundo) L.push(`Fundo e vista das aberturas: ${r.fundo}`);
-  if(r.temperatura) L.push(`Luz artificial: ${r.temperatura}`);
-  if(r.luminarias.length) L.push("Luminárias (exatamente estas, nas posições do print):\n"+r.luminarias.map(x=>"- "+x).join("\n"));
+  if(r.luminarias.length) L.push("Luminárias (exatamente estas, nas posições do print, cada uma na sua temperatura de cor):\n"+r.luminarias.map(x=>`- ${x.luz}: ${x.temp==="off"?"DESLIGADA":"ligada, "+x.temp}`).join("\n"));
   if(r.objetos?.length) L.push("Objetos e decoração (inventário fechado: exatamente estes, nas quantidades e posições do print; nada além):\n"+r.objetos.map(x=>"- "+x).join("\n"));
   else L.push("Objetos e decoração: só os que aparecem na IMAGEM 1; não acrescentar nenhum.");
   if(r.vazios?.length) L.push("Áreas vazias no print (continuam vazias, sem nenhum objeto):\n"+r.vazios.map(x=>"- "+x).join("\n"));
@@ -1415,10 +1440,10 @@ function ledRule(quick){
   if(v==="off"||art==="off") return "LUZ ARTIFICIAL: todas as luminárias DESLIGADAS, sem nenhum brilho de LED. Só a luz do cenário.";
   if(ps?.art==="off") return `LUZ ARTIFICIAL: DESLIGADA, porque o cenário escolhido ("${ps.n}") é sem luz artificial. Nenhuma luminária acesa, nenhum brilho de LED.`;
   const which=art==="some"?"SOMENTE as luminárias listadas ficam ligadas; todas as outras ficam desligadas":"todas as luminárias existentes no print ficam ligadas";
-  if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, quentes (~2700K) como pede o cenário. Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam onde há luz; nada de luz amarelada artificial.`;
+  if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, cada uma no Kelvin indicado na ficha (sem indicação: quentes, ~2700–3000K, como pede o cenário). Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam onde há luz; nada de luz amarelada artificial.`;
   const t={neutral:"branco neutro, cerca de 3500K–4000K",3500:"branco neutro-quente, cerca de 3500K (luz de LED real, natural, nem amarelada nem fria)",3000:"branco quente, cerca de 3000K (aconchegante, sem amarelar)",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
   const role=ps?.nat===false?"complementando a luz difusa do cenário, sem virar a fonte principal":"só complementando a luz natural, que continua dominante";
-  return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, acesas com intensidade média, claramente visíveis e aconchegantes, desenhando a superfície onde batem, ${role}. Fitas e perfis de LED com brilho contínuo e um degradê visível na superfície (e refletido nas superfícies polidas), sem faixas estouradas. LED OCULTO (faixa amarela sem a fonte visível: nichos, sancas, atrás de espelho, embaixo de prateleira): luz SUAVE e difusa, intensidade baixa a média, só uma lavagem delicada na superfície que ela banha, com degradê longo e macio; a fita e o perfil não aparecem; sem linha brilhante, sem faixa marcada, sem borda dura de luz, sem ponto estourado. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam ONDE há luz: a luz nunca é amarela; o resultado é LED real, natural, como numa fotografia.`;
+  return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, acesas com intensidade média, claramente visíveis e aconchegantes, desenhando a superfície onde batem, ${role}. Fitas e perfis de LED com brilho contínuo e um degradê visível na superfície (e refletido nas superfícies polidas), sem faixas estouradas. LED OCULTO (faixa amarela sem a fonte visível: nichos, sancas, atrás de espelho, embaixo de prateleira): luz SUAVE e difusa, intensidade baixa a média, só uma lavagem delicada na superfície que ela banha, com degradê longo e macio; a fita e o perfil não aparecem; sem linha brilhante, sem faixa marcada, sem borda dura de luz, sem ponto estourado. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: cada luminária no Kelvin indicado na ficha (ex.: gerais 4000K e decorativas 3500K na mesma cena, cada uma com a sua cor real); as que não tiverem indicação: ${t}. Brancos continuam neutros. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam ONDE há luz: a luz nunca é amarela; o resultado é LED real, natural, como numa fotografia.`;
 }
 const PIECE_PRESETS=[
  ["Spot embutir múltiplo","Spot de embutir retangular múltiplo (quantidade de focos conforme o print), moldura branca fina rente ao forro, cada foco recuado dentro de uma célula quadrada branca fosca, com refletor interno direcionável. Cada foco gera um facho próprio e suave. Não é painel, plafon nem luminária de sobrepor."],
