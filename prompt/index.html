@@ -374,8 +374,8 @@ body.gated .wrap{display:none}
 .card-in .lt{display:flex;justify-content:space-between;align-items:baseline}
 .linkbtn.mini{font-size:12px;color:var(--rose-deep)}
 .inrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.inrow .btn{width:100%;justify-content:center}
-#contaDlg .fold{margin-top:6px}.so-leitor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-#contaSetup{margin:14px 0}#contaSetup li{margin-bottom:8px}
+.so-leitor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+
 .updbox{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px rgba(51,64,73,.16);font-size:13px;max-width:calc(100vw - 32px)}
 .updbox .x{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;width:32px;height:32px;border-radius:10px}.updbox .x:hover{background:var(--rose-soft)}
 .f .lt .sub{font-weight:400;color:var(--muted);letter-spacing:0}
@@ -541,18 +541,7 @@ textarea{padding:12px 14px}
       <div class="inrow"><button class="btn" type="submit">entrar</button><button class="btn ghost" id="contaCriar" type="button">criar conta</button></div>
       <p class="hint small">Primeira vez? Escreva e-mail e senha e toque em <b>criar conta</b>. Nos outros aparelhos, use os mesmos e toque em <b>entrar</b>.</p>
     </form>
-    <details class="fold"><summary>ou entrar com Google</summary>
-      <p class="hint">O Google só funciona aqui depois de liberar o site no Firebase (passo a passo abaixo, se aparecer o aviso).</p>
-      <button class="btn ghost" id="contaGoogle" type="button">entrar com Google</button>
-    </details>
   </div>
-  <ol class="gsteps" id="contaSetup" hidden>
-    <li>Faça isso no <b>computador</b>, que é mais fácil (no iPad também dá). Toque em <a href="https://console.firebase.google.com/project/lampada-db06b/authentication/settings" target="_blank" rel="noopener"><b>abrir o Firebase do Lâmpada</b></a>. Se pedir login, entre com a <b>mesma conta Google</b> que você usou para criar o Lâmpada.</li>
-    <li>Vai abrir a tela <b>Authentication</b>, na aba <b>Settings</b> (Configurações). Na coluna da esquerda dessa aba, clique em <b>Authorized domains</b> (Domínios autorizados).</li>
-    <li>Você vai ver uma lista com <i>localhost</i>, <i>arqlais.github.io</i>… Clique no botão <b>Add domain</b> (Adicionar domínio), digite <code>www.lais3d.com.br</code> e clique em <b>Add</b>.</li>
-    <li>Clique em <b>Add domain</b> de novo, digite <code>lais3d.com.br</code> (sem www) e clique em <b>Add</b>.</li>
-    <li>Pronto. Volte para esta página, recarregue e toque em <b>entrar com Google</b>. Pode levar 1 ou 2 minutos para valer.</li>
-  </ol>
   <div class="actions">
     <button class="btn" id="contaSync" type="button" hidden>sincronizar agora</button>
     <button class="btn ghost" id="contaOut" type="button" hidden>sair da conta neste aparelho</button>
@@ -971,7 +960,6 @@ function contaInit(){ // carrega o Firebase e devolve quando souber se já há a
     if(!window.firebase) try{ await get("vendor/firebase/") }catch{ await get("https://www.gstatic.com/firebasejs/10.12.2/") } // cópia no próprio site; o Google como reserva
     const app=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);
     CONTA.auth=app.auth(); CONTA.db=app.firestore();
-    try{ await CONTA.auth.getRedirectResult() }catch(e){ contaUI(e.code==="auth/unauthorized-domain"?"domain":"err",e) }
     await new Promise(r=>{ const u=CONTA.auth.onAuthStateChanged(x=>{ u(); r() }) });
     CONTA.auth.onAuthStateChanged(u=>{ CONTA.user=u; if(u) contaWatch(); else { CONTA.on=false; CONTA.unsub?.(); CONTA.unsub=null; contaUI("off") } });
   })();
@@ -1018,16 +1006,13 @@ function contaUI(st,e){
   $("contaDot").style.background=ok?"":"var(--warn)";
   const msg=ok?`Conectada como ${u.email||u.displayName||"você"}. Projetos e chave do Gemini sincronizados.`:st==="sync"?"Sincronizando…":st==="domain"?AUTH_MSG["auth/unauthorized-domain"]:st==="err"?(AUTH_MSG[e?.code]||(u?"Não consegui falar com a nuvem agora. Os projetos continuam salvos neste aparelho.":"Não deu para entrar agora. Tente de novo.")):"";
   status($("contaStatus"),msg,st==="sync",st==="err"||st==="domain");
-  $("contaIn").hidden=!!u; $("contaSetup").hidden=st!=="domain";
+  $("contaIn").hidden=!!u;
   $("contaSync").hidden=!u; $("contaOut").hidden=!u;
   const h=$("projHint"); if(h) h.innerHTML=ok?"Sincronizados com a sua conta: aparecem no computador, no iPad e no celular.":"Os projetos ficam só neste aparelho. Entre na <b>conta</b> (no topo) para vê-los no iPad e no computador, ou exporte e importe o arquivo.";
 }
 async function contaOpen(){ $("contaDlg").showModal(); contaUI(CONTA.st); try{ await contaInit() }catch{ contaUI("err") } }
 async function contaAfterLogin(){ $("contaDlg").close(); toast("Conta conectada"); await contaSync().catch(()=>{}); const k=lsGet(GKEY); if(k&&!G.key){ try{ await enterGemini(k) }catch(err){ showGate(errMsg(err)) } } }
 $("contaBtn").onclick=contaOpen; $("gateContaBtn").onclick=contaOpen;
-$("contaGoogle").onclick=async()=>{ try{ await contaInit(); const pr=new firebase.auth.GoogleAuthProvider(); pr.setCustomParameters({prompt:"select_account"});
-  try{ await CONTA.auth.signInWithPopup(pr) }catch(e){ if(/popup-blocked|operation-not-supported|web-storage/.test(e?.code||"")) return CONTA.auth.signInWithRedirect(pr); throw e }
-  await contaAfterLogin(); }catch(e){ if(e?.code!=="auth/cancelled-popup-request") contaUI(e?.code==="auth/unauthorized-domain"?"domain":"err",e) } };
 $("contaForm").onsubmit=async e=>{ e.preventDefault();
   try{ await contaInit(); await CONTA.auth.signInWithEmailAndPassword($("contaEmail").value.trim(),$("contaSenha").value); $("contaSenha").value=""; await contaAfterLogin() }catch(err){ contaUI("err",err) } };
 $("contaCriar").onclick=async()=>{ const em=$("contaEmail").value.trim(), pw=$("contaSenha").value;
