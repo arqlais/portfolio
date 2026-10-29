@@ -1,6 +1,6 @@
 {
-  "name": "Revela · prompt de render",
-  "short_name": "Revela",
+  "name": "lavi render",
+  "short_name": "lavi render",
   "description": "Do print do SketchUp à fotografia: prompts travados para IA de imagem. Ferramenta do estúdio laís.",
   "lang": "pt-BR",
   "start_url": "./",
@@ -9,8 +9,22 @@
   "background_color": "#F5F2EE",
   "theme_color": "#F5F2EE",
   "icons": [
-    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
-    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
-    {"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml"}
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
   ]
 }
