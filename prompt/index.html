@@ -351,6 +351,17 @@ body.gated .wrap{display:none}
 .manual.pick{width:fit-content;max-width:96vw}
 .pickbar{max-width:1100px}
 #pickCv{display:block;max-width:100%;border-radius:10px;cursor:crosshair;touch-action:none;background:var(--sand)}
+.f>.lt{display:block;line-height:1.35}
+.aibtn.upd{background:var(--rose);color:#fff;border-color:var(--rose)}
+.f .lt .sub{font-weight:400;color:var(--muted);letter-spacing:0}
+.lightbox{display:grid;gap:14px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.rrow .sw{cursor:pointer}
+.cpick #cpSV{display:block;width:100%;height:auto;aspect-ratio:13/6;border-radius:12px;cursor:crosshair;touch-action:none}
+.cpick #cpHue{width:100%;margin:14px 0 4px;-webkit-appearance:none;appearance:none;height:14px;border-radius:999px;background:linear-gradient(90deg,red,#ff0,lime,cyan,blue,#f0f,red)}
+.cpick #cpHue::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--ink)}
+.cpick #cpHue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--ink)}
+.cprow{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 12px;margin-top:12px}
+.cprow .f{flex:1 1 130px}.cprow input{font-family:var(--mono)}
 .pickbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px}
 .pickSw{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);flex:none}
 .pickbar b{font-family:var(--mono);font-weight:500;font-size:14px;min-width:150px}
@@ -509,6 +520,7 @@ textarea{padding:12px 14px}
       <button role="tab" id="tabLib" aria-selected="false">ajustes e pós</button>
       <button role="tab" id="tabCmp" aria-selected="false">comparar</button>
       <a href="https://www.lais3d.com.br/">portfólio ↗</a>
+      <button type="button" id="updBtn" class="aibtn upd" hidden title="Saiu uma versão nova desta página">↻ atualizar</button>
       <button type="button" id="aiBtn" class="aibtn" hidden title="Configurar o Gemini"><span class="dotok"></span>gemini</button>
     </nav>
   </header>
@@ -526,12 +538,6 @@ textarea{padding:12px 14px}
   <div id="noAI" class="banner" hidden><b>Modo gratuito.</b> A página monta o pedido completo; você cola num chat de IA gratuito (Claude, Gemini ou ChatGPT) junto com o print e cola a resposta de volta aqui. Nada é pago.</div>
 
   <div id="viewGen">
-  <div class="modebar">
-    <div class="seg" role="group" aria-label="Modo">
-      <button id="mQuick" aria-pressed="true">rápido</button>
-      <button id="mDetail" aria-pressed="false">detalhado</button>
-    </div>
-  </div>
   <div class="grid">
     <aside class="board">
       <section class="step">
@@ -562,12 +568,32 @@ textarea{padding:12px 14px}
         <h2><span class="n">leitura do print</span>O que a IA <em>viu</em></h2>
         <p class="hint">Ficha do print, editável: corrija direto aqui. É ela que vai para o prompt. Itens com <b class="cfmark">conferir</b> são palpites da IA.</p>
         <div class="readview" id="qRead"><p class="hint">Envie o print e toque em analisar. É opcional.</p></div>
+        <div class="lightbox">
+          <div class="f"><span class="lt">Cenário de luz <span class="sub">· padrão: dia neutro, nem quente nem frio</span></span>
+            <div class="chips" id="qChips"></div>
+          </div>
+          <div class="row2">
+            <label class="f" id="viewWrap"><span class="lt"><span id="viewLabel">Vista pela janela</span> <span class="sub">· a análise já escolhe</span></span>
+              <select id="view"></select>
+            </label>
+            <label class="f"><span class="lt">Luzes artificiais <span class="sub">· padrão ~3500K</span></span>
+              <select id="ledTemp">
+                <option value="3500" selected>Ligadas · branco neutro-quente (~3500K)</option>
+                <option value="3000">Ligadas · branco quente (~3000K)</option>
+                <option value="neutral">Ligadas suaves · neutra (~3500–4000K)</option>
+                <option value="2700">Ligadas suaves · bem quente (~2700K)</option>
+                <option value="cool">Ligadas suaves · branca fria (~4500K)</option>
+                <option value="off">Desligadas</option>
+              </select>
+            </label>
+          </div>
+        </div>
       </section>
 
       <section class="step quickonly">
         <h2><span class="n">passo 2 · opcional</span>Especifique ou <em>altere</em></h2>
         <p class="hint">Escreva o que a leitura não pegou ou o que quer mudar: material, cor, RGB, acabamento, luminárias e o que NÃO é. Pode escrever corrido. O que você escrever aqui vence a ficha.</p>
-        <div class="actions qtools"><button class="btn ghost small" id="qPick" type="button">conta-gotas · inserir RGB do print</button></div>
+        <div class="actions qtools"><button class="btn ghost small" id="qPick" type="button">conta-gotas · RGB do print</button><button class="btn ghost small" id="qColor" type="button">escolher cor · HEX ou RGB</button></div>
         <textarea id="qText" aria-label="Descrição do projeto" placeholder="piso porcelanato acetinado bege muito claro, paredes greige fosca rgb 209,202,194, teto da sala amadeirado Amendoa Natural exatamente como no print, painel da tv lambri ripas 10cm espaço 1cm marrom liso rgb 152,136,123 NAO é amadeirado, bancada quartzo branco polido, metais preto acetinado...
 luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fita de led em cima e embaixo da prateleira, spots no forro, arandela dourado acetinado em cima do sofá"></textarea>
       </section>
@@ -609,7 +635,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
       </section>
 
       <section class="step dark">
-        <h2><span class="n"><span class="quickonly">passo 3</span><span class="detail">passo 4</span></span>Gerar o <em>prompt</em></h2>
+        <h2><span class="n">passo 3</span>Gerar o <em>prompt</em></h2>
         <div class="genrow">
           <label class="f">Onde vai usar
             <select id="dest">
@@ -630,23 +656,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
         <details class="fold" id="fine">
           <summary>Ajustes finos <span id="fineSum" class="sumline"></span></summary>
           <div class="finebody">
-            <div class="f quickonly">Cenário de luz
-              <div class="chips" id="qChips"></div>
-            </div>
-            <label class="f">Luzes artificiais (padrão: ligadas, ~3500K)
-              <select id="ledTemp">
-                <option value="3500" selected>Ligadas · branco neutro-quente (~3500K)</option>
-                <option value="3000">Ligadas · branco quente (~3000K)</option>
-                <option value="neutral">Ligadas suaves · neutra (~3500–4000K)</option>
-                <option value="2700">Ligadas suaves · bem quente (~2700K)</option>
-                <option value="cool">Ligadas suaves · branca fria (~4500K)</option>
-                <option value="off">Desligadas</option>
-              </select>
-            </label>
-            <div class="row2">
-              <label class="f" id="viewWrap"><span id="viewLabel">Vista pela janela</span>
-                <select id="view"></select>
-              </label>
+            <div>
               <label class="f">Atmosfera
                 <select id="atmo">
                   <option value="">Neutra</option>
@@ -851,6 +861,15 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
   <form method="dialog" class="mhd"><h2 id="pickTitle"><span class="n">conta-gotas</span>clique na cor, direto no print</h2><button class="x" aria-label="Fechar">×</button></form>
   <canvas id="pickCv"></canvas>
   <div class="pickbar"><span class="pickSw" id="pickSw"></span><b id="pickVal"></b><span class="hint">Clique numa área bem iluminada, sem sombra nem reflexo. A cor é a média de 5×5 pixels.</span></div>
+</dialog>
+<dialog id="colorDlg" class="manual cpick" aria-labelledby="cpTitle">
+  <form method="dialog" class="mhd"><h2 id="cpTitle"><span class="n">cor</span>escolha, digite HEX ou RGB</h2><button class="x" aria-label="Fechar">×</button></form>
+  <canvas id="cpSV" width="520" height="240" aria-label="Saturação e brilho"></canvas>
+  <input type="range" id="cpHue" min="0" max="360" step="1" aria-label="Matiz">
+  <div class="cprow"><span class="pickSw" id="cpSw"></span>
+    <label class="f">HEX<input type="text" id="cpHex" placeholder="#D1ADA4" spellcheck="false"></label>
+    <label class="f">RGB<input type="text" id="cpRgb" placeholder="209, 173, 164" spellcheck="false"></label>
+    <button class="btn" id="cpOk" type="button">usar esta cor</button></div>
 </dialog>
 <dialog id="manual" class="manual" aria-labelledby="mTitle">
   <form method="dialog" class="mhd">
@@ -1073,6 +1092,32 @@ $("pickCv").addEventListener("pointermove",e=>{ if(pickSrc) setPick(sampleAt(e))
 $("pickCv").addEventListener("click",e=>{ const c=pickSrc&&sampleAt(e); if(!c) return; $("pickDlg").close(); pickCb?.(c); toast(`Cor capturada: RGB ${c.join(", ")}`); });
 $("qPick").onclick=()=>{ const t=$("qText"), a=t.selectionStart??t.value.length, b=t.selectionEnd??a;
   pickColor(c=>{ const ins=`RGB ${c.join(",")}`; t.value=t.value.slice(0,a)+(a&&!/\s$/.test(t.value.slice(0,a))?" ":"")+ins+t.value.slice(b); t.focus(); }); };
+$("qColor").onclick=()=>{ const t=$("qText"), a=t.selectionStart??t.value.length, b=t.selectionEnd??a;
+  pickManual(null,c=>{ const ins=`RGB ${c.join(",")} (HEX ${toHex(c)})`; t.value=t.value.slice(0,a)+(a&&!/\s$/.test(t.value.slice(0,a))?" ":"")+ins+t.value.slice(b); t.focus(); }); };
+/* ---------- seletor de cor do próprio site (sem a janela do Windows) ---------- */
+function parseColor(v){ v=String(v||"").trim(); let m=v.match(/#?\b([0-9a-f]{6}|[0-9a-f]{3})\b/i);
+  if(m&&/[a-f#]/i.test(v)||m&&/^#?[0-9a-f]{6}$/i.test(v)){ let h=m[1]; if(h.length===3) h=[...h].map(x=>x+x).join(""); return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)) }
+  m=v.match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/); if(m){ const c=[+m[1],+m[2],+m[3]]; if(c.every(x=>x<=255)) return c } return null }
+function toHex(c){ return "#"+c.map(x=>x.toString(16).padStart(2,"0")).join("").toUpperCase() }
+function hsv2rgb(h,s,v){ const f=n=>{const k=(n+h/60)%6; return Math.round(255*(v-v*s*Math.max(0,Math.min(k,4-k,1))))}; return [f(5),f(3),f(1)] }
+function rgb2hsv([r,g,b]){ r/=255;g/=255;b/=255; const mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn; let h=0;
+  if(d){ h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4; h*=60; if(h<0) h+=360 } return [h,mx?d/mx:0,mx] }
+const CP={h:30,s:.15,v:.9,cb:null};
+function cpDraw(){ const cv=$("cpSV"), g=cv.getContext("2d"), W=cv.width, H=cv.height;
+  g.fillStyle=`hsl(${CP.h},100%,50%)`; g.fillRect(0,0,W,H);
+  let gr=g.createLinearGradient(0,0,W,0); gr.addColorStop(0,"#fff"); gr.addColorStop(1,"rgba(255,255,255,0)"); g.fillStyle=gr; g.fillRect(0,0,W,H);
+  gr=g.createLinearGradient(0,0,0,H); gr.addColorStop(0,"rgba(0,0,0,0)"); gr.addColorStop(1,"#000"); g.fillStyle=gr; g.fillRect(0,0,W,H);
+  const x=CP.s*W, y=(1-CP.v)*H; g.lineWidth=2; g.strokeStyle=CP.v>.5?"#000":"#fff"; g.beginPath(); g.arc(x,y,7,0,7); g.stroke();
+  const c=hsv2rgb(CP.h,CP.s,CP.v); $("cpSw").style.background=`rgb(${c})`; $("cpHue").value=CP.h;
+  if(document.activeElement!==$("cpHex")) $("cpHex").value=toHex(c); if(document.activeElement!==$("cpRgb")) $("cpRgb").value=c.join(", "); }
+function pickManual(init,cb){ CP.cb=cb; if(init){ [CP.h,CP.s,CP.v]=rgb2hsv(init) } $("colorDlg").showModal(); cpDraw(); }
+(()=>{ const cv=$("cpSV"); let drag=false;
+  const at=e=>{ const r=cv.getBoundingClientRect(); CP.s=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)); CP.v=1-Math.min(1,Math.max(0,(e.clientY-r.top)/r.height)); cpDraw() };
+  cv.addEventListener("pointerdown",e=>{ drag=true; cv.setPointerCapture(e.pointerId); at(e) }); cv.addEventListener("pointermove",e=>{ if(drag) at(e) }); cv.addEventListener("pointerup",()=>drag=false);
+  $("cpHue").oninput=e=>{ CP.h=+e.target.value; cpDraw() };
+  const typed=e=>{ const c=parseColor(e.target.value); if(c){ [CP.h,CP.s,CP.v]=rgb2hsv(c); cpDraw() } }; $("cpHex").oninput=typed; $("cpRgb").oninput=typed;
+  $("cpOk").onclick=()=>{ const c=hsv2rgb(CP.h,CP.s,CP.v); $("colorDlg").close(); CP.cb?.(c); toast(`Cor: RGB ${c.join(", ")} · ${toHex(c)}`) };
+})();
 let manualCb=null, manualText="";
 function manual({title,prompt,attach,onReply}){
   manualText=prompt; manualCb=onReply;
@@ -1092,6 +1137,7 @@ $("mUse").onclick=()=>{
 
 const PRESETS = {
 INTERIOR: [
+ {n:"Dia neutro (padrão)", t:"Luz do dia natural e NEUTRA (~5500K), nem quente nem fria, suave e realista, vinda das aberturas do ambiente: as visíveis no print ou as que ficam fora do enquadramento, na direção indicada pela ficha. Mesmo sem janela visível, a cena recebe luz natural difusa coerente com essa direção. Iluminação artificial existente ligada no tom definido, visível e aconchegante sem dominar a luz natural. Brancos limpos, sem dominante amarela, alaranjada, rosada ou azul."},
  {n:"Natural predominante + artificial", t:"Luz natural predominante entrando pelas aberturas existentes, suave e realista. Toda a iluminação artificial existente ligada, quente e visível sem dominar a luz natural. Mistura equilibrada de luz natural e artificial, fisicamente plausível."},
  {n:"Cortina translúcida + luz artificial", t:"Luz natural principal entrando pela janela lateral, filtrada pela cortina translúcida, suave, difusa e natural. Temperatura da luz natural entre 5000K e 5400K, balanço neutro. Ligar obrigatoriamente todas as luzes artificiais já existentes no modelo, sem adicionar nenhuma nova. Luz artificial de intensidade baixa porém visível, contribuindo para profundidade e atmosfera. Equilibrar exposição interior/exterior: evitar janela estourada, evitar interior escuro, sombras suaves e naturais."},
  {n:"Cortina translúcida, muita luz", t:"Luz natural de abertura lateral filtrada por cortina translúcida. Luz suave e difusa, sem sol direto. Sombras muito macias e espalhadas. Contraste baixo a médio. Exposição levemente elevada sem estourar brancos. Brancos neutros, sem dominante verde ou magenta. Temperatura entre 4800K e 5200K. Atmosfera clara, leve e arejada. Bounce light natural preenchendo as áreas opostas à janela. Sem hotspots, sem iluminação dramática, sem HDR exagerado."},
@@ -1099,6 +1145,8 @@ INTERIOR: [
  {n:"Persiana, luz abundante", t:"Luz natural lateral vinda de janela real, filtrada pela persiana, com suavização natural, direção lateral clara e sombras extremamente suaves. Exterior levemente superexposto simulando céu claro, interior corretamente exposto, high dynamic range natural. Contraste suave, bounce neutro, sem luz artificial dominante. Simular câmera full-frame, lente 35mm, ISO baixo, balanço de branco neutro (~5200K), curva tonal natural, microcontraste realista."},
  {n:"Persiana + sol, sombra marcada", t:"Luz solar direta atravessando persianas horizontais ou elementos vazados, criando padrões lineares de luz e sombra bem definidos sobre paredes, piso e mobiliário. Sombras com bordas relativamente marcadas, porém fisicamente realistas. Contraste médio-alto com detalhes preservados nas luzes e nas sombras. Temperatura levemente quente (4300K–4800K), balanço neutro sem verde ou magenta. Luz principal lateral criando volumetria. Leve rebatimento natural nas sombras."},
  {n:"Fim de tarde quente", t:"Fotografia de final de tarde com luz natural dominante entrando pelas aberturas existentes, direção coerente com elas. Luz suave levemente quente, 4800K–5600K, sem feixes de sol duros. Gradiente suave no piso e nas paredes. Exterior levemente mais claro que o interior, nenhuma área estourada, HDR natural equilibrado. Rebote quente vindo da madeira e do piso, sem sombras pretas fechadas. Luz artificial existente apenas como complemento sutil (2700K–3000K), sem tornar a cena noturna. Preservar o calor natural da cena; não recalibrar o balanço de branco; não alterar horário nem direção da luz."},
+ {n:"Noite, luzes acesas",nat:false,night:true, t:"Noite: lá fora escuro, sem luz do dia. Toda a iluminação artificial existente ligada no tom definido, criando a luz da cena com gradientes suaves, halos locais junto das fitas e spots e sombras macias. Aberturas mostram exterior noturno discreto, sem paisagem inventada. Brancos ainda limpos, sem dominante alaranjada; nada de luz nova."},
+ {n:"Blue hour interna",night:true, t:"Início da noite (blue hour): pelas aberturas, céu azul profundo e suave entrando como luz fria e fraca; iluminação artificial existente ligada no tom definido como luz principal. Contraste suave entre o azul de fora e o branco neutro-quente de dentro, sem exagero de saturação."},
  {n:"Sem luz natural",nat:false,art:"off", t:"Iluminação indireta neutra, suave e difusa. Ambiente extremamente claro, sombras muito macias e alongadas, sem bordas duras. Bounce light realista. Exposição equilibrada, contraste moderado, aparência editorial. White balance neutro, sem tonalidade amarela. Nada de HDR, nada de luz artificial ligada. GI realista."},
  {n:"Sem luz natural, luz atrás da câmera",nat:false, t:"Iluminação suave com direção frontal predominante, como fotografia profissional de interiores. Leve gradiente: área próxima à câmera um pouco mais iluminada, queda suave em direção ao fundo. Modelagem lateral extremamente sutil só para separar planos. Sombras suaves com gradiente sob os objetos. Rebatimento suave no teto e superfícies claras. Neutralizar dominantes quentes, brancos verdadeiramente neutros, ~5400K. Não representar nenhuma abertura física nem reflexos de fontes de luz."},
  {n:"Banheiro, luz lavada", t:"Luz do dia difusa e filtrada vinda da abertura, suave e homogênea, sem contraste agressivo. Sombras suaves com bordas levemente difusas. Soft bounce das superfícies claras. Temperatura neutra levemente quente (4800K–5200K). Brancos absolutamente neutros, sem verde ou magenta. Sem estouro na janela. Atmosfera natural, elegante e silenciosa. Sem luz dramática, sem pôr do sol, sem blue hour, sem luz artificial dominante."},
@@ -1237,7 +1285,8 @@ Como ler o SketchUp:
 - Faixas amarelas ou muito brilhantes em nichos, sancas, prateleiras, forros e espelhos são só a indicação de LED no SketchUp: liste como luminária (LED de luz neutra), nunca como material amarelo nem luz amarela. Para cada uma diga o formato (fita linear contínua, perfil linear, spot, pendente), a posição exata e o sentido (ex.: "fita linear vertical na lateral interna do nicho do box", "fita linear horizontal embaixo da espelheira"). Fita em nicho, sanca ou atrás de espelho costuma ser embutida e oculta: diga "fita oculta" e qual superfície ela banha de luz (ex.: "fita linear vertical oculta no canto interno esquerdo do nicho, banhando o fundo do nicho"). Liste SÓ onde há faixa amarela ou luminária no print; nunca deduza LED embaixo de gabinetes, bancadas, rodapés ou espelhos sem faixa amarela ali.
 - Vidros de box, divisórias e janelas: incolor (extra clear) por padrão, salvo se o print mostrar outra cor clara. Diga quantos painéis de vidro existem e onde (ex.: "1 painel fixo + 1 porta de correr entre box e vaso"). Se a área de banho NÃO tiver vidro no print (box aberto, só ralo), inclua em "vazios": "box aberto, sem vidro".
 - Cada elemento tem o seu material: marcenaria ripada, frentes e gabinetes são marcenaria (laca, laminado, madeira) na cor do print ou da usuária, nunca a pedra das cubas ou bancadas vizinhas.
-- Fundo: azul chapado atrás das aberturas é o céu padrão do SketchUp, provisório; não é material nem a cor do céu. Em "fundo" diga o que fica coerente com o ambiente: em interiores, exterior claro e difuso de onde vem a luz (ex.: banheiro: claridade esbranquiçada pela janela). Só descreva uma paisagem se o print tiver uma imagem de fundo específica.
+- Fundo: azul chapado atrás das aberturas é o céu padrão do SketchUp, provisório; não é material nem a cor do céu. Em "fundo" diga o que fica coerente com o ambiente: em interiores, exterior claro e difuso de onde vem a luz (ex.: banheiro: claridade esbranquiçada pela janela). Só descreva uma paisagem se o print tiver uma imagem de fundo específica. Em "vista" escolha uma destas chaves: ${VIEWS[kind].map(v=>v[0]).join(", ")} ("keep" = automático, coerente com o ambiente; escolha outra só se o print mostrar claramente essa paisagem).
+- Luz natural: mesmo quando NENHUMA janela aparece no print, quase sempre existe luz natural vinda de fora do enquadramento. Pelas sombras e pelo lado mais claro do print, diga de onde ela vem (ex.: "da esquerda, fora do quadro", "de trás da câmera") e se é difusa. Só escreva "sem luz natural" se for claramente um ambiente fechado sem aberturas.
 - Em "acabamento" inclua brilho (fosco, acetinado, polido), formato e paginação (placas grandes, ripas verticais, réguas no comprimento) e direção dos veios quando houver.
 - Em "cor" escreva só o nome do tom e em "rgb" o valor aproximado (ex.: "226,219,208").
 - AGRUPE: elementos com o MESMO material e acabamento viram UM item geral, com nome que diz do que se trata (ex.: "Metais", "Marcenaria amadeirada", "Estofados", "Vidros") e todas as peças em "onde" (ex.: metais: torneira, puxadores, pés da mesa e arandela). Não repita cada peça separada. Só separe quando o material, a cor ou o acabamento forem DIFERENTES (ex.: "Metais dourados" e "Metais pretos"), dizendo em "onde" quais peças são de cada.
@@ -1247,13 +1296,14 @@ Como ler o SketchUp:
 - Seja honesto: se não tiver certeza, marque "conferir": true (sem explicar a dúvida no texto).
 - Escreva CURTO, para leitura rápida: "elemento" com até 4 palavras; "material" com até 5 palavras (só o mais provável, sem listar alternativas); "acabamento" com até 6 palavras; "onde" com as superfícies, curto; "cor" só o nome do tom; cada luminária com até 8 palavras; "luzNatural" com uma frase curta.
 Formato JSON:
-{"ambiente":"ex.: banheiro social","luzNatural":"janela à esquerda, luz difusa","fundo":"exterior claro e esbranquiçado pela janela","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"LED neutro ~4000K","objetos":["2 frascos âmbar no nicho do box"],"vazios":["prateleiras do nicho ao lado do vaso"],"materiais":[{"elemento":"Revestimento porcelanato","onde":"parede da pia, parede do box e piso","material":"Porcelanato marmorizado","acabamento":"Acetinado, placas grandes","cor":"Branco com veios cinza","rgb":"","conferir":false},{"elemento":"Parede do vaso","onde":"parede ao fundo","material":"Pintura","acabamento":"Fosco","cor":"Verde sálvia","rgb":"168,180,160","conferir":false}]}`;
+{"ambiente":"ex.: banheiro social","luzNatural":"janela à esquerda, luz difusa","fundo":"exterior claro e esbranquiçado pela janela","vista":"keep","luminarias":["fita de LED no nicho do box", "..."],"temperatura":"LED neutro ~4000K","objetos":["2 frascos âmbar no nicho do box"],"vazios":["prateleiras do nicho ao lado do vaso"],"materiais":[{"elemento":"Revestimento porcelanato","onde":"parede da pia, parede do box e piso","material":"Porcelanato marmorizado","acabamento":"Acetinado, placas grandes","cor":"Branco com veios cinza","rgb":"","conferir":false},{"elemento":"Parede do vaso","onde":"parede ao fundo","material":"Pintura","acabamento":"Fosco","cor":"Verde sálvia","rgb":"168,180,160","conferir":false}]}`;
   const apply=data=>{
     const mats=Array.isArray(data?.materiais)?data.materiais:[];
     const have=new Set(existing.map(r=>r.elemento.toLowerCase()));
     if(!existing.length) $("mat").innerHTML="";
     let added=0; mats.forEach(m=>{const el=String(m.elemento||"").trim(); if(el&&!have.has(el.toLowerCase())){addRow({elemento:el,material:String(m.material||""),acabamento:String(m.acabamento||""),cor:String(m.cor||"")+(m.rgb?" · RGB "+m.rgb:""),nota:m.onde?"onde: "+String(m.onde):""});added++}});
     if(!$("lightDir").value && data?.luzNatural) $("lightDir").value=String(data.luzNatural);
+    if(data?.vista && VIEWS[kind].some(v=>v[0]===data.vista)){ $("view").value=data.vista; updateFineSum(); }
     if(!$("lights").value.trim() && Array.isArray(data?.luminarias)) $("lights").value=data.luminarias.map(String).join("\n");
         renderRead(data,mats);
     status($("aStatus"),`${data?.ambiente?String(data.ambiente)+" · ":""}${added} elemento(s) identificados.`);
@@ -1290,12 +1340,12 @@ function renderRead(data,mats){
     <label class="f">Fundo e vista das aberturas<input type="text" data-k="fundo"></label>
     <label class="f">Luz artificial<input type="text" data-k="temperatura"></label>
   </div>
-  <label class="f">Luminárias <span class="sub">uma por linha</span><textarea data-k="luminarias" rows="3"></textarea></label>
+  <label class="f"><span class="lt">Luminárias <span class="sub">· uma por linha, com formato e posição</span></span><textarea data-k="luminarias" rows="3"></textarea></label>
   <div class="rgrid">
-    <label class="f">Objetos e decoração <span class="sub">só estes, com quantidade</span><textarea data-k="objetos" rows="3" placeholder="Ex.: 3 frascos âmbar no nicho do box"></textarea></label>
-    <label class="f">Áreas vazias <span class="sub">continuam vazias</span><textarea data-k="vazios" rows="3" placeholder="Ex.: prateleiras ao lado do vaso"></textarea></label>
+    <label class="f"><span class="lt">Objetos e decoração <span class="sub">· só estes, com quantidade</span></span><textarea data-k="objetos" rows="3" placeholder="Ex.: 3 frascos âmbar no nicho do box"></textarea></label>
+    <label class="f"><span class="lt">Áreas vazias <span class="sub">· continuam vazias</span></span><textarea data-k="vazios" rows="3" placeholder="Ex.: prateleiras ao lado do vaso"></textarea></label>
   </div>
-  <div class="f">Materiais <span class="sub" id="rConf"></span></div>
+  <div class="f"><span class="lt">Materiais <span class="sub" id="rConf"></span></span></div>
   <div class="rmats" id="rMats"></div>
   <div class="actions"><button type="button" class="btn ghost small" id="rAdd">+ material</button><button type="button" class="btn ghost small" id="rCopy">copiar leitura</button></div>`;
   box.append(f);
@@ -1314,14 +1364,15 @@ function addReadRow(m){
     <button class="x" type="button" aria-label="Remover material">×</button>
     <input class="rm" type="text" aria-label="Material e acabamento" placeholder="Material e acabamento">
     <input class="rc" type="text" aria-label="Cor" placeholder="Cor">
-    <span class="rgbw"><span class="sw"></span><input class="rg" type="text" aria-label="RGB opcional" placeholder="RGB (opcional)" inputmode="numeric"><button class="pk" type="button" title="Conta-gotas: pegar a cor no print" aria-label="Pegar a cor no print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg></button></span>
+    <span class="rgbw"><span class="sw"></span><input class="rg" type="text" aria-label="RGB opcional" placeholder="RGB ou HEX (opcional)"><button class="pk" type="button" title="Conta-gotas: pegar a cor no print" aria-label="Pegar a cor no print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg></button></span>
     <button class="cf" type="button" title="Clique quando já tiver conferido">conferir</button>`;
   const q=c=>d.querySelector(c);
   q(".re").value=String(m.elemento||""); q(".ro").value=String(m.onde||"");
   q(".rm").value=[String(m.material||"").trim(),lc(m.acabamento)].filter(Boolean).join(", ");
   q(".rc").value=lc(m.cor); q(".rg").value=String(m.rgb||"").replace(/\s/g,"").replace(/,/g,", ");
-  const sw=()=>{ const r=q(".rg").value.match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/); q(".sw").style.background=r?`rgb(${r[1]},${r[2]},${r[3]})`:""; q(".sw").classList.toggle("none",!r) };
-  q(".rg").oninput=sw; sw();
+  const sw=()=>{ const c=parseColor(q(".rg").value); q(".sw").style.background=c?`rgb(${c})`:""; q(".sw").classList.toggle("none",!c); q(".sw").title=c?`${toHex(c)} · clique para ajustar`:"clique para escolher a cor" };
+  q(".rg").oninput=sw; q(".rg").onblur=()=>{ const c=parseColor(q(".rg").value); if(c) q(".rg").value=c.join(", "); sw(); }; sw();
+  q(".sw").onclick=()=>pickManual(parseColor(q(".rg").value),c=>{ q(".rg").value=c.join(", "); sw(); });
   q(".pk").onclick=()=>pickColor(c=>{ q(".rg").value=c.join(", "); sw(); });
   q(".x").onclick=()=>{ d.remove(); updConf() };
   q(".cf").onclick=()=>{ d.classList.remove("unsure"); updConf() };
@@ -1329,12 +1380,12 @@ function addReadRow(m){
 }
 function updConf(){
   const n=document.querySelectorAll("#rMats .rrow.unsure").length, el=$("rConf");
-  if(el) el.textContent=(n?`${n} para conferir · `:"")+"cada item: elemento e onde aparece · material e acabamento · cor · RGB (opcional)";
+  if(el) el.textContent=(n?`${n} para conferir · `:"")+"· cada item: elemento e onde aparece · material e acabamento · cor · RGB ou HEX (opcional; clique no quadradinho para escolher)";
 }
 function getRead(){
   const f=document.querySelector("#qRead .rform"); if(!f) return null;
   const o={}; f.querySelectorAll("[data-k]").forEach(i=>o[i.dataset.k]=/^(luminarias|objetos|vazios)$/.test(i.dataset.k)?i.value.split("\n").map(x=>x.trim()).filter(Boolean):i.value.trim());
-  o.materiais=[...f.querySelectorAll(".rrow")].map(d=>({elemento:d.querySelector(".re").value.trim(),onde:d.querySelector(".ro").value.trim(),material:d.querySelector(".rm").value.trim(),cor:d.querySelector(".rc").value.trim(),rgb:d.querySelector(".rg").value.trim(),conferir:d.classList.contains("unsure")})).filter(m=>m.elemento||m.material);
+  o.materiais=[...f.querySelectorAll(".rrow")].map(d=>({elemento:d.querySelector(".re").value.trim(),onde:d.querySelector(".ro").value.trim(),material:d.querySelector(".rm").value.trim(),cor:d.querySelector(".rc").value.trim(),rgb:(c=>c?c.join(","):d.querySelector(".rg").value.trim())(parseColor(d.querySelector(".rg").value)),conferir:d.classList.contains("unsure")})).filter(m=>m.elemento||m.material);
   return o;
 }
 function readingText(){
@@ -1348,7 +1399,7 @@ function readingText(){
   if(r.objetos?.length) L.push("Objetos e decoração (inventário fechado: exatamente estes, nas quantidades e posições do print; nada além):\n"+r.objetos.map(x=>"- "+x).join("\n"));
   else L.push("Objetos e decoração: só os que aparecem na IMAGEM 1; não acrescentar nenhum.");
   if(r.vazios?.length) L.push("Áreas vazias no print (continuam vazias, sem nenhum objeto):\n"+r.vazios.map(x=>"- "+x).join("\n"));
-  if(r.materiais.length) L.push("Materiais (um item com várias superfícies em 'onde' = o MESMO material em todas elas):\n"+r.materiais.map(m=>`- ${m.elemento}${m.onde?` [onde: ${m.onde}]`:""}: ${[m.material,m.cor,m.rgb?`RGB ${m.rgb.replace(/\s/g,"")}`:""].filter(Boolean).join("; ")}${m.conferir?" (palpite da IA, não conferido)":""}`).join("\n"));
+  if(r.materiais.length) L.push("Materiais (um item com várias superfícies em 'onde' = o MESMO material em todas elas):\n"+r.materiais.map(m=>`- ${m.elemento}${m.onde?` [onde: ${m.onde}]`:""}: ${[m.material,m.cor,m.rgb?`RGB ${m.rgb.replace(/\s/g,"")}${parseColor(m.rgb)?` (HEX ${toHex(parseColor(m.rgb))})`:""}`:""].filter(Boolean).join("; ")}${m.conferir?" (palpite da IA, não conferido)":""}`).join("\n"));
   return L.join("\n");
 }
 
@@ -1363,7 +1414,7 @@ function ledRule(quick){
   if(ps?.night) return `LUZ ARTIFICIAL (${who}): ${which}, quentes (~2700K) como pede o cenário. Elas são a principal luz da cena, com intensidade realista e fachos suaves, sem halo nem glow exagerado. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam onde há luz; nada de luz amarelada artificial.`;
   const t={neutral:"branco neutro, cerca de 3500K–4000K",3500:"branco neutro-quente, cerca de 3500K (luz de LED real, natural, nem amarelada nem fria)",3000:"branco quente, cerca de 3000K (aconchegante, sem amarelar)",2700:"quente, cerca de 2700K",cool:"branco frio, cerca de 4500K"}[v];
   const role=ps?.nat===false?"complementando a luz difusa do cenário, sem virar a fonte principal":"só complementando a luz natural, que continua dominante";
-  return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, acesas com intensidade média, claramente visíveis e aconchegantes, desenhando a superfície onde batem, ${role}. Fitas e perfis de LED com brilho contínuo e um degradê visível na superfície (e refletido nas superfícies polidas), sem faixas estouradas. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam ONDE há luz: a luz nunca é amarela; o resultado é LED real, natural, como numa fotografia.`;
+  return `LUZ ARTIFICIAL (${who}; vence qualquer Kelvin de luz artificial citado no cenário): ${which}, acesas com intensidade média, claramente visíveis e aconchegantes, desenhando a superfície onde batem, ${role}. Fitas e perfis de LED com brilho contínuo e um degradê visível na superfície (e refletido nas superfícies polidas), sem faixas estouradas. LED OCULTO (faixa amarela sem a fonte visível: nichos, sancas, atrás de espelho, embaixo de prateleira): luz SUAVE e difusa, intensidade baixa a média, só uma lavagem delicada na superfície que ela banha, com degradê longo e macio; a fita e o perfil não aparecem; sem linha brilhante, sem faixa marcada, sem borda dura de luz, sem ponto estourado. Spots sem fachos marcados nem círculos fortes na parede ou no piso. Sem halo, sem glow exagerado, sem amarelar a cena. Temperatura: ${t}. Brancos continuam neutros. Nenhuma luminária nova. As faixas amarelas do SketchUp só indicam ONDE há luz: a luz nunca é amarela; o resultado é LED real, natural, como numa fotografia.`;
 }
 const PIECE_PRESETS=[
  ["Spot embutir múltiplo","Spot de embutir retangular múltiplo (quantidade de focos conforme o print), moldura branca fina rente ao forro, cada foco recuado dentro de uma célula quadrada branca fosca, com refletor interno direcionável. Cada foco gera um facho próprio e suave. Não é painel, plafon nem luminária de sobrepor."],
@@ -1436,6 +1487,25 @@ function negList(){
 function negBrief(){ const l=negList(); return l?`\nNÃO EXISTEM NESTA CENA (lista gerada pela ficha; copie LITERALMENTE em PRIORIDADES/TOP PRIORITIES e em RESTRIÇÕES como "NÃO ADICIONAR"/"DO NOT ADD"): ${l.map(x=>x.pt).join("; ")}.`:"" }
 function negLine(lang){ const l=negList(); if(!l) return ""; return lang==="en"?`DO NOT ADD (not in IMAGE 1): ${l.map(x=>x.en).join(", ")}.`:`NÃO ADICIONAR (não existem na IMAGEM 1): ${l.map(x=>x.pt).join(", ")}.` }
 function addNegLines(){ for(const [id,lang] of [["pPt","pt"],["pEn","en"]]){ const t=$(id).textContent, line=negLine(lang); if(t&&line&&!t.includes(line)) $(id).textContent=t.trimEnd()+"\n\n"+line; } const lim=$("size").value==="full"?Infinity:+$("size").value; [["cEn","pEn"],["cPt","pPt"]].forEach(([c,pid])=>{const t=$(pid).textContent;$(c).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(c).classList.toggle("over",t.length>lim)}); }
+// último recurso: o limite do Magnific é rígido. Tira as linhas menos importantes (as mais longas sem RGB, NÃO, trava ou quantidade) até caber
+function hardFit(lim){
+  const keep=/RGB|HEX|\bN[ÃA]O\b|\bNOT\b|DO NOT|LOCK|TRAVA|exactly|exatamente|ADICIONAR|ADD|INVENT|PRIORI|Applies|Aplica/i;
+  for(const id of ["pPt","pEn"]){
+    let L=$(id).textContent.split("\n"), guard=0;
+    while(L.join("\n").length>lim && guard++<400){
+      let bi=-1, bl=0; L.forEach((l,i)=>{ if(l.length>bl && !keep.test(l) && !/^-{5,}$/.test(l.trim()) && i>2){ bi=i; bl=l.length } });
+      if(bi<0){ // só sobrou linha importante: encurta a mais longa no fim de uma frase
+        L.forEach((l,i)=>{ if(l.length>bl){ bi=i; bl=l.length } });
+        const l=L[bi], cut=l.lastIndexOf(". ", Math.max(40,l.length-(L.join("\n").length-lim)-1));
+        if(cut<40){ L.splice(bi,1); continue } L[bi]=l.slice(0,cut+1); continue;
+      }
+      const l=L[bi], over=L.join("\n").length-lim, cut=l.lastIndexOf(". ", l.length-over-1);
+      if(cut>60) L[bi]=l.slice(0,cut+1); else L.splice(bi,1);
+    }
+    $(id).textContent=L.join("\n").replace(/\n{3,}/g,"\n\n");
+  }
+  [["cEn","pEn"],["cPt","pPt"]].forEach(([c,pid])=>{const t=$(pid).textContent;$(c).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(c).classList.toggle("over",t.length>lim)});
+}
 function buildQuickBrief(){
   const size=$("size").value;
   const ps=lightStyle>=0?PRESETS[kind][lightStyle]:null;
@@ -1462,7 +1532,7 @@ ${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
 
 BLOCOS EXTRAS DO MÉTODO (incorporar nas seções certas):
 ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim()?" Neste projeto: "+$("sameMat").value.trim()+".":"")).join("\n")||"- nenhum"}
-TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.7)+" caracteres (~"+Math.round(size*0.7/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO e todos os materiais"}`;
+TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.6)+" caracteres (~"+Math.round(size*0.6/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO e todos os materiais"}`;
 }
 function buildBrief(){
   const r=rows(), size=$("size").value;
@@ -1486,7 +1556,7 @@ ${EXTRAS.filter(x=>x.on).map(x=>"- "+x.t+(x.id==="same"&&$("sameMat").value.trim
 RGB: os informados valem exatamente. Cores sólidas sem RGB (pintura, laca, laminado liso, tecido liso) recebem um RGB aproximado lido do print ("approx. RGB ..., sampled from IMAGE 1"); materiais com textura natural (madeira, pedra, mármore) não recebem RGB inventado: descrever tom e veio "exactly matching the appearance shown in IMAGE 1". Elementos com "onde:" listando várias superfícies são o MESMO material em todas.
 ${piecesBrief(!AI.mode||(imgFile&&imgOK)?2:1)}
 DETALHES EXTRAS DA USUÁRIA (prioridade máxima): ${$("notes").value.trim()||"nenhum"}${negBrief()}
-TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.7)+" caracteres (~"+Math.round(size*0.7/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
+TAMANHO: ${size==="full"?"estrutura completa, sem limite rígido":"LIMITE RÍGIDO: cada prompt (português e inglês, contados separadamente, com espaços) deve ter no máximo "+size+" caracteres. Mire em cerca de "+Math.round(size*0.6)+" caracteres (~"+Math.round(size*0.6/6.5)+" palavras) para ter margem: a contagem é rígida. Orçamento aproximado: abertura e travas 15%, iluminação 20%, materiais 40% (prioridade), câmera 5%, fotorrealismo 8%, restrições 8%, consistência final 4%. Para caber: frases curtas, sem repetir a mesma regra em várias seções, sem adjetivos de enfeite; nunca corte materiais, RGB, nomes comerciais, medidas ou regras de NÃO"}`;
 }
 
 const DEST={
@@ -1528,7 +1598,7 @@ ${DEST[$("dest").value]}
 - O cenário de luz tem prioridade sobre qualquer menção a horário do dia em outros campos. A regra de LUZ ARTIFICIAL do briefing decide se as luminárias ficam acesas; nunca contradiga essa regra em outra seção.
 - Abertura: fotografia arquitetônica fotorrealista baseada estritamente na IMAGE 1 (print do SketchUp); IMAGE 1 é a fonte absoluta da verdade geométrica; tratar como ambiente ${kind==="INTERIOR"?"interno":"externo"} real, fixo, já projetado; listar os elementos da cena que devem ser preservados; DO NOT redesign, reinterpret, remodel, reposition, remove, add, simplify, improve, modernize, or complete any element; elementos decorativos permanecem exatamente na posição, escala, orientação e quantidade.
 - Seções nesta ordem, separadas por uma linha de hífens (--------------------------------------------------) acima e abaixo do título: LIGHTING, MATERIALS — LOCKED, CAMERA, PHOTOREALISM, STRICT RESTRICTIONS, FINAL CONSISTENCY. No português: ILUMINAÇÃO, MATERIAIS — BLOQUEADOS, CÂMERA, FOTORREALISMO, RESTRIÇÕES ABSOLUTAS, CONSISTÊNCIA FINAL.
-- LIGHTING: luz predominante, direção da luz natural citando a abertura, "Preserve the exact natural-light direction established by IMAGE 1", estado da luz artificial, frase de equilíbrio natural x artificial, lista "Artificial lighting:" com um item por luminária terminando em ": ON" ou ": OFF" conforme a regra de LUZ ARTIFICIAL (inclua acabamento de luminária se informado), preservar posição/quantidade das luminárias, comportamento físico da luz, "Do not create additional light sources." LUMINÁRIAS EXATAS: cada luz só onde a leitura ou a IMAGE 1 indicam, com o mesmo formato, sentido e comprimento da faixa amarela (fita linear = linha de luz fina e contínua, uniforme, com perfil embutido, não spot nem pontos; fita oculta em nicho, sanca ou espelho = a fita não aparece, só a lavagem de luz suave na superfície indicada, mais forte junto à fita e caindo com a distância); proíba nominalmente LED embaixo de gabinetes, bancadas, rodapés, espelhos ou nichos que não tenham faixa amarela no print.
+- LIGHTING: luz predominante, direção da luz natural citando a abertura, "Preserve the exact natural-light direction established by IMAGE 1", estado da luz artificial, frase de equilíbrio natural x artificial, lista "Artificial lighting:" com um item por luminária terminando em ": ON" ou ": OFF" conforme a regra de LUZ ARTIFICIAL (inclua acabamento de luminária se informado), preservar posição/quantidade das luminárias, comportamento físico da luz, "Do not create additional light sources." LUMINÁRIAS EXATAS: cada luz só onde a leitura ou a IMAGE 1 indicam, com o mesmo formato, sentido e comprimento da faixa amarela (fita linear = linha de luz fina e contínua, uniforme, com perfil embutido, não spot nem pontos; fita oculta em nicho, sanca ou espelho = a fita não aparece, só uma lavagem de luz SUAVE e difusa, de intensidade baixa a média, na superfície indicada, com degradê longo e macio; nunca uma linha brilhante, faixa marcada ou borda dura de luz); proíba nominalmente LED embaixo de gabinetes, bancadas, rodapés, espelhos ou nichos que não tenham faixa amarela no print.
 - MATERIAL CERTO EM CADA PEÇA: marcenaria (ripados, frentes, gabinetes) continua marcenaria na cor da leitura, nunca vira a pedra, o porcelanato ou o metal de peças vizinhas; escreva em RESTRICTIONS "X is NOT stone" quando houver marcenaria junto de pedra.
 - MATERIALS: um bloco por material ou grupo de mesmo material, com o nome em CAIXA ALTA seguido de dois-pontos e, quando for grupo, a linha "Applies to: ..." com as peças, depois linhas curtas: material, acabamento, cor. RGB vira "Exact color: RGB r, g, b." Nomes comerciais (ex.: Amendoa Natural) ficam com o nome original; se a usuária disser "exatamente como no print", acrescente "exactly matching the appearance shown in IMAGE 1". Se várias peças usam o mesmo amadeirado, crie o bloco ALL WOODEN JOINERY com "Do not introduce different wood colors." Medidas (ripas, espaçamentos) em bullets. Quando algo NÃO é um material (ex.: NÃO é madeira, NÃO é moldura), diga explicitamente no bloco e liste o que não fazer. Termine com DECORATIVE ELEMENTS mantendo tudo no lugar.
 - CAMERA: manter exatamente ângulo, perspectiva, enquadramento; lista Preserve: camera position, height, orientation, focal perspective, field of view, proportions, composition, visible geometry; ótica realista, sem fisheye, sem distorção exagerada, sem correção de perspectiva que altere a geometria.
@@ -1570,7 +1640,7 @@ $("gen").onclick=async()=>{
     const prompt=MASTER(quick?buildQuickBrief():buildBrief())+"\n\nA IMAGEM 1 (print do SketchUp) está anexada nesta conversa."+(withPics?" As imagens seguintes são fotos de referência das peças específicas, na ordem listada.":"");
     manual({title:"gerar o prompt",prompt,attach:"anexe o print do SketchUp"+(withPics?` e depois as ${withPics} foto(s) das peças, na ordem da lista`:""),onReply:t=>{
       if(!t.includes("===PT===")||!t.includes("===EN===")) throw {code:"manual_format"};
-      $("outSec").hidden=false; showPrompts(t); addNegLines();
+      $("outSec").hidden=false; showPrompts(t); addNegLines(); { const l=$("size").value==="full"?0:+$("size").value; if(l) hardFit(l); }
       const lim=$("size").value==="full"?0:+$("size").value, over=lim&&($("pPt").textContent.length>lim||$("pEn").textContent.length>lim);
       status($("gStatus"),over?`Passou de ${lim.toLocaleString("pt-BR")} caracteres. No mesmo chat, peça: "encurte cada prompt para no máximo ${Math.round(lim*.85).toLocaleString("pt-BR")} caracteres, mantendo todos os materiais, RGB, medidas e regras de NÃO, no mesmo formato" e cole a nova resposta.`:"Pronto. Copie e cole na sua IA de imagem.",false,!!over);
       $("outSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
@@ -1589,8 +1659,9 @@ $("gen").onclick=async()=>{
     const lim=$("size").value==="full"?0:+$("size").value;
     if(lim && !truncated){
       for(const id of ["pPt","pEn"]){
-        for(let pass=0; pass<3 && $(id).textContent.length>lim; pass++){
-          const cur=$(id).textContent, target=Math.round(lim*[0.8,0.7,0.6][pass]);
+        const room=lim-(negLine(id==="pEn"?"en":"pt").length+2)-150; // espaço reservado para a linha NÃO ADICIONAR e uma margem
+        for(let pass=0; pass<3 && $(id).textContent.length>room; pass++){
+          const cur=$(id).textContent, target=Math.round(room*[0.85,0.75,0.65][pass]);
           status($("gStatus"),`Ajustando o ${id==="pPt"?"português":"inglês"} ao limite (${cur.length.toLocaleString("pt-BR")} → até ${lim.toLocaleString("pt-BR")})…`,true);
           const r=await aiText(`Encurte o prompt abaixo para no máximo ${target} caracteres, cerca de ${Math.round(target/6.5)} palavras (hoje ele tem ${cur.length} caracteres; precisa cortar uns ${Math.round((1-target/cur.length)*100)}%). O limite é rígido. Mantenha o mesmo idioma, as mesmas seções e a mesma ordem. Mantenha TODOS os materiais, todos os valores RGB, nomes comerciais, medidas, luminárias e todas as regras do tipo "NÃO é". Corte primeiro: frases repetidas, listas genéricas de fotorrealismo (pode reduzir a seção a 3 linhas), restrições que repetem o que já foi dito (no máximo 8 linhas), explicações longas, adjetivos de enfeite. Mantenha as travas de geometria (bloco inicial e linha final). Responda só com o prompt encurtado, sem comentários e sem markdown.\n\n${cur}`,{signal:genCtl.signal,light:true});
           $(id).textContent=r.text.trim(); fixed=true;
@@ -1598,7 +1669,7 @@ $("gen").onclick=async()=>{
       }
       [["cEn","pEn"],["cPt","pPt"]].forEach(([c,pid])=>{const t=$(pid).textContent;$(c).textContent=t.length.toLocaleString("pt-BR")+" caracteres";$(c).classList.toggle("over",t.length>lim)});
     }
-    addNegLines();
+    addNegLines(); if(lim) hardFit(lim);
     const still=lim && ($("pPt").textContent.length>lim || $("pEn").textContent.length>lim);
     status($("gStatus"),truncated?"O texto foi cortado. Escolha um tamanho menor e gere de novo.":still?"Ainda passou do limite. Gere de novo ou escolha um tamanho menor.":fixed?"Pronto, ajustado ao limite de caracteres. Copie e cole na sua IA.":"Pronto. Copie e cole na sua IA.",false,truncated||still);
     $("outSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
@@ -1628,7 +1699,7 @@ function renderProjects(){
     d.innerHTML=`<div style="min-width:0;display:flex;flex-direction:column"><span></span><small></small></div><div class="actions"><button class="btn small">Carregar</button><button class="btn ghost small" aria-label="Excluir">×</button></div>`;
     d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${p.qText?" · texto salvo":" · "+p.rows.length+" materiais"}`;
     const [lb,db]=d.querySelectorAll("button");
-    lb.onclick=()=>{exampleActive=false;if(typeof p.quick==="boolean")setMode(p.quick);if(p.read)renderRead(p.read,p.read.materiais);lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3500";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
+    lb.onclick=()=>{exampleActive=false;if(p.read)renderRead(p.read,p.read.materiais);else if(p.rows?.length)renderRead({luminarias:(p.lights||"").split("\n").filter(Boolean),luzNatural:p.lightDir||""},p.rows.map(r=>({elemento:r.elemento,material:[r.material,r.acabamento].filter(Boolean).join(", "),cor:r.cor,onde:r.nota})));lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;setRows(p.rows);if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("lightDir").value=p.lightDir;$("artOn").value=p.artOn;$("lights").value=p.lights;$("notes").value=p.notes;$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3500";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
     db.onclick=()=>{if(db.dataset.c){const a=loadAll();a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
     box.append(d)});
 }
@@ -1640,9 +1711,17 @@ $("saveProj").onclick=()=>{
 };
 
 /* ---------- início ---------- */
-function setMode(q){ document.body.classList.toggle("quick",q); $("mQuick").setAttribute("aria-pressed",q); $("mDetail").setAttribute("aria-pressed",!q); try{localStorage.setItem("lais-render-modo",q?"q":"d")}catch{} }
-$("mQuick").onclick=()=>setMode(true); $("mDetail").onclick=()=>setMode(false);
-let _m="q"; try{_m=localStorage.getItem("lais-render-modo")||"q"}catch{} setMode(_m!=="d");
+/* ---------- aviso de versão nova: compara a página publicada com a carregada ---------- */
+(()=>{ if(!/^https?:$/.test(location.protocol)) return;
+  const sig=t=>{ let h=0; for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))|0; return h };
+  let base=null;
+  const check=async()=>{ try{ const r=await fetch(location.href.split("#")[0],{cache:"no-store"}); if(!r.ok) return; const h=sig(await r.text());
+    if(base===null) base=h; else if(h!==base) $("updBtn").hidden=false; }catch{} };
+  $("updBtn").onclick=()=>location.reload();
+  check(); setInterval(check,3*60*1000); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) check() });
+})();
+function setMode(){ document.body.classList.add("quick") } // uma aba só: ficha do print + texto livre
+setMode();
 PIECE_PRESETS.forEach(([n,t])=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent="+ "+n;b.onclick=()=>addPiece(n,t);$("pieceChips").append(b)});
 $("addPiece").onclick=()=>addPiece();
 renderTypes(); renderView("keep"); renderChips(); renderExtras(); setRows(EXAMPLE); renderProjects();
@@ -1730,7 +1809,7 @@ function sameRules(n,opt,first=opt!==2){ // regras fixas que o texto do PDF não
 • Fotografia real: nitidez de câmera profissional, microcontraste natural, sombras de contato definidas. Sem névoa, sem raios de luz volumétricos, sem glow, sem aspecto pintado ou sonhador.
 • Materiais: polido com brilho alto e reflexos nítidos da janela, dos LEDs e dos metais; tecidos existentes com trama real; metais com reflexo real; rejunte fino e alinhado.
 • Vidro do box incolor (extra clear), transparente e com reflexos sutis, só onde o print tem vidro; box aberto no print continua aberto. Marcenaria continua marcenaria, nunca vira pedra.
-• Luz: LED branco neutro-quente ~3500K só onde há faixa amarela no print, com o mesmo formato (fita linear = linha contínua) e sentido; fita em nicho ou sanca fica oculta, só a luz aparece; nada de LED embaixo de gabinetes ou bancadas sem faixa amarela (o vão fica em sombra natural); cor neutra sem dominante rosada, alaranjada ou amarela; o calor fica só perto das fitas, e os revestimentos claros mantêm a cor do print.`;
+• Luz: LED branco neutro-quente ~3500K só onde há faixa amarela no print, com o mesmo formato (fita linear = linha contínua) e sentido; fita em nicho ou sanca fica oculta: só uma luz suave e difusa, sem linha brilhante nem faixa marcada; nada de LED embaixo de gabinetes ou bancadas sem faixa amarela (o vão fica em sombra natural); cor neutra sem dominante rosada, alaranjada ou amarela; o calor fica só perto das fitas, e os revestimentos claros mantêm a cor do print.`;
 }
 function sameRulesEN(n,opt,first=opt!==2){
   const pk=first?"first":ORD_EN[n];
@@ -1740,7 +1819,7 @@ function sameRulesEN(n,opt,first=opt!==2){
 • Real photograph: professional camera sharpness, natural micro-contrast, defined contact shadows. No haze, no volumetric light rays, no glow, no painterly or dreamy look.
 • Materials: polished = high gloss with sharp reflections of the window, LEDs and metals; existing fabrics with real weave; metals with real reflections; thin aligned grout.
 • Shower glass is clear (extra clear), transparent, with subtle reflections, only where the screenshot has glass; an open shower stays open. Joinery stays joinery, never stone.
-• Light: neutral-warm white LED ~3500K only where the screenshot has yellow strips, same shape (linear strip = continuous line) and direction; strips in niches or coves stay hidden, only their light shows; no LED under cabinets or counters without a yellow strip (the gap stays in natural shadow); neutral color with no pink, orange or yellow cast; the warmth stays only near the strips, and light finishes keep the screenshot color.`;
+• Light: neutral-warm white LED ~3500K only where the screenshot has yellow strips, same shape (linear strip = continuous line) and direction; strips in niches or coves stay hidden: only a soft diffuse wash, no bright line or hard band of light; no LED under cabinets or counters without a yellow strip (the gap stays in natural shadow); neutral color with no pink, orange or yellow cast; the warmth stays only near the strips, and light finishes keep the screenshot color.`;
 }
 function sameEnvImgs(n,opt,first=opt!==2){ return first?`Envie: 1º o print novo, depois ${n} render(s) prontos do ambiente`:`Envie: ${n} render(s) prontos do ambiente, por último o print novo`; }
 function anim(dir){
@@ -2132,7 +2211,7 @@ COMO LER O QUE EU MANDO
 - Rejuntes coerentes e leves: em porcelanato, cerâmica, ladrilho, pastilha e pedra em placas, rejunte real mas bem leve (fio fino, quase imperceptível, na cor da peça, sem sulco marcado), seguindo exatamente a paginação do print; as fiadas continuam na mesma altura de uma parede para a outra e viram o canto alinhadas; nada de juntas tortas ou desencontradas. Nunca placas viram superfície contínua, exceto o que eu disser que é monolítico (microcimento, resina, quartzo ou pedra inteiriça).
 - Reflexos e luz sempre reais: reflexo conforme o acabamento (fosco quase nada, acetinado suave, POLIDO com brilho alto e reflexos nítidos e bem visíveis da janela, dos LEDs e dos metais, sem perder o desenho do material), efeito Fresnel, só refletindo o que existe na cena; luz com queda natural, gradiente a partir da janela, luz rebatida entre superfícies, sombras de contato e sombras que suavizam com a distância; LED e spots desenhando a superfície com degradês reais. Nada de luz chapada ou reflexo de CGI.
 - Bloco TOP PRIORITIES logo após o GEOMETRY LOCK, com 4 a 6 linhas curtas sobre o que a IA mais erra nesta cena (objetos e áreas vazias, vão sem LED embaixo de móveis suspensos, posição e formato de cada LED, marcenaria x pedra, vidros); repita no fim.
-- Fita em nicho ou sanca é oculta: só a lavagem de luz aparece.
+- Fita em nicho ou sanca é oculta: só uma lavagem de luz suave e difusa, sem linha brilhante, faixa marcada ou borda dura.
 - Luminárias exatas: LED só onde há faixa amarela, mesmo formato (fita linear = linha contínua), sentido e comprimento; nunca LED embaixo de gabinetes ou bancadas sem faixa amarela.
 - Vidro de box incolor por padrão (extra clear, transparente, reflexos sutis), só onde o print tem vidro; nunca acrescentar box de vidro. Marcenaria nunca vira a pedra vizinha.
 - Calor do LED só perto das fitas e spots; revestimentos claros mantêm a cor base do print (off-white continua off-white, nunca pêssego ou rosado), e metais rosé não tingem o ambiente.
