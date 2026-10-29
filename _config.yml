@@ -8,4 +8,3 @@ exclude:
   - package-lock.json
   - node_modules
   - README.md
-  - assets/js/img-data-*.js

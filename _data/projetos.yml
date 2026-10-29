@@ -2,8 +2,7 @@ chamada: "estudos de caso"
 titulo: "do *papel* à entrega técnica"
 texto: "cinco frentes de trabalho que mostram como cada etapa contribui para um projeto claro, do conceito à execução."
 projetos:
-  - imagem: "/assets/img/cases/planta-baixa.webp"
-    imagem_pdf: "/assets/img/cases/extras/planta.webp"
+  - imagem: "/assets/img/cases/limpas/planta-humanizada.webp"
     descricao_alt: "Planta baixa humanizada"
     legenda: "Planta baixa humanizada — Projeto: Letícia Guedes"
     categoria: "diagramação de prancha"
@@ -19,8 +18,7 @@ projetos:
         valor: "Sketchup · IA"
       - rotulo: "softwares que podemos utilizar"
         valor: "Sketchup · IA · AutoCAD"
-  - imagem: "/assets/img/cases/corte.webp"
-    imagem_pdf: "/assets/img/cases/extras/corte-a.webp"
+  - imagem: "/assets/img/cases/limpas/cortes.webp"
     descricao_alt: "Corte humanizado — prancha de arquitetura de interiores"
     legenda: "Corte humanizado — Projeto: Laís A. Vieira"
     categoria: "documentação técnica"
@@ -28,8 +26,8 @@ projetos:
     texto: "esse corte é de um projeto autoral meu, onde quis mostrar a relação de alturas e profundidade entre os ambientes de forma mais visual."
     texto_servico: "Cortes e isométricas humanizadas tornam o projeto mais claro e didático, mostrando alturas, volumes e profundidade de forma visual e realista. Eles ajudam a entender melhor o espaço, enxergar detalhes construtivos e se conectar com o projeto com mais facilidade."
     extras:
-      - imagem: "/assets/img/cases/extras/corte-prancha.jpg"
-        legenda: "prancha completa — cortes e isométricas"
+      - imagem: "/assets/img/cases/limpas/corte-isometricas.webp"
+        legenda: "isométricas humanizadas"
     ficha:
       - rotulo: "projeto"
         valor: "Laís A. Vieira"
@@ -39,13 +37,7 @@ projetos:
         valor: "Sketchup · Layout"
       - rotulo: "softwares que podemos utilizar"
         valor: "AutoCAD · Vectorworks · Layout"
-    formato: "1.414/1"
-    enquadramento:
-      x: 95.4
-      "y": 6.3
-      zoom: 1.77
-  - imagem: "/assets/img/cases/executivo.webp"
-    imagem_pdf: "/assets/img/cases/extras/executivo-planta.jpg"
+  - imagem: "/assets/img/cases/limpas/executivo-planta-eletrica.webp"
     descricao_alt: "Prancha de projeto executivo"
     legenda: "Projeto executivo — Projeto: Prazark Arquitetura"
     categoria: "projeto executivo"
@@ -53,7 +45,7 @@ projetos:
     texto: "reuni os detalhamentos técnicos desse projeto executivo pra Prazark Arquitetura, com as medidas e especificações que a equipe de obra precisava pra executar sem erros."
     texto_servico: "O projeto executivo é essencial para transformar a ideia em obra, reunindo todos os detalhamentos técnicos necessários para a execução correta. Ele garante clareza para os profissionais, evita erros e retrabalhos, e assegura que o resultado final siga exatamente o que foi planejado."
     extras:
-      - imagem: "/assets/img/cases/extras/executivo-vistas.jpg"
+      - imagem: "/assets/img/cases/limpas/executivo-vistas.webp"
         legenda: "vistas elétrica e hidráulica — cozinha"
     ficha:
       - rotulo: "projeto"
@@ -64,13 +56,7 @@ projetos:
         valor: "Sketchup · Layout"
       - rotulo: "softwares que podemos utilizar"
         valor: "AutoCAD · Vectorworks · Layout"
-    formato: "1.414/1"
-    enquadramento:
-      x: 69.2
-      "y": 52.3
-      zoom: 1.53
-  - imagem: "/assets/img/cases/detalhamento.webp"
-    imagem_pdf: "/assets/img/cases/extras/detalhamento-prancha.jpg"
+  - imagem: "/assets/img/cases/limpas/detalhamento-marcenaria.webp"
     descricao_alt: "Prancha de detalhamento de marcenaria"
     legenda: "Detalhamentos — Projeto: Daniele Rossi"
     categoria: "detalhamento"
@@ -86,13 +72,7 @@ projetos:
         valor: "Sketchup · Layout"
       - rotulo: "softwares que podemos utilizar"
         valor: "AutoCAD · Vectorworks · Layout"
-    formato: "1.414/1"
-    enquadramento:
-      x: 2.6
-      "y": 6.7
-      zoom: 1.19
-  - imagem: "/assets/img/cases/modelagem.webp"
-    imagem_pdf: "/assets/img/cases/extras/modelagem-iso.webp"
+  - imagem: "/assets/img/cases/limpas/modelagem-isometrica.webp"
     descricao_alt: "Modelagem 3D isométrica de apartamento"
     legenda: "Modelagem 3D — Projeto: Barlô Arquitetura"
     categoria: "modelagem 3d"
@@ -108,8 +88,3 @@ projetos:
         valor: "Sketchup"
       - rotulo: "softwares que podemos utilizar"
         valor: "Sketchup"
-    formato: "4/3"
-    enquadramento:
-      x: 73.5
-      "y": 50
-      zoom: 1

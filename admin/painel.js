@@ -125,17 +125,16 @@
           { type: 'list', name: 'projetos', label: '', singular: 'projeto', resumo: (p) => p.categoria,
             fields: [
               { type: 'formato', name: 'formato', label: 'formato da imagem no site', opcoes: FORMATOS_CASO },
-              { type: 'image', name: 'imagem', label: 'imagem', pasta: 'assets/img/cases', proporcaoDe: 'formato', enquadramento: 'enquadramento' },
+              { type: 'image', name: 'imagem', label: 'imagem', pasta: 'assets/img/cases', proporcaoDe: 'formato', enquadramento: 'enquadramento', hint: 'use só o recorte que importa: sem carimbo, sem dados do cliente e sem margem sobrando.' },
               { type: 'duas', campos: [texto('categoria', 'categoria (texto pequeno)'), titulo()] },
               textoLongo('texto', 'descrição'),
               textoLongo('texto_servico', 'por que isso importa', { hint: 'aparece no portfólio em PDF, num destaque abaixo da descrição.' }),
               { type: 'list', name: 'ficha', label: 'ficha técnica', singular: 'linha', layout: 'linhas',
                 fields: [texto('rotulo', 'item'), texto('valor', 'valor')], novo: () => ({ rotulo: '', valor: '' }) },
               { type: 'duas', campos: [texto('legenda', 'legenda ao ampliar'), texto('descricao_alt', 'descrição da imagem (acessibilidade)')] },
-              { type: 'image', name: 'imagem_pdf', label: 'imagem no PDF (opcional)', pasta: 'assets/img/cases/extras', opcional: true,
-                hint: 'se ficar vazia, o PDF usa a imagem do site. ideal: a prancha em alta ou um PNG sem fundo.' },
-              { type: 'list', name: 'extras', label: 'imagens extras no PDF (até 3)', singular: 'imagem extra', resumo: (e) => e.legenda,
-                fields: [{ type: 'image', name: 'imagem', label: '', pasta: 'assets/img/cases/extras' }, texto('legenda', 'legenda')],
+              { type: 'list', name: 'extras', label: 'imagens extras no PDF (até 2)', singular: 'imagem extra', resumo: (e) => e.legenda,
+                hint: 'aparecem ao lado da imagem principal no portfólio em PDF. use só o recorte que importa — sem carimbo nem dados do cliente.',
+                fields: [{ type: 'image', name: 'imagem', label: '', pasta: 'assets/img/cases' }, texto('legenda', 'legenda')],
                 novo: () => ({ imagem: '', legenda: '' }) },
             ],
             novo: () => ({ imagem: '', descricao_alt: '', legenda: '', categoria: '', titulo: '', texto: '', texto_servico: '', ficha: [{ rotulo: 'projeto', valor: '' }] }) },
@@ -424,10 +423,10 @@
     {
       id: 'pdf-capa', aba: 'pdf', arquivo: 'pdf', nome: 'capa e apresentação', modelo: 'portfolio-pdf.html',
       titulo: 'capa e <span class="script">apresentação</span>',
-      descricao: 'a capa do portfólio em PDF, a página “muito prazer!” e a faixa de serviços.',
+      descricao: 'o topo da folha: título, sua foto, o “muito prazer!” e a faixa de serviços.',
       grupos: [
         { titulo: 'capa', campos: [{ type: 'objeto', name: 'capa', campos: [
-          { type: 'image', name: 'foto', label: 'foto da capa', pasta: 'assets/img', proporcao: '106/138', forma: 'arco', enquadramento: 'foto_enquadramento' },
+          { type: 'image', name: 'foto', label: 'sua foto', pasta: 'assets/img', proporcao: '312/430', forma: 'arco', enquadramento: 'foto_enquadramento' },
           { type: 'duas', campos: [texto('titulo', 'título (fino, espaçado)'), texto('destaque', 'destaque (letra cursiva)')] },
           { type: 'duas', campos: [texto('subtitulo', 'linha abaixo do título'), texto('ano', 'ano')] },
         ] }] },
@@ -436,7 +435,7 @@
           { type: 'markdown', name: 'texto', label: 'sua apresentação', hint: 'selecione palavras e clique em B para deixar em negrito. deixe uma linha em branco para começar outro parágrafo.' },
           selos,
         ] }] },
-        { titulo: 'faixa de serviços (capa)', campos: [
+        { titulo: 'faixa rosada de serviços', campos: [
           { type: 'list', name: 'faixa', label: 'serviços', singular: 'serviço', layout: 'chips' },
         ] },
       ],
@@ -444,32 +443,32 @@
     {
       id: 'pdf-vendas', aba: 'pdf', arquivo: 'pdf', nome: 'diferenciais e fechamento', modelo: 'portfolio-pdf.html',
       titulo: 'diferenciais e <span class="script">fechamento</span>',
-      descricao: 'os argumentos que fazem o cliente querer fechar com você e a página final com WhatsApp e QR code.',
+      descricao: 'os 4 argumentos lado a lado que fazem o cliente querer fechar e o fim da folha, com WhatsApp e QR code.',
       grupos: [
         { titulo: 'por que terceirizar com você', campos: [{ type: 'objeto', name: 'diferenciais', campos: [
           titulo(),
-          { type: 'list', name: 'itens', label: 'diferenciais', singular: 'diferencial', resumo: (d) => d.titulo,
+          { type: 'list', name: 'itens', label: 'diferenciais (até 4, lado a lado)', singular: 'diferencial', resumo: (d) => d.titulo,
             fields: [{ type: 'icon', name: 'icone', label: 'ícone' }, texto('titulo', 'título'), textoLongo('texto', 'texto')],
             novo: () => ({ icone: 'alvo', titulo: '', texto: '' }) },
         ] }] },
-        { titulo: 'página final', campos: [{ type: 'objeto', name: 'encerramento', campos: [
+        { titulo: 'fim da folha', campos: [{ type: 'objeto', name: 'encerramento', campos: [
           texto('titulo', 'título (em letra cursiva)'), textoLongo('texto', 'texto'), texto('botao', 'texto do botão do WhatsApp'),
         ] }] },
       ],
     },
     {
-      id: 'pdf-paginas', aba: 'pdf', arquivo: 'pdf', nome: 'páginas do PDF', modelo: 'portfolio-pdf.html',
-      titulo: 'páginas do <span class="script">PDF</span>',
-      descricao: 'escolha quais páginas entram no portfólio. as fotos, serviços e estudos de caso vêm das seções do site — edite lá e o PDF acompanha.',
+      id: 'pdf-paginas', aba: 'pdf', arquivo: 'pdf', nome: 'partes do PDF', modelo: 'portfolio-pdf.html',
+      titulo: 'partes do <span class="script">PDF</span>',
+      descricao: 'o PDF é uma folha única, como o seu portfólio original. escolha o que entra — menos partes = leitura mais rápida. fotos e estudos de caso vêm das seções do site.',
       grupos: [
-        { titulo: 'o que aparece no PDF', campos: [{ type: 'objeto', name: 'secoes', campos: [
-          { type: 'liga', name: 'sobre', label: 'muito prazer! (apresentação e números)' },
-          { type: 'liga', name: 'servicos', label: 'serviços e para quem' },
+        { titulo: 'o que entra na folha', campos: [{ type: 'objeto', name: 'secoes', campos: [
+          { type: 'liga', name: 'sobre', label: 'muito prazer! (foto, apresentação e números)' },
+          { type: 'liga', name: 'servicos', label: 'cartões de serviços', hint: 'a faixa rosada com os serviços já aparece no topo.' },
           { type: 'liga', name: 'diferenciais', label: 'por que terceirizar comigo' },
           { type: 'liga', name: 'como_funciona', label: 'como funciona' },
           { type: 'liga', name: 'comparar', label: 'do print ao render final (V-Ray × IA)' },
           { type: 'liga', name: 'portfolio', label: 'portfólio de renders', hint: 'na seção “portfólio” do site, cada foto pode ficar “fora do PDF”.' },
-          { type: 'liga', name: 'projetos', label: 'estudos de caso (uma página cada)' },
+          { type: 'liga', name: 'projetos', label: 'estudos de caso (texto e imagem lado a lado)' },
           { type: 'liga', name: 'formacao', label: 'cursos e softwares' },
         ] }] },
       ],
@@ -1660,7 +1659,7 @@
   let larguraSite = 1280;
   const telaLarga = () => window.matchMedia('(min-width: 1200px)').matches;
 
-  const LARGURA_A4 = 860; // folha A4 (794px) com a margem cinza da página do PDF
+  const LARGURA_A4 = 1024; // largura da folha única do portfólio em PDF
   const ajustarSite = () => {
     if (!lateralSite) return;
     const palco = $('#lateral-palco');

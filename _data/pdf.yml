@@ -49,11 +49,10 @@ encerramento:
   botao: "falar no WhatsApp"
 secoes:
   sobre: true
-  servicos: true
+  servicos: false
   diferenciais: true
   como_funciona: true
-  comparar: true
+  comparar: false
   portfolio: true
   projetos: true
   formacao: true
-fotos_por_pagina: 9
