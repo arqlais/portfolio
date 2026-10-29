@@ -128,14 +128,9 @@
               { type: 'image', name: 'imagem', label: 'imagem', pasta: 'assets/img/cases', proporcaoDe: 'formato', enquadramento: 'enquadramento', hint: 'use só o recorte que importa: sem carimbo, sem dados do cliente e sem margem sobrando.' },
               { type: 'duas', campos: [texto('categoria', 'categoria (texto pequeno)'), titulo()] },
               textoLongo('texto', 'descrição'),
-              textoLongo('texto_servico', 'por que isso importa', { hint: 'aparece no portfólio em PDF, num destaque abaixo da descrição.' }),
               { type: 'list', name: 'ficha', label: 'ficha técnica', singular: 'linha', layout: 'linhas',
                 fields: [texto('rotulo', 'item'), texto('valor', 'valor')], novo: () => ({ rotulo: '', valor: '' }) },
               { type: 'duas', campos: [texto('legenda', 'legenda ao ampliar'), texto('descricao_alt', 'descrição da imagem (acessibilidade)')] },
-              { type: 'list', name: 'extras', label: 'imagens extras no PDF (até 2)', singular: 'imagem extra', resumo: (e) => e.legenda,
-                hint: 'aparecem ao lado da imagem principal no portfólio em PDF. use só o recorte que importa — sem carimbo nem dados do cliente.',
-                fields: [{ type: 'image', name: 'imagem', label: '', pasta: 'assets/img/cases' }, texto('legenda', 'legenda')],
-                novo: () => ({ imagem: '', legenda: '' }) },
             ],
             novo: () => ({ imagem: '', descricao_alt: '', legenda: '', categoria: '', titulo: '', texto: '', texto_servico: '', ficha: [{ rotulo: 'projeto', valor: '' }] }) },
         ] },
@@ -421,69 +416,61 @@
       ],
     },
     {
-      id: 'pdf-capa', aba: 'pdf', arquivo: 'pdf', nome: 'capa e apresentação', modelo: 'portfolio-pdf.html',
-      titulo: 'capa e <span class="script">apresentação</span>',
-      descricao: 'o topo da folha: título, sua foto, o “muito prazer!” e a faixa de serviços.',
+      id: 'pdf-capa', aba: 'pdf', arquivo: 'pdf', nome: 'topo e apresentação', modelo: 'portfolio-pdf.html',
+      titulo: 'topo e <span class="script">apresentação</span>',
+      descricao: 'a barra azul, sua foto, o “muito prazer!” e os 3 selos. texto curto: o site vai junto com o PDF.',
       grupos: [
-        { titulo: 'capa', campos: [{ type: 'objeto', name: 'capa', campos: [
-          { type: 'image', name: 'foto', label: 'sua foto', pasta: 'assets/img', proporcao: '312/430', forma: 'arco', enquadramento: 'foto_enquadramento' },
-          { type: 'duas', campos: [texto('titulo', 'título (fino, espaçado)'), texto('destaque', 'destaque (letra cursiva)')] },
-          { type: 'duas', campos: [texto('subtitulo', 'linha abaixo do título'), texto('ano', 'ano')] },
+        { titulo: 'barra do topo', campos: [{ type: 'objeto', name: 'capa', campos: [
+          { type: 'duas', campos: [texto('barra', 'texto da barra azul'), texto('ano', 'ano')] },
+          { type: 'image', name: 'foto', label: 'sua foto', pasta: 'assets/img', proporcao: '300/372', forma: 'arco', enquadramento: 'foto_enquadramento' },
         ] }] },
         { titulo: 'muito prazer!', campos: [{ type: 'objeto', name: 'apresentacao', campos: [
           texto('saudacao', 'saudação (em letra cursiva)'),
-          { type: 'markdown', name: 'texto', label: 'sua apresentação', hint: 'selecione palavras e clique em B para deixar em negrito. deixe uma linha em branco para começar outro parágrafo.' },
-          selos,
+          { type: 'markdown', name: 'texto', label: 'sua apresentação', hint: 'dois parágrafos curtos funcionam melhor. selecione palavras e clique em B para negrito.' },
+          { ...selos, label: 'selos (até 3, lado a lado)' },
         ] }] },
-        { titulo: 'faixa rosada de serviços', campos: [
-          { type: 'list', name: 'faixa', label: 'serviços', singular: 'serviço', layout: 'chips' },
-        ] },
       ],
     },
     {
-      id: 'pdf-vendas', aba: 'pdf', arquivo: 'pdf', nome: 'diferenciais e fechamento', modelo: 'portfolio-pdf.html',
-      titulo: 'diferenciais e <span class="script">fechamento</span>',
-      descricao: 'os 4 argumentos lado a lado que fazem o cliente querer fechar e o fim da folha, com WhatsApp e QR code.',
+      id: 'pdf-trabalhos', aba: 'pdf', arquivo: 'pdf', nome: 'renders e estudos de caso', modelo: 'portfolio-pdf.html',
+      titulo: 'renders e <span class="script">estudos de caso</span>',
+      descricao: 'quais fotos entram vem da seção “portfólio” do site: a ordem é a mesma e cada foto pode ficar “fora do PDF”. os estudos de caso vêm da seção “estudos de caso”.',
       grupos: [
-        { titulo: 'por que terceirizar com você', campos: [{ type: 'objeto', name: 'diferenciais', campos: [
-          titulo(),
-          { type: 'list', name: 'itens', label: 'diferenciais (até 4, lado a lado)', singular: 'diferencial', resumo: (d) => d.titulo,
-            fields: [{ type: 'icon', name: 'icone', label: 'ícone' }, texto('titulo', 'título'), textoLongo('texto', 'texto')],
-            novo: () => ({ icone: 'alvo', titulo: '', texto: '' }) },
+        { titulo: 'renders', campos: [{ type: 'objeto', name: 'galeria', campos: [
+          { type: 'duas', campos: [texto('chamada', 'chamada (texto pequeno)'), titulo()] },
+          { type: 'number', name: 'quantidade', label: 'quantas fotos no PDF', hint: '11 é o ideal: com o cartão “+ renders no site”, fecha 3 linhas de 4. use 7 para 2 linhas.' },
+        ] }] },
+        { titulo: 'estudos de caso', campos: [{ type: 'objeto', name: 'casos', campos: [
+          { type: 'duas', campos: [texto('chamada', 'chamada (texto pequeno)'), titulo()] },
+        ] }] },
+      ],
+    },
+    {
+      id: 'pdf-final', aba: 'pdf', arquivo: 'pdf', nome: 'botão do site e fechamento', modelo: 'portfolio-pdf.html',
+      titulo: 'botão do site e <span class="script">fechamento</span>',
+      descricao: 'o cartão que leva para o antes e depois print × IA no site e o fim azul com WhatsApp, site e contatos.',
+      grupos: [
+        { titulo: 'cartão “print × IA no site”', campos: [{ type: 'objeto', name: 'botao_site', campos: [
+          titulo(), textoLongo('texto', 'texto'),
+          { type: 'duas', campos: [texto('botao', 'texto do botão'), texto('link', 'link', { hint: 'ex.: https://www.lais3d.com.br/#compare' })] },
         ] }] },
         { titulo: 'fim da folha', campos: [{ type: 'objeto', name: 'encerramento', campos: [
-          texto('titulo', 'título (em letra cursiva)'), textoLongo('texto', 'texto'), texto('botao', 'texto do botão do WhatsApp'),
+          texto('titulo', 'título (em letra cursiva)'), textoLongo('texto', 'texto'),
+          { type: 'duas', campos: [texto('botao', 'botão do WhatsApp'), texto('botao_site', 'botão do site')] },
         ] }] },
       ],
     },
     {
       id: 'pdf-paginas', aba: 'pdf', arquivo: 'pdf', nome: 'partes do PDF', modelo: 'portfolio-pdf.html',
       titulo: 'partes do <span class="script">PDF</span>',
-      descricao: 'o PDF é uma folha única, como o seu portfólio original. escolha o que entra — menos partes = leitura mais rápida. fotos e estudos de caso vêm das seções do site.',
+      descricao: 'uma folha só, curta. escolha o que entra.',
       grupos: [
         { titulo: 'o que entra na folha', campos: [{ type: 'objeto', name: 'secoes', campos: [
-          { type: 'liga', name: 'sobre', label: 'muito prazer! (foto, apresentação e números)' },
-          { type: 'liga', name: 'servicos', label: 'cartões de serviços', hint: 'a faixa rosada com os serviços já aparece no topo.' },
-          { type: 'liga', name: 'diferenciais', label: 'por que terceirizar comigo' },
-          { type: 'liga', name: 'como_funciona', label: 'como funciona' },
-          { type: 'liga', name: 'comparar', label: 'do print ao render final (V-Ray × IA)' },
-          { type: 'liga', name: 'portfolio', label: 'portfólio de renders', hint: 'na seção “portfólio” do site, cada foto pode ficar “fora do PDF”.' },
-          { type: 'liga', name: 'projetos', label: 'estudos de caso (texto e imagem lado a lado)' },
-          { type: 'liga', name: 'formacao', label: 'cursos e softwares' },
+          { type: 'liga', name: 'sobre', label: 'foto, “muito prazer!” e selos' },
+          { type: 'liga', name: 'portfolio', label: 'seleção de renders' },
+          { type: 'liga', name: 'botao_site', label: 'cartão “comparar print × IA no site”' },
+          { type: 'liga', name: 'projetos', label: 'estudos de caso (cartões)' },
         ] }] },
-      ],
-    },
-    {
-      id: 'cursos', aba: 'pdf', arquivo: 'cursos', nome: 'cursos', modelo: 'portfolio-pdf.html',
-      titulo: 'cursos e <span class="script">formação</span>',
-      descricao: 'seus cursos com escola e carga horária. o total de horas é somado sozinho.',
-      grupos: [
-        { titulo: 'cursos', campos: [
-          { type: 'list', name: 'cursos', label: '', singular: 'curso', resumo: (c) => `${c.nome || ''}${c.horas ? ` · ${c.horas}h` : ''}`,
-            fields: [texto('nome', 'nome do curso'), { type: 'duas', campos: [texto('escola', 'escola / professor'), { type: 'number', name: 'horas', label: 'horas' }] }],
-            novo: () => ({ nome: '', escola: '', horas: 0 }) },
-        ] },
-        { titulo: 'textos da página', campos: cabecalho },
       ],
     },
   ];
@@ -505,7 +492,7 @@
   let refazer = [];
   let estavel = '';
   let timerHistorico = null;
-  const NOMES_ARQUIVO = { pdf: 'portfólio em PDF', cursos: 'cursos', orcamento: 'orçamento' };
+  const NOMES_ARQUIVO = { pdf: 'portfólio em PDF', orcamento: 'orçamento' };
 
   /* ---------- Utilidades ---------- */
   const $ = (sel) => document.querySelector(sel);
@@ -1659,7 +1646,7 @@
   let larguraSite = 1280;
   const telaLarga = () => window.matchMedia('(min-width: 1200px)').matches;
 
-  const LARGURA_A4 = 1024; // largura da folha única do portfólio em PDF
+  const LARGURA_A4 = 1080; // largura da folha única do portfólio em PDF
   const ajustarSite = () => {
     if (!lateralSite) return;
     const palco = $('#lateral-palco');

@@ -1,7 +1,7 @@
 // Gera o portfólio em PDF a partir da página /portfolio-pdf/ do site já montado (_site).
 // Uso: node ferramentas/gerar-pdf.mjs <pasta do site> <arquivo .pdf de saída>
 // Sobe um servidor local temporário, abre a página no Chromium e imprime numa folha única
-// (1024px de largura e a altura exata do conteúdo, como o portfólio original).
+// (1080px de largura e a altura exata do conteúdo, como o portfólio original).
 import { chromium } from 'playwright';
 import http from 'node:http';
 import fs from 'node:fs';
@@ -26,7 +26,7 @@ await new Promise((ok) => servidor.listen(0, ok));
 const porta = servidor.address().port;
 
 const navegador = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
-const pagina = await navegador.newPage({ viewport: { width: 1024, height: 1400 } });
+const pagina = await navegador.newPage({ viewport: { width: 1080, height: 1400 } });
 // Em ambientes sem internet, o script do QR code pode vir de um arquivo local.
 if (process.env.QR_LOCAL) {
   await pagina.route(/cdnjs\.cloudflare\.com/, (r) => r.fulfill({ path: process.env.QR_LOCAL, contentType: 'text/javascript' }));
@@ -42,7 +42,7 @@ if (quebradas.length) console.warn('Imagens que não carregaram:', quebradas);
 
 fs.mkdirSync(path.dirname(saida), { recursive: true });
 const altura = await pagina.evaluate(() => Number(document.documentElement.dataset.altura) || Math.ceil(document.querySelector('.folha').getBoundingClientRect().height));
-await pagina.pdf({ path: saida, width: '1024px', height: `${altura}px`, printBackground: true, pageRanges: '1' });
-console.log(`PDF gerado: ${saida} (folha única 1024 × ${altura}px, ${(fs.statSync(saida).size / 1048576).toFixed(1)} MB)`);
+await pagina.pdf({ path: saida, width: '1080px', height: `${altura}px`, printBackground: true, pageRanges: '1' });
+console.log(`PDF gerado: ${saida} (folha única 1080 × ${altura}px, ${(fs.statSync(saida).size / 1048576).toFixed(1)} MB)`);
 await navegador.close();
 servidor.close();
