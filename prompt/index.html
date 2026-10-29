@@ -120,7 +120,7 @@ header .tabs{justify-self:end}
 
 /* inputs */
 .f{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.02em;min-width:0}
-input[type=text],input[type=password],select,textarea{width:100%;font:400 14px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+input[type=text],input[type=password],input[type=email],input[type=search],select,textarea{width:100%;font:400 14px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 textarea{resize:vertical;min-height:84px;line-height:1.55}
 input:focus,select:focus,textarea:focus,button:focus-visible,.drop:focus-visible,.stage:focus-visible,.ph:focus-visible{outline:2px solid var(--rose);outline-offset:1px}
 .row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -368,7 +368,13 @@ body.gated .wrap{display:none}
 .lrow .x:hover{color:var(--warn);background:var(--rose-soft)}
 @media (max-width:640px){.lrow{grid-template-columns:minmax(0,1fr) 34px}.lrow select{grid-row:2;grid-column:1 / -1}}
 .gateor{margin-top:14px;font-size:13px;color:var(--muted)}.linkbtn{border:0;background:none;padding:0;font:inherit;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.contaform{display:grid;gap:10px;margin:12px 0}.so-leitor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.contaform{display:grid;gap:12px;margin:14px 0 4px}
+.card-in{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card-in input{background:var(--card)}
+.card-in .lt{display:flex;justify-content:space-between;align-items:baseline}
+.linkbtn.mini{font-size:12px;color:var(--rose-deep)}
+.inrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.inrow .btn{width:100%;justify-content:center}
+#contaDlg .fold{margin-top:6px}.so-leitor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 #contaSetup{margin:14px 0}#contaSetup li{margin-bottom:8px}
 .updbox{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px rgba(51,64,73,.16);font-size:13px;max-width:calc(100vw - 32px)}
 .updbox .x{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;width:32px;height:32px;border-radius:10px}.updbox .x:hover{background:var(--rose-soft)}
@@ -454,7 +460,8 @@ h1 em,h2 em,h3 em{font-size:1.15em;line-height:1}
 .steps,.board{gap:20px}
 .step,.side,.card{padding:24px;border-radius:20px}
 .step{gap:16px}
-input[type=text],input[type=password],select{height:44px;padding:0 14px}
+input[type=text],input[type=password],input[type=email],input[type=search],select{height:44px;padding:0 14px}
+input[type=search]{-webkit-appearance:none;appearance:none}
 textarea{padding:12px 14px}
 .btn{min-height:44px;padding:0 22px}
 .btn.small{min-height:34px;padding:0 14px}
@@ -524,15 +531,15 @@ textarea{padding:12px 14px}
   </div>
 </div>
 <dialog id="contaDlg" class="manual" aria-labelledby="contaTitle">
-  <form method="dialog" class="mhd"><h2 id="contaTitle"><span class="n">sua conta</span>projetos em todos os aparelhos</h2><button class="x" aria-label="Fechar">×</button></form>
-  <p class="hint">Mesma conta do Lâmpada (Firebase, grátis). Conectada, a página guarda os projetos salvos e a chave do Gemini só para você, e eles aparecem no computador, no iPad e no celular.</p>
+  <form method="dialog" class="mhd"><h2 id="contaTitle"><span class="n">sua conta</span>em todos os <em>aparelhos</em></h2><button class="x" aria-label="Fechar">×</button></form>
+  <p class="hint">Seus projetos salvos e a chave do Gemini no computador, no iPad e no celular. Grátis, e só você vê.</p>
   <div class="status" id="contaStatus"></div>
   <div id="contaIn" class="contaform">
-    <form id="contaForm" class="contaform">
-      <span class="lt"><b>E-mail e senha</b> <span class="sub">· funciona já, sem configurar nada</span></span>
-      <input type="email" id="contaEmail" autocomplete="username" placeholder="seu e-mail" required>
-      <input type="password" id="contaSenha" autocomplete="current-password" placeholder="senha (mínimo 6 caracteres)" minlength="6" required>
-      <div class="actions"><button class="btn" type="submit">entrar</button><button class="btn ghost" id="contaCriar" type="button">criar conta</button><button class="linkbtn" id="contaEsqueci" type="button">esqueci a senha</button></div>
+    <form id="contaForm" class="contaform card-in">
+      <label class="f">E-mail<input type="email" id="contaEmail" autocomplete="username" placeholder="voce@email.com" required></label>
+      <label class="f"><span class="lt">Senha <button class="linkbtn mini" id="contaEsqueci" type="button">esqueci a senha</button></span><input type="password" id="contaSenha" autocomplete="current-password" placeholder="mínimo 6 caracteres" minlength="6" required></label>
+      <div class="inrow"><button class="btn" type="submit">entrar</button><button class="btn ghost" id="contaCriar" type="button">criar conta</button></div>
+      <p class="hint small">Primeira vez? Escreva e-mail e senha e toque em <b>criar conta</b>. Nos outros aparelhos, use os mesmos e toque em <b>entrar</b>.</p>
     </form>
     <details class="fold"><summary>ou entrar com Google</summary>
       <p class="hint">O Google só funciona aqui depois de liberar o site no Firebase (passo a passo abaixo, se aparecer o aviso).</p>
@@ -1009,7 +1016,7 @@ function contaUI(st,e){
   if(!SITE) return; CONTA.st=st; const ok=st==="ok", u=CONTA.user;
   $("contaLbl").textContent=ok?"conta ✓":st==="sync"?"sincronizando…":u?"conta !":"entrar";
   $("contaDot").style.background=ok?"":"var(--warn)";
-  const msg=ok?`Conectada como ${u.email||u.displayName||"você"}. Projetos e chave do Gemini sincronizados.`:st==="sync"?"Sincronizando…":st==="domain"?AUTH_MSG["auth/unauthorized-domain"]:st==="err"?(AUTH_MSG[e?.code]||(u?"Não consegui falar com a nuvem agora. Os projetos continuam salvos neste aparelho.":"Não deu para entrar agora. Tente de novo.")):"Entre com e-mail e senha (ou crie a conta na hora). Vale a mesma conta em todos os aparelhos.";
+  const msg=ok?`Conectada como ${u.email||u.displayName||"você"}. Projetos e chave do Gemini sincronizados.`:st==="sync"?"Sincronizando…":st==="domain"?AUTH_MSG["auth/unauthorized-domain"]:st==="err"?(AUTH_MSG[e?.code]||(u?"Não consegui falar com a nuvem agora. Os projetos continuam salvos neste aparelho.":"Não deu para entrar agora. Tente de novo.")):"";
   status($("contaStatus"),msg,st==="sync",st==="err"||st==="domain");
   $("contaIn").hidden=!!u; $("contaSetup").hidden=st!=="domain";
   $("contaSync").hidden=!u; $("contaOut").hidden=!u;
