@@ -1,6 +1,6 @@
 {
-  "name": "lavi render",
-  "short_name": "lavi render",
+  "name": "Lavi Prompt",
+  "short_name": "Lavi Prompt",
   "description": "Do print do SketchUp à fotografia: prompts travados para IA de imagem. Ferramenta do estúdio laís.",
   "lang": "pt-BR",
   "start_url": "./",
