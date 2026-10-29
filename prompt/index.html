@@ -68,6 +68,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .mark span{color:var(--rose)}
 .brand small{font-size:11px;letter-spacing:.14em;color:var(--muted)}
 .tabs{display:flex;gap:2px;flex-wrap:wrap}
+header{display:grid!important;grid-template-columns:auto 1fr auto;align-items:center}
+header .tabs{justify-self:end}
+.tools{display:flex;gap:6px;align-items:center;justify-self:end}
+@media (max-width:1100px){header{grid-template-columns:1fr auto}header .tabs{grid-column:1 / -1;grid-row:2;justify-self:start}}
+@media (max-width:900px){header .tabs a{display:none}.tools .aibtn{padding:6px 11px;font-size:12.5px}}
+.tools .aibtn{white-space:nowrap}@media (max-width:520px){.brand small{display:none}}
 .tabs button{border:0;background:transparent;color:var(--muted);font:500 13px var(--body);padding:8px 14px;border-radius:999px;cursor:pointer;text-transform:lowercase}
 .tabs button:hover{color:var(--ink)}
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
@@ -361,7 +367,11 @@ body.gated .wrap{display:none}
 .lrow .x{border:0;background:transparent;color:var(--muted);font-size:20px;cursor:pointer;height:40px;border-radius:10px}
 .lrow .x:hover{color:var(--warn);background:var(--rose-soft)}
 @media (max-width:640px){.lrow{grid-template-columns:minmax(0,1fr) 34px}.lrow select{grid-row:2;grid-column:1 / -1}}
-.aibtn.upd{background:var(--rose);color:#fff;border-color:var(--rose)}
+.gateor{margin-top:14px;font-size:13px;color:var(--muted)}.linkbtn{border:0;background:none;padding:0;font:inherit;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.contaform{display:grid;gap:10px;margin:12px 0}.so-leitor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#contaSetup{margin:14px 0}#contaSetup li{margin-bottom:8px}
+.updbox{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px rgba(51,64,73,.16);font-size:13px;max-width:calc(100vw - 32px)}
+.updbox .x{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;width:32px;height:32px;border-radius:10px}.updbox .x:hover{background:var(--rose-soft)}
 .f .lt .sub{font-weight:400;color:var(--muted);letter-spacing:0}
 .lightbox{display:grid;gap:14px}
 .rrow .sw{cursor:pointer}
@@ -506,12 +516,33 @@ textarea{padding:12px 14px}
     <p class="hint">Para entrar, cole a sua chave gratuita do Gemini. Ela fica salva só neste navegador e não vai para o site.</p>
     <form id="gateForm"><input type="password" id="gateKey" aria-label="Chave do Gemini" placeholder="chave do Gemini (começa com AIza…)" autocomplete="off" spellcheck="false"><button class="btn" type="submit">entrar</button></form>
     <div class="status" id="gateStatus"></div>
+    <p class="gateor" id="gateConta" hidden>ou <button type="button" class="linkbtn" id="gateContaBtn">entre com a conta do painel do site</button> e a chave vem sozinha</p>
     <details class="fold"><summary>como pegar a chave grátis</summary>
       <ol class="gsteps"><li>Entre em <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> com a sua conta Google.</li><li>Clique em <b>Create API key</b> (criar chave) e copie.</li><li>Cole aqui e clique em entrar. É de graça e não pede cartão.</li></ol>
       <p class="hint">No plano gratuito o Google pode usar o que você envia para melhorar os produtos dele.</p>
     </details>
   </div>
 </div>
+<dialog id="contaDlg" class="manual" aria-labelledby="contaTitle">
+  <form method="dialog" class="mhd"><h2 id="contaTitle"><span class="n">sua conta</span>projetos em todos os aparelhos</h2><button class="x" aria-label="Fechar">×</button></form>
+  <p class="hint">É o mesmo login do painel do site (lais3d.com.br/admin). Conectada, a página guarda os projetos salvos e a chave do Gemini num repositório <b>privado</b> do seu GitHub, e eles aparecem no computador, no iPad e no celular.</p>
+  <div class="status" id="contaStatus"></div>
+  <form id="contaForm" class="contaform" hidden>
+    <input class="so-leitor" type="text" name="username" autocomplete="username" value="arqlais" tabindex="-1" aria-hidden="true" readonly>
+    <label class="f">Token do GitHub (o mesmo do painel)<input type="password" id="contaTk" name="password" autocomplete="current-password" placeholder="github_pat_…" spellcheck="false"></label>
+    <button class="btn" type="submit">entrar</button>
+  </form>
+  <ol class="gsteps" id="contaSetup" hidden>
+    <li><b>Crie o repositório privado</b> (só uma vez): <a href="https://github.com/new?name=prompt-dados&visibility=private&description=Dados%20privados%20do%20Prompt%20de%20Render" target="_blank" rel="noopener">abrir o GitHub já preenchido</a>. Confira que está marcado <b>Private</b> e clique em <b>Create repository</b>.</li>
+    <li><b>Libere esse repositório no seu token</b>: abra <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">seus tokens</a>, clique no token do painel, em <b>Repository access</b> adicione <b>prompt-dados</b> (deixe o <b>portfolio</b> também), em <b>Permissions → Contents</b> deixe <b>Read and write</b> e salve.</li>
+    <li>Volte aqui e toque em <b>tentar de novo</b>.</li>
+  </ol>
+  <div class="actions">
+    <button class="btn" id="contaSync" type="button" hidden>sincronizar agora</button>
+    <button class="btn" id="contaRetry" type="button" hidden>tentar de novo</button>
+    <button class="btn ghost" id="contaOut" type="button" hidden>sair da conta neste aparelho</button>
+  </div>
+</dialog>
 <dialog id="aiDlg" class="manual" aria-labelledby="aiTitle">
   <form method="dialog" class="mhd"><h2 id="aiTitle"><span class="n">inteligência artificial</span>gemini</h2><button class="x" aria-label="Fechar">×</button></form>
   <div class="msteps" style="gap:12px">
@@ -529,9 +560,11 @@ textarea{padding:12px 14px}
       <button role="tab" id="tabLib" aria-selected="false">ajustes e pós</button>
       <button role="tab" id="tabCmp" aria-selected="false">comparar</button>
       <a href="https://www.lais3d.com.br/">portfólio ↗</a>
-      <button type="button" id="updBtn" class="aibtn upd" hidden title="Saiu uma versão nova desta página">↻ atualizar</button>
-      <button type="button" id="aiBtn" class="aibtn" hidden title="Configurar o Gemini"><span class="dotok"></span>gemini</button>
     </nav>
+    <div class="tools">
+      <button type="button" id="contaBtn" class="aibtn" hidden title="Sua conta: projetos e chave em todos os aparelhos"><span class="dotok" id="contaDot"></span><span id="contaLbl">conta</span></button>
+      <button type="button" id="aiBtn" class="aibtn" hidden title="Configurar o Gemini"><span class="dotok"></span>gemini</button>
+    </div>
   </header>
 
   <section class="hero" id="hero">
@@ -570,7 +603,7 @@ textarea{padding:12px 14px}
         <div class="actions"><input type="text" id="projName" placeholder="Ex.: Apto Moema · sala"><button class="btn small" id="saveProj">Salvar</button></div>
         <div class="projects" id="projList"></div>
         <div class="actions projio"><button class="btn ghost small" id="projExp" type="button">exportar projetos</button><button class="btn ghost small" id="projImp" type="button">importar</button><input type="file" id="projFile" accept=".json,application/json" hidden></div>
-        <p class="hint small">Os projetos ficam só neste aparelho. Para levar do computador pro iPad: exporte, salve no iCloud/Drive e importe no outro.</p>
+        <p class="hint small" id="projHint">Os projetos ficam só neste aparelho. Entre na <b>conta</b> (no topo) para vê-los no iPad e no computador, ou exporte e importe o arquivo.</p>
       </section>
     </aside>
 
@@ -849,6 +882,7 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
   </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
+<div class="updbox" id="updBox" role="status" hidden><span>Saiu uma versão nova da página.</span><button type="button" class="btn small" id="updBtn">atualizar</button><button type="button" class="x" id="updX" aria-label="Fechar aviso">×</button></div>
 <dialog id="pickDlg" class="manual pick" aria-labelledby="pickTitle">
   <form method="dialog" class="mhd"><h2 id="pickTitle"><span class="n">conta-gotas</span>clique na cor, direto no print</h2><button class="x" aria-label="Fechar">×</button></form>
   <canvas id="pickCv"></canvas>
@@ -900,6 +934,7 @@ async function connectAI0(){
   if(sample){ AI.mode="claude"; const lim=await sample.limits().catch(()=>null); imgOK=!!lim?.images; pieceImgMax=lim?.images?.maxCount||1; }
   else{
     imgOK=true; pieceImgMax=6;
+    if(SITE){ $("contaBtn").hidden=false; $("gateConta").hidden=false; contaUI("off"); if(contaToken()) await contaSync().catch(()=>{}); }
     const k=lsGet(GKEY);
     if(!k){ showGate(); return }
     try{ await enterGemini(k,{quiet:true}); return }
@@ -909,6 +944,77 @@ async function connectAI0(){
   $("noAI").hidden=!!AI.mode; $("analyze").hidden=!imgOK; $("gen").disabled=false;
   updateAnalyze(); try{renderCmp()}catch{}
 }
+/* ---------- conta: o mesmo login do painel do site (token do GitHub); dados num repositório PRIVADO ---------- */
+const SITE=/^https?:$/.test(location.protocol)&&!window.claude; // só no lais3d (no artefato do claude.ai não há painel)
+const CONTA={tk:"painel-lais-token",repo:"arqlais/prompt-dados",file:"dados.json",on:false,sha:null,t:null,busy:null,clearKey:false};
+function contaToken(){ try{return localStorage.getItem(CONTA.tk)||sessionStorage.getItem(CONTA.tk)||""}catch{return""} }
+async function gh(path,{method="GET",body}={}){
+  let r; try{ r=await fetch("https://api.github.com"+path,{method,cache:"no-store",headers:{Authorization:"Bearer "+contaToken(),Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},body:body?JSON.stringify(body):undefined}) }catch{ throw {code:"net"} }
+  if(!r.ok) throw {status:r.status}; return r.json();
+}
+function b64e(t){ const u=new TextEncoder().encode(t); let s=""; for(let i=0;i<u.length;i+=0x8000) s+=String.fromCharCode(...u.subarray(i,i+0x8000)); return btoa(s) }
+function b64d(t){ const b=atob(String(t).replace(/\s/g,"")), u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return new TextDecoder().decode(u) }
+async function contaPull(){
+  try{ const j=await gh(`/repos/${CONTA.repo}/contents/${CONTA.file}`); CONTA.sha=j.sha; return JSON.parse(b64d(j.content)||"{}") }
+  catch(e){
+    if(e.code) throw e;
+    if(e.status===401) throw {code:"bad_token"};
+    if(e.status===404){ try{ await gh(`/repos/${CONTA.repo}`); CONTA.sha=null; return {} }catch(e2){ throw {code:e2.status===401?"bad_token":e2.code||"no_repo"} } }
+    throw {code:e.status===403?"no_access":"net"};
+  }
+}
+function mergeProj(a,b,dead){
+  const m=new Map(); [...a,...b].forEach(p=>{ if(!p?.nome) return; const o=m.get(p.nome); if(!o||(p.salvo||0)>(o.salvo||0)) m.set(p.nome,p) });
+  return [...m.values()].filter(p=>!((dead[p.nome]||0)>=(p.salvo||0))).sort((x,y)=>(y.salvo||0)-(x.salvo||0));
+}
+async function contaSync(){
+  if(!SITE||!contaToken()) return;
+  if(CONTA.busy) return CONTA.busy;
+  CONTA.busy=(async()=>{
+    contaUI("sync");
+    for(let tryN=0;tryN<2;tryN++){
+      const r=await contaPull();
+      const dead={...(r.apagados||{})}; Object.entries(deadAll()).forEach(([n,t])=>{ if(t>(dead[n]||0)) dead[n]=t });
+      const projetos=mergeProj(loadAll(),Array.isArray(r.projetos)?r.projetos:[],dead);
+      let key=lsGet(GKEY);
+      if(CONTA.clearKey) key=""; else if(!key&&r.gemini){ key=r.gemini; lsSet(GKEY,key) }
+      saveAll(projetos,{local:true}); try{localStorage.setItem(DEADKEY,JSON.stringify(dead))}catch{}
+      try{renderProjects()}catch{}
+      const novo={v:1,projetos,apagados:dead,gemini:key||"",atualizado:r.atualizado};
+      const same=JSON.stringify({...r,atualizado:0})===JSON.stringify({...novo,atualizado:0});
+      if(same){ CONTA.clearKey=false; break }
+      novo.atualizado=new Date().toISOString();
+      try{ const w=await gh(`/repos/${CONTA.repo}/contents/${CONTA.file}`,{method:"PUT",body:{message:"Prompt de Render: projetos atualizados",content:b64e(JSON.stringify(novo,null,1)),...(CONTA.sha?{sha:CONTA.sha}:{})}}); CONTA.sha=w.content?.sha||null; CONTA.clearKey=false; break }
+      catch(e){ if((e.status===409||e.status===422)&&tryN===0) continue; throw {code:e.status===403||e.status===404?"no_write":e.code||"net"} }
+    }
+    CONTA.on=true; contaUI("ok");
+  })().catch(e=>{ CONTA.on=false; contaUI(e.code||"net"); throw e }).finally(()=>{ CONTA.busy=null });
+  return CONTA.busy;
+}
+function contaSoon(ms=1500){ if(!SITE||!contaToken()) return; clearTimeout(CONTA.t); CONTA.t=setTimeout(()=>contaSync().catch(()=>{}),ms) }
+const CONTA_MSG={ok:"Conectada. Projetos e chave do Gemini sincronizados com o repositório privado.",sync:"Sincronizando…",off:"Cole o token do GitHub que você usa no painel do site. Se você já entrou no painel neste aparelho, ele aparece sozinho.",
+  bad_token:"O GitHub não aceitou o token (pode ter vencido). Gere um novo no painel ou cole de novo.",no_repo:"Falta liberar o repositório privado de dados. Siga os 3 passos abaixo (só uma vez).",
+  no_write:"O token lê mas não consegue gravar no prompt-dados. No token, deixe Contents em Read and write.",no_access:"O GitHub negou o acesso agora. Tente de novo em instantes.",net:"Sem conexão com o GitHub agora. Os projetos continuam salvos neste aparelho."};
+function contaUI(st){
+  if(!SITE) return; CONTA.st=st;
+  const has=!!contaToken(), ok=st==="ok";
+  $("contaLbl").textContent=ok?"conta ✓":st==="sync"?"sincronizando…":has?"conta !":"entrar";
+  $("contaDot").style.background=ok?"":"var(--warn)";
+  status($("contaStatus"),has?CONTA_MSG[st]||CONTA_MSG.net:CONTA_MSG.off,st==="sync",has&&!ok&&st!=="sync");
+  $("contaForm").hidden=has&&st!=="bad_token"; $("contaSetup").hidden=!(st==="no_repo"||st==="no_write");
+  $("contaSync").hidden=!ok; $("contaRetry").hidden=!(has&&!ok&&st!=="sync"); $("contaOut").hidden=!has;
+  const h=$("projHint"); if(h) h.innerHTML=ok?"Sincronizados com a sua conta: aparecem no computador, no iPad e no celular.":"Os projetos ficam só neste aparelho. Entre na <b>conta</b> (no topo) para vê-los no iPad e no computador, ou exporte e importe o arquivo.";
+}
+function contaOpen(){ contaUI(CONTA.st||(contaToken()?"net":"off")); $("contaDlg").showModal(); if(!contaToken()) setTimeout(()=>$("contaTk").focus(),50) }
+$("contaBtn").onclick=contaOpen; $("gateContaBtn").onclick=contaOpen;
+$("contaForm").onsubmit=async e=>{ e.preventDefault(); const t=$("contaTk").value.trim(); if(!t) return;
+  try{ localStorage.setItem(CONTA.tk,t) }catch{} $("contaTk").value="";
+  try{ await contaSync(); toast("Conta conectada"); const k=lsGet(GKEY); if(k&&!G.key){ $("contaDlg").close(); try{ await enterGemini(k) }catch(err){ showGate(errMsg(err)) } } }catch{} };
+$("contaRetry").onclick=async()=>{ try{ await contaSync(); toast("Conta conectada"); const k=lsGet(GKEY); if(k&&!G.key){ $("contaDlg").close(); try{ await enterGemini(k) }catch(err){ showGate(errMsg(err)) } } }catch{} };
+$("contaSync").onclick=()=>contaSync().then(()=>toast("Sincronizado")).catch(()=>{});
+$("contaOut").onclick=()=>{ if(!$("contaOut").dataset.c){ $("contaOut").dataset.c=1; $("contaOut").textContent="sair também do painel neste aparelho?"; return }
+  try{ localStorage.removeItem(CONTA.tk); sessionStorage.removeItem(CONTA.tk) }catch{} delete $("contaOut").dataset.c; $("contaOut").textContent="sair da conta neste aparelho"; CONTA.on=false; contaUI("off"); toast("Você saiu da conta neste aparelho"); };
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&CONTA.on) contaSoon(300) }); // voltou para a aba: puxa o que mudou no outro aparelho
 /* ---------- Gemini (chave gratuita do Google AI Studio, salva só neste navegador) ---------- */
 const GBASE="https://generativelanguage.googleapis.com/v1beta/", GKEY="lais-gemini-chave", GMODEL="lais-gemini-modelo";
 const G={key:"",model:"",models:[]};
@@ -1043,7 +1149,7 @@ async function enterGemini(key,{quiet}={}){
 $("gateForm").onsubmit=async e=>{
   e.preventDefault(); const k=$("gateKey").value.trim(); if(!k) return;
   status($("gateStatus"),"Conferindo a chave…",true);
-  try{ await enterGemini(k); lsSet(GKEY,k); $("gateKey").value=""; status($("gateStatus"),""); }
+  try{ await enterGemini(k); lsSet(GKEY,k); contaSoon(); $("gateKey").value=""; status($("gateStatus"),""); }
   catch(err){ status($("gateStatus"),errMsg(err),false,true) }
 };
 $("aiBtn").onclick=()=>{
@@ -1052,7 +1158,7 @@ $("aiBtn").onclick=()=>{
   sel.value=G.model; $("aiDlg").showModal();
 };
 $("aiModel").onchange=e=>{ G.model=e.target.value; lsSet(GMODEL,G.model); toast("Modelo trocado"); };
-$("aiOut").onclick=()=>{ lsSet(GKEY,""); lsSet(GMODEL,""); lsSet(GOFF,""); $("aiDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu. A chave foi apagada deste navegador."); };
+$("aiOut").onclick=()=>{ lsSet(GKEY,""); lsSet(GMODEL,""); lsSet(GOFF,""); if(CONTA.on){ CONTA.clearKey=true; contaSoon(0) } $("aiDlg").close(); G.key=""; AI.mode=null; showGate("Você saiu. A chave foi apagada deste navegador."); };
 
 /* conta-gotas: pega o RGB direto do print enviado no passo 1 */
 let pickCb=null, pickSrc=null;
@@ -1641,7 +1747,10 @@ $("copyEn").onclick=()=>copy("pEn"); $("copyPt").onclick=()=>copy("pPt");
 /* ---------- projetos (só neste navegador) ---------- */
 const KEY="lais-render-projetos";
 function loadAll(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch{return[]}}
-function saveAll(l){try{localStorage.setItem(KEY,JSON.stringify(l));return true}catch{return false}}
+function saveAll(l,{local}={}){try{localStorage.setItem(KEY,JSON.stringify(l)); if(!local) contaSoon(); return true}catch{return false}}
+const DEADKEY="lais-render-apagados";
+function deadAll(){ try{return JSON.parse(localStorage.getItem(DEADKEY)||"{}")}catch{return{}} }
+function markDead(nome){ const d=deadAll(); d[nome]=Date.now(); try{localStorage.setItem(DEADKEY,JSON.stringify(d))}catch{} }
 function renderProjects(){
   const l=loadAll(), box=$("projList"); box.innerHTML="";
   if(!l.length){box.innerHTML='<p class="hint">Nenhum projeto salvo ainda.</p>';return}
@@ -1650,12 +1759,12 @@ function renderProjects(){
     d.querySelector("span").textContent=p.nome; d.querySelector("small").textContent=`${(TYPES.find(x=>x[0]===p.tipo)||[0,p.kind.toLowerCase()])[1]}${" · "+((p.read?.materiais||p.rows||[]).length)+" materiais"}${p.qText?" · com texto":""}`;
     const [lb,db]=d.querySelectorAll("button");
     lb.onclick=()=>{if(p.read)renderRead(p.read,p.read.materiais);else if(p.rows?.length)renderRead({luminarias:(p.lights||"").split("\n").filter(Boolean),luzNatural:p.lightDir||""},p.rows.map(r=>({elemento:r.elemento,material:[r.material,r.acabamento].filter(Boolean).join(", "),cor:r.cor,onde:r.nota})));lightStyle=typeof p.lightStyle==="number"?p.lightStyle:0;setTipo(p.tipo||(p.kind==="EXTERIOR"?"ext_res":"int_res"));if(p.view)$("view").value=p.view;$("viewTxt").value=p.viewTxt||"";$("atmo").value=p.atmo||"";if(p.dest)$("dest").value=p.dest;if(p.ratio)$("ratio").value=p.ratio;if(p.extras){EXTRAS.forEach(x=>x.on=p.extras.includes(x.id));renderExtras()}$("sameMat").value=p.sameMat||"";$("projName").value=p.nome;$("qText").value=p.qText||"";$("ledTemp").value=p.ledTemp||"3500";$("pieces").innerHTML="";(p.pieces||[]).forEach(x=>addPiece(x.nome,x.desc));updateAnalyze();toast("Projeto carregado. Troque o print para outro ângulo")};
-    db.onclick=()=>{if(db.dataset.c){const a=loadAll();a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
+    db.onclick=()=>{if(db.dataset.c){const a=loadAll();markDead(a[i].nome);a.splice(i,1);saveAll(a);renderProjects()}else{db.dataset.c=1;db.textContent="Excluir?"}};
     box.append(d)});
 }
 $("saveProj").onclick=()=>{
   const nome=$("projName").value.trim(); if(!nome){toast("Dê um nome ao projeto");return}
-  const p={nome,kind,tipo,read:getRead(),qText:$("qText").value,ledTemp:$("ledTemp").value,pieces:pieces().map(x=>({nome:x.nome,desc:x.desc})),view:$("view").value,atmo:$("atmo").value,dest:$("dest").value,ratio:$("ratio").value,lightStyle,extras:EXTRAS.filter(x=>x.on).map(x=>x.id),sameMat:$("sameMat").value,viewTxt:$("viewTxt").value};
+  const p={nome,salvo:Date.now(),kind,tipo,read:getRead(),qText:$("qText").value,ledTemp:$("ledTemp").value,pieces:pieces().map(x=>({nome:x.nome,desc:x.desc})),view:$("view").value,atmo:$("atmo").value,dest:$("dest").value,ratio:$("ratio").value,lightStyle,extras:EXTRAS.filter(x=>x.on).map(x=>x.id),sameMat:$("sameMat").value,viewTxt:$("viewTxt").value};
   const l=loadAll().filter(x=>x.nome!==nome); l.unshift(p);
   toast(saveAll(l)?"Projeto salvo neste navegador":"Não foi possível salvar neste navegador"); renderProjects();
 };
@@ -1668,7 +1777,7 @@ $("projExp").onclick=async()=>{
 };
 $("projImp").onclick=()=>$("projFile").click();
 $("projFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return;
-  try{ const j=JSON.parse(await f.text()), inc=(Array.isArray(j)?j:j.projetos||[]).filter(p=>p&&p.nome);
+  try{ const j=JSON.parse(await f.text()), inc=(Array.isArray(j)?j:j.projetos||[]).filter(p=>p&&p.nome).map(p=>({...p,salvo:Date.now()}));
     if(!inc.length) throw 0;
     const names=new Set(inc.map(p=>p.nome)), l=[...inc,...loadAll().filter(p=>!names.has(p.nome))];
     toast(saveAll(l)?`${inc.length} projeto(s) importado(s)`:"Não foi possível salvar neste navegador"); renderProjects();
@@ -1679,8 +1788,9 @@ $("projFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; 
   const sig=t=>{ let h=0; for(let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))|0; return h };
   let base=null;
   const check=async()=>{ try{ const r=await fetch(location.href.split("#")[0],{cache:"no-store"}); if(!r.ok) return; const h=sig(await r.text());
-    if(base===null) base=h; else if(h!==base) $("updBtn").hidden=false; }catch{} };
+    if(base===null) base=h; else if(h!==base) $("updBox").hidden=false; }catch{} };
   $("updBtn").onclick=()=>location.reload();
+  $("updX").onclick=async()=>{ $("updBox").hidden=true; try{ const r=await fetch(location.href.split("#")[0],{cache:"no-store"}); base=sig(await r.text()) }catch{} }; // só volta a avisar se sair outra versão
   check(); setInterval(check,3*60*1000); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) check() });
 })();
 function setMode(){ document.body.classList.add("quick") } // uma aba só: ficha do print + texto livre
