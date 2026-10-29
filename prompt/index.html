@@ -381,7 +381,7 @@ body.gated .wrap{display:none}
 .card-in{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px}
 .card-in input{background:var(--card)}
 .card-in .lt{display:flex;justify-content:space-between;align-items:baseline}
-.linkbtn.mini{font-size:12px;color:var(--rose-deep)}
+.linkbtn.mini{font-size:12px;color:var(--rose-deep)}.linkbtn.forgot{justify-self:end;margin-top:-6px}
 .inrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.inrow .btn{width:100%;justify-content:center}
 .so-leitor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 
@@ -531,7 +531,8 @@ textarea{padding:12px 14px}
     <h1>lavi <em>prompt</em></h1>
     <form id="gateLogin" class="contaform card-in" hidden>
       <label class="f">E-mail<input type="email" id="gateEmail" autocomplete="username" placeholder="voce@email.com" required></label>
-      <label class="f"><span class="lt">Senha <button class="linkbtn mini" id="gateEsqueci" type="button">esqueci a senha</button></span><input type="password" id="gateSenha" autocomplete="current-password" required></label>
+      <label class="f">Senha<input type="password" id="gateSenha" autocomplete="current-password" required></label>
+      <button class="linkbtn mini forgot" id="gateEsqueci" type="button">esqueci a senha</button>
       <button class="btn" type="submit">entrar</button>
     </form>
     <div id="gateKeyStep">
@@ -552,7 +553,8 @@ textarea{padding:12px 14px}
   <div id="contaIn" class="contaform">
     <form id="contaForm" class="contaform card-in">
       <label class="f">E-mail<input type="email" id="contaEmail" autocomplete="username" placeholder="voce@email.com" required></label>
-      <label class="f"><span class="lt">Senha <button class="linkbtn mini" id="contaEsqueci" type="button">esqueci a senha</button></span><input type="password" id="contaSenha" autocomplete="current-password" placeholder="mínimo 6 caracteres" minlength="6" required></label>
+      <label class="f">Senha<input type="password" id="contaSenha" autocomplete="current-password" placeholder="mínimo 6 caracteres" minlength="6" required></label>
+      <button class="linkbtn mini forgot" id="contaEsqueci" type="button">esqueci a senha</button>
       <div class="inrow"><button class="btn" type="submit">entrar</button><button class="btn ghost" id="contaCriar" type="button" hidden>criar conta</button></div>
     </form>
   </div>
