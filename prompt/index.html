@@ -541,7 +541,7 @@ textarea{padding:12px 14px}
           <div id="dropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher · também dá pra colar com Ctrl+V</p></div>
           <img id="preview" alt="Print enviado" hidden>
         </div>
-        <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+        <input type="file" id="file" accept="image/*,.heic,.heif" hidden>
         <div class="actions">
           <button class="btn rose" id="analyze" disabled>Analisar print</button>
           <button class="btn ghost small" id="clearImg" hidden>Trocar print</button>
@@ -697,13 +697,13 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
         <h2><span class="n">passo 1</span>Imagens da <em>cena</em></h2>
         <div class="slabel">renders prontos do ambiente <small>(1 a 4 · pode soltar vários de uma vez)</small></div>
         <div class="refs" id="sRefs"></div>
-        <input type="file" id="sRefFile" accept="image/jpeg,image/png,image/webp" multiple hidden>
+        <input type="file" id="sRefFile" accept="image/*,.heic,.heif" multiple hidden>
         <div class="slabel">print do novo ângulo</div>
         <div class="drop sdrop" id="sDrop" tabindex="0" role="button" aria-label="Enviar o print do novo ângulo">
           <div id="sDropEmpty"><strong>Solte o print aqui</strong><p>ou toque para escolher · Ctrl+V também funciona</p></div>
           <img id="sPrev" alt="Print do novo ângulo" hidden>
         </div>
-        <input type="file" id="sPrintFile" accept="image/jpeg,image/png,image/webp" hidden>
+        <input type="file" id="sPrintFile" accept="image/*,.heic,.heif" hidden>
         <div class="actions">
           <button class="btn ghost small" id="sUsePrint" type="button" hidden>usar o print do gerar</button>
           <button class="btn ghost small" id="sClear" type="button">limpar tudo</button>
@@ -813,8 +813,8 @@ luz natural predominante vindo do fundo pela varanda, todas as luzes ligadas: fi
             <div class="slot" id="slotA"><div class="th" id="thA"></div><div class="info"><b>Print do SketchUp</b><small id="infA">nenhum · pode soltar aqui</small></div><button class="btn ghost small" id="pickA" type="button">escolher</button></div>
             <button class="btn ghost small" id="usePrint" type="button" hidden>usar o print do passo 1</button>
             <div class="slot" id="slotB"><div class="th" id="thB"></div><div class="info"><b>Imagem final</b><small id="infB">nenhuma · pode soltar aqui</small></div><button class="btn ghost small" id="pickB" type="button">escolher</button></div>
-            <input type="file" id="fileA" accept="image/jpeg,image/png,image/webp" hidden>
-            <input type="file" id="fileB" accept="image/jpeg,image/png,image/webp" hidden>
+            <input type="file" id="fileA" accept="image/*,.heic,.heif" hidden>
+            <input type="file" id="fileB" accept="image/*,.heic,.heif" hidden>
           </div>
           <div class="actions">
             <button class="btn" id="cmpDiff" disabled type="button">encontrar diferenças</button>
@@ -881,8 +881,8 @@ function parseJSON(text){
   try{ return JSON.parse(text.slice(a,b+1)) }catch{ throw {code:"invalid_json"} }
 }
 const JSON_TAIL="\n\nResponda apenas com o JSON, sem nenhum texto antes ou depois e sem blocos de código.";
-async function aiText(prompt,{images,signal,onText,light}={}){ if(AI.mode==="gemini") return await gemGenerate(prompt,{images,signal,onText,light}); const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=images; if(onText) o.onText=onText; return await sample(prompt,o); }
-async function aiJSON(prompt,{images,light}={}){ if(AI.mode==="gemini"){ const {text}=await gemGenerate(prompt+JSON_TAIL,{images,json:true,light}); return parseJSON(text) } const o={modelTier:"default",cache:false}; if(images) o.images=images; return await sample.json(prompt,o); }
+async function aiText(prompt,{images,signal,onText,light}={}){ if(AI.mode==="gemini") return await gemGenerate(prompt,{images,signal,onText,light}); const o={signal,cache:false,modelTier:"default"}; if(images?.length) o.images=await Promise.all(images.map(shrinkFile)); if(onText) o.onText=onText; return await sample(prompt,o); }
+async function aiJSON(prompt,{images,light}={}){ if(AI.mode==="gemini"){ const {text}=await gemGenerate(prompt+JSON_TAIL,{images,json:true,light}); return parseJSON(text) } const o={modelTier:"default",cache:false}; if(images?.length) o.images=await Promise.all(images.map(shrinkFile)); return await sample.json(prompt,o); }
 async function connectAI(){ try{ await connectAI0() }finally{ document.body.classList.remove("booting") } }
 async function connectAI0(){
   try{ sample=await window.claude?.use("sample") }catch{ sample=null }
@@ -903,13 +903,17 @@ const GBASE="https://generativelanguage.googleapis.com/v1beta/", GKEY="lais-gemi
 const G={key:"",model:"",models:[]};
 function lsGet(k){ try{return localStorage.getItem(k)||""}catch{return""} }
 function lsSet(k,v){ try{ v?localStorage.setItem(k,v):localStorage.removeItem(k) }catch{} }
-async function shrink(f){ // até 2048px em JPEG: detalhe suficiente para ler o print, dentro dos limites da API
-  const url=await readURL(f), im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=url});
-  const s=Math.min(1,2048/Math.max(im.naturalWidth,im.naturalHeight)), c=document.createElement("canvas");
+function isImg(f){ return !!f&&(/^image\//.test(f.type)||/\.(jpe?g|png|webp|gif|bmp|tiff?|avif|heic|heif)$/i.test(f.name||"")) }
+async function toJpeg(f,max=2048){ // qualquer tamanho de arquivo: reduz para até 2048px em JPEG (detalhe suficiente para ler o print, dentro dos limites das IAs)
+  let im; try{ const url=await readURL(f); im=await new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=url}) }catch{ throw {code:"image_decode"} }
+  const s=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)), c=document.createElement("canvas");
   c.width=Math.max(1,Math.round(im.naturalWidth*s)); c.height=Math.max(1,Math.round(im.naturalHeight*s));
   const g=c.getContext("2d"); g.fillStyle="#fff"; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height);
-  return {mime_type:"image/jpeg",data:c.toDataURL("image/jpeg",.9).split(",")[1]};
+  let q=.9, d=c.toDataURL("image/jpeg",q); while(d.length>4.5e6&&q>.5){ q-=.1; d=c.toDataURL("image/jpeg",q) } // fica abaixo de ~3,3 MB
+  return d;
 }
+async function shrink(f){ return {mime_type:"image/jpeg",data:(await toJpeg(f)).split(",")[1]} }
+async function shrinkFile(f){ const d=await toJpeg(f), b=atob(d.split(",")[1]), u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return new File([u],(f.name||"imagem").replace(/\.\w+$/,"")+".jpg",{type:"image/jpeg"}) }
 async function gemErr(res){
   let st="", msg=""; try{ const e=(await res.json()).error||{}; st=e.status||""; msg=e.message||"" }catch{}
   const detail=msg||st;
@@ -1184,7 +1188,7 @@ function setKind(k){ const prev=$("view").value; const changed=k!==kind; kind=k;
 
 /* ---------- imagem ---------- */
 function setImage(f){
-  if(!f||!/^image\/(jpeg|png|webp)$/.test(f.type)){toast("Use um print em JPG, PNG ou WebP");return}
+  if(!f||!isImg(f)){toast("Esse arquivo não é uma imagem");return}
   imgFile=f; const r=new FileReader();
   r.onload=()=>{ $("preview").src=r.result; $("preview").hidden=false; $("dropEmpty").hidden=true; $("clearImg").hidden=false; updateAnalyze(); };
   r.readAsDataURL(f);
@@ -1205,7 +1209,7 @@ $("clearImg").onclick=e=>{e.stopPropagation();imgFile=null;$("preview").hidden=t
 function status(el,msg,busy,err){ el.className="status"+(err?" err":""); el.innerHTML=(busy?'<span class="dot"></span>':"")+(msg?`<span></span>`:""); if(msg) el.lastChild.textContent=msg; }
 function errMsg(e){
   const m={not_granted:"Você não autorizou o uso do Claude nesta página.",rate_limited:"Muitas solicitações agora. Tente de novo em alguns minutos.",
-    image_rejected:"Esse arquivo não foi aceito. Tente outro print (JPG ou PNG).",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",gemini_quota:"Acabou a cota gratuita da API do Gemini por agora, inclusive no modelo reserva. Espere um minuto (ou até amanhã, se for o limite diário).",gemini_model:"Nenhum modelo do Gemini disponível para a sua chave aceitou o pedido. Abra o botão gemini e escolha um Flash.",bad_key:"A chave não foi aceita pelo Google. Confira se copiou inteira (começa com AIza).",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
+    image_rejected:"A IA não aceitou a imagem. Tente de novo; se repetir, exporte o print em JPG.",image_decode:"Não consegui abrir esse arquivo neste navegador (HEIC/RAW?). Exporte o print em JPG ou PNG.",invalid_json:"A resposta não veio no formato esperado (JSON). Tente de novo ou peça ao chat para responder só com o JSON.",gemini_quota:"Acabou a cota gratuita da API do Gemini por agora, inclusive no modelo reserva. Espere um minuto (ou até amanhã, se for o limite diário).",gemini_model:"Nenhum modelo do Gemini disponível para a sua chave aceitou o pedido. Abra o botão gemini e escolha um Flash.",bad_key:"A chave não foi aceita pelo Google. Confira se copiou inteira (começa com AIza).",manual_format:"A resposta não veio no formato esperado. Confira se colou a resposta inteira do chat, com ===PT=== e ===EN===.",
     session_expired:"Sua sessão expirou. Entre de novo no claude.ai.",refused:"O pedido foi recusado. Revise o texto e tente de novo.",images_unavailable:"Esta visualização não permite enviar imagens.",
     network:"A conexão caiu no meio do caminho. Confira a internet e tente de novo.",server:"O servidor não respondeu. Tente de novo em instantes.",overloaded:"O Gemini está sobrecarregado agora (comum no plano grátis da API). Tentei de novo e com outro modelo; espere um minuto e clique outra vez.",
     bad_code:"Código de acesso incorreto. Digite de novo no aviso acima.",too_large:"As imagens ficaram grandes demais. Tente com menos fotos de referência.",not_configured:"O servidor ainda não tem a chave da API configurada.",
@@ -1231,7 +1235,7 @@ Como ler o SketchUp:
 - Olhe CADA superfície separadamente: cada parede visível (diga qual: parede da janela, do fundo, da esquerda, atrás da bancada…), piso, teto, bancadas, frentes de marcenaria. Compare cor, textura, desenho e paginação entre elas. Se forem o MESMO material, devolva UM item e liste todas as superfícies em "onde". Se forem diferentes, um item por superfície, com a posição em "onde".
 - RGB só quando a cor exata importa e a cor é sólida: pinturas, lacas, laminados e tecidos lisos, metais e vidros coloridos. Leia numa área bem iluminada, sem sombra e sem reflexo. Para madeira, pedra, mármore, porcelanato com desenho e outros materiais com textura, deixe "rgb" vazio e descreva tom e veio.
 - Faixas amarelas ou muito brilhantes em nichos, sancas, prateleiras, forros e espelhos são só a indicação de LED no SketchUp: liste como luminária (LED de luz neutra), nunca como material amarelo nem luz amarela. Para cada uma diga o formato (fita linear contínua, perfil linear, spot, pendente), a posição exata e o sentido (ex.: "fita linear vertical na lateral interna do nicho do box", "fita linear horizontal embaixo da espelheira"). Fita em nicho, sanca ou atrás de espelho costuma ser embutida e oculta: diga "fita oculta" e qual superfície ela banha de luz (ex.: "fita linear vertical oculta no canto interno esquerdo do nicho, banhando o fundo do nicho"). Liste SÓ onde há faixa amarela ou luminária no print; nunca deduza LED embaixo de gabinetes, bancadas, rodapés ou espelhos sem faixa amarela ali.
-- Vidros de box, divisórias e janelas: incolor (extra clear) por padrão, salvo se o print mostrar outra cor clara.
+- Vidros de box, divisórias e janelas: incolor (extra clear) por padrão, salvo se o print mostrar outra cor clara. Diga quantos painéis de vidro existem e onde (ex.: "1 painel fixo + 1 porta de correr entre box e vaso"). Se a área de banho NÃO tiver vidro no print (box aberto, só ralo), inclua em "vazios": "box aberto, sem vidro".
 - Cada elemento tem o seu material: marcenaria ripada, frentes e gabinetes são marcenaria (laca, laminado, madeira) na cor do print ou da usuária, nunca a pedra das cubas ou bancadas vizinhas.
 - Fundo: azul chapado atrás das aberturas é o céu padrão do SketchUp, provisório; não é material nem a cor do céu. Em "fundo" diga o que fica coerente com o ambiente: em interiores, exterior claro e difuso de onde vem a luz (ex.: banheiro: claridade esbranquiçada pela janela). Só descreva uma paisagem se o print tiver uma imagem de fundo específica.
 - Em "acabamento" inclua brilho (fosco, acetinado, polido), formato e paginação (placas grandes, ripas verticais, réguas no comprimento) e direção dos veios quando houver.
@@ -1374,14 +1378,14 @@ let pieceImgMax=1;
 function addPiece(name="",desc=""){
   const uid=Math.random().toString(36).slice(2,8);
   const d=document.createElement("div"); d.className="piece"; d._img=null;
-  d.innerHTML=`<label class="ph" tabindex="0" title="Anexar foto de referência"><span>+ foto de referência</span><input type="file" accept="image/jpeg,image/png,image/webp" hidden id="pf_${uid}"></label>
+  d.innerHTML=`<label class="ph" tabindex="0" title="Anexar foto de referência"><span>+ foto de referência</span><input type="file" accept="image/*,.heic,.heif" hidden id="pf_${uid}"></label>
   <div class="pb"><input type="text" id="pn_${uid}" placeholder="Nome da peça (ex.: spot triplo do forro da sala)" aria-label="Nome da peça"><textarea id="pd_${uid}" placeholder="Como ela é: formato, cor, acabamento, quantas saídas de luz, onde está…" aria-label="Descrição da peça"></textarea>
   <label class="send" hidden><input type="checkbox" id="ps_${uid}"> Vou enviar esta foto junto para a IA de imagem</label></div>
   <button class="x" type="button" aria-label="Remover peça">×</button>`;
   const [ni,de]=[d.querySelector("input[type=text]"),d.querySelector("textarea")]; ni.value=name; de.value=desc;
   const fi=d.querySelector("input[type=file]"), ph=d.querySelector(".ph"), send=d.querySelector(".send");
   ph.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fi.click()}};
-  fi.onchange=()=>{const f=fi.files[0]; if(!f) return; if(!/^image\/(jpeg|png|webp)$/.test(f.type)){toast("Use JPG, PNG ou WebP");return}
+  fi.onchange=()=>{const f=fi.files[0]; if(!f) return; if(!isImg(f)){toast("Esse arquivo não é uma imagem");return}
     d._img=f; const r=new FileReader(); r.onload=()=>{ph.innerHTML="";const im=document.createElement("img");im.src=r.result;im.alt="Referência";ph.append(im,fi);send.hidden=false}; r.readAsDataURL(f);};
   d.querySelector(".x").onclick=()=>d.remove();
   $("pieces").append(d);
@@ -1482,7 +1486,7 @@ ${brief}
 REGRAS:
 ${DEST[$("dest").value]}
 - TRAVA DE GEOMETRIA (prioridade máxima, acima de qualquer outra regra, inclusive cenário de luz, vista e atmosfera): logo depois da abertura do destino, escreva um bloco curto e forte "GEOMETRY LOCK" (no PT: "TRAVA DE GEOMETRIA") dizendo que a imagem final deve se sobrepor à IMAGE 1 linha por linha: mesmas bordas, contornos, alinhamentos, proporções, alturas, larguras e posições de tudo; mesma quantidade de cada item; nenhum objeto, móvel, planta, quadro, luminária, cortina, persiana, tapete, pessoa ou acessório que não exista na IMAGE 1; áreas vazias continuam vazias; nada é movido, girado, redimensionado, simplificado ou completado; sem cortar, ampliar, estender ou recompor o enquadramento.
-- PRIORIDADES DESTA CENA (IAs de imagem leem melhor o começo): logo depois do GEOMETRY LOCK, um bloco curto "TOP PRIORITIES" (no PT: "PRIORIDADES") com 4 a 6 linhas de no máximo 15 palavras sobre os pontos desta cena que a IA mais erra: objetos e áreas vazias (inclusive vão sem LED embaixo de móveis suspensos), posição e formato exatos de cada LED, materiais que podem ser confundidos (marcenaria x pedra vizinha, cor de metais), vidros. Repita esses pontos no fim, em FINAL CONSISTENCY.
+- PRIORIDADES DESTA CENA (IAs de imagem leem melhor o começo): logo depois do GEOMETRY LOCK, um bloco curto "TOP PRIORITIES" (no PT: "PRIORIDADES") com 4 a 6 linhas de no máximo 15 palavras sobre os pontos desta cena que a IA mais erra: objetos e áreas vazias (inclusive vão sem LED embaixo de móveis suspensos), posição e formato exatos de cada LED, materiais que podem ser confundidos (marcenaria x pedra vizinha, cor de metais), vidros (quantos painéis e onde; nenhum box de vidro onde o print não tem). Repita esses pontos no fim, em FINAL CONSISTENCY.
 - Cenário de luz que cita cortina, persiana, brise ou elementos vazados: só vale se esse elemento EXISTIR na IMAGE 1. Se não existir, aplique apenas o efeito de luz descrito (difusa, filtrada, com sombras lineares) e diga explicitamente que o elemento NÃO deve ser adicionado.
 - Vista, entorno, atmosfera e realismo nunca justificam adicionar, remover ou mudar geometria.
 - A última linha do prompt (em CONSISTÊNCIA FINAL) repete a trava em uma frase: "GEOMETRY LOCK: overlay-exact match with IMAGE 1 — nothing added, nothing removed, nothing moved." (no PT: "TRAVA DE GEOMETRIA: sobreposição exata com a IMAGEM 1 — nada adicionado, nada removido, nada movido.").
@@ -1499,7 +1503,7 @@ ${DEST[$("dest").value]}
 - MATERIAL CERTO EM CADA PEÇA: marcenaria (ripados, frentes, gabinetes) continua marcenaria na cor da leitura, nunca vira a pedra, o porcelanato ou o metal de peças vizinhas; escreva em RESTRICTIONS "X is NOT stone" quando houver marcenaria junto de pedra.
 - MATERIALS: um bloco por material ou grupo de mesmo material, com o nome em CAIXA ALTA seguido de dois-pontos e, quando for grupo, a linha "Applies to: ..." com as peças, depois linhas curtas: material, acabamento, cor. RGB vira "Exact color: RGB r, g, b." Nomes comerciais (ex.: Amendoa Natural) ficam com o nome original; se a usuária disser "exatamente como no print", acrescente "exactly matching the appearance shown in IMAGE 1". Se várias peças usam o mesmo amadeirado, crie o bloco ALL WOODEN JOINERY com "Do not introduce different wood colors." Medidas (ripas, espaçamentos) em bullets. Quando algo NÃO é um material (ex.: NÃO é madeira, NÃO é moldura), diga explicitamente no bloco e liste o que não fazer. Termine com DECORATIVE ELEMENTS mantendo tudo no lugar.
 - CAMERA: manter exatamente ângulo, perspectiva, enquadramento; lista Preserve: camera position, height, orientation, focal perspective, field of view, proportions, composition, visible geometry; ótica realista, sem fisheye, sem distorção exagerada, sem correção de perspectiva que altere a geometria.
-- Realismo físico de TODOS os materiais, como numa fotografia: metal acetinado com brilho difuso e reflexo suave do ambiente; escovado com micro-riscos direcionais e brilho alongado no sentido da escovação; polido com reflexo nítido do ambiente real, sem cara de cromado de computador; madeira com veio e poro reais; pedra e porcelanato com profundidade e reflexo condizente com o acabamento; tecidos com trama e caimento; vidro de box e divisórias INCOLOR por padrão (extra clear, transparência total, sem tom verde, fumê ou bronze, só um leve verde na espessura da borda), com reflexos sutis e nítidos da cena, highlights finos nas bordas e perfis reais, sem embaçado nem gotas; exatamente a quantidade de painéis do print, sem painel extra nem imagem fantasma duplicada; pinturas foscas sem brilho plástico. Nunca aparência de CGI, plástico ou material liso perfeito.
+- Realismo físico de TODOS os materiais, como numa fotografia: metal acetinado com brilho difuso e reflexo suave do ambiente; escovado com micro-riscos direcionais e brilho alongado no sentido da escovação; polido com reflexo nítido do ambiente real, sem cara de cromado de computador; madeira com veio e poro reais; pedra e porcelanato com profundidade e reflexo condizente com o acabamento; tecidos com trama e caimento; vidro de box e divisórias INCOLOR por padrão (extra clear, transparência total, sem tom verde, fumê ou bronze, só um leve verde na espessura da borda), com reflexos sutis e nítidos da cena, highlights finos nas bordas e perfis reais, sem embaçado nem gotas; exatamente a quantidade de painéis do print, sem painel extra nem imagem fantasma duplicada; vidro de box só onde o print tem vidro: área de banho sem vidro no print continua aberta, nunca acrescentar box; pinturas foscas sem brilho plástico. Nunca aparência de CGI, plástico ou material liso perfeito.
 - TETO E TABICA (entra no bloco do teto/forro): descreva o tipo de teto da ficha. Tabica (junta de dilatação: rebaixo fino e reto de cerca de 1 cm no encontro do forro com as paredes, com sombra discreta e nítida) SÓ quando a ficha ou o texto da usuária disserem "com tabica" ou quando ela estiver visível na IMAGEM 1. Se disser "sem tabica", ou se for laje, encontro direto e limpo entre teto e parede. Na dúvida, siga exatamente o que a IMAGEM 1 mostra: nunca inventar nem remover tabica.
 - REJUNTES COERENTES E LEVES (entra no bloco de cada revestimento em placas e nas restrições): porcelanato, cerâmica, ladrilho, pastilha, pedra em placas e similares mostram rejunte real, mas BEM LEVE: um fio fino, quase imperceptível, na cor praticamente igual à da peça, sem sombra ou sulco marcado. A paginação é a do print: mesmo tamanho de peça, mesmo alinhamento e mesmo sentido. As juntas são COERENTES entre superfícies: as fiadas horizontais continuam na mesma altura de uma parede para a outra e viram o canto alinhadas; as juntas verticais seguem a modulação das placas; o piso segue a sua própria paginação, alinhada ao print. Nunca juntas tortas, desencontradas entre paredes ou mais escuras que o revestimento. Placas não viram superfície contínua; só é contínuo o que a usuária indicar como monolítico (microcimento, cimento queimado, resina, quartzo ou pedra inteiriça).
 - REFLEXOS E LUZ SEMPRE REAIS (entra em LIGHTING e PHOTOREALISM, com frases físicas e concretas): reflexos fisicamente corretos em todas as superfícies, com intensidade e nitidez conforme o acabamento: fosco quase sem reflexo; acetinado com reflexo suave e difuso; POLIDO com brilho alto e reflexos nítidos e bem visíveis (porcelanato, pedra e quartzo polidos refletem claramente a janela, as fitas de LED, os spots e os metais que existem na cena, com highlights especulares marcados, sem perder o desenho do material), efeito Fresnel (mais reflexo em ângulos rasantes), perspectiva correta e só refletindo elementos que existem na cena; piso refletindo de leve janelas, móveis e luminárias; vidro e espelho com reflexo e transparência reais. Luz com queda natural (mais forte perto da fonte e suavizando com a distância), gradiente da janela para o fundo, luz rebatida entre superfícies com leve transferência de cor, sombras de contato nítidas e sombras projetadas que suavizam com a distância, LED desenhando a superfície onde bate (manchas e degradês reais, sem pontos estourados), spots com facho suave e sombra coerente. Nada de luz chapada, ambiente sem sombras ou reflexo de CGI.
@@ -1695,7 +1699,7 @@ function sameRules(n,opt,first=opt!==2){ // regras fixas que o texto do PDF não
 • Superfícies que não aparecem nas referências seguem ELEMENTOS NOVOS ou, sem descrição, a cor e o material do print. Nenhum material vira outro.
 • Fotografia real: nitidez de câmera profissional, microcontraste natural, sombras de contato definidas. Sem névoa, sem raios de luz volumétricos, sem glow, sem aspecto pintado ou sonhador.
 • Materiais: polido com brilho alto e reflexos nítidos da janela, dos LEDs e dos metais; tecidos existentes com trama real; metais com reflexo real; rejunte fino e alinhado.
-• Vidro do box incolor (extra clear), transparente e com reflexos sutis. Marcenaria continua marcenaria, nunca vira pedra.
+• Vidro do box incolor (extra clear), transparente e com reflexos sutis, só onde o print tem vidro; box aberto no print continua aberto. Marcenaria continua marcenaria, nunca vira pedra.
 • Luz: LED branco neutro-quente ~3500K só onde há faixa amarela no print, com o mesmo formato (fita linear = linha contínua) e sentido; fita em nicho ou sanca fica oculta, só a luz aparece; nada de LED embaixo de gabinetes ou bancadas sem faixa amarela (o vão fica em sombra natural); cor neutra sem dominante rosada, alaranjada ou amarela; o calor fica só perto das fitas, e os revestimentos claros mantêm a cor do print.`;
 }
 function sameRulesEN(n,opt,first=opt!==2){
@@ -1705,7 +1709,7 @@ function sameRulesEN(n,opt,first=opt!==2){
 • Surfaces not visible in the references follow NEW ELEMENTS or, without a description, the screenshot color and material. No material turns into another.
 • Real photograph: professional camera sharpness, natural micro-contrast, defined contact shadows. No haze, no volumetric light rays, no glow, no painterly or dreamy look.
 • Materials: polished = high gloss with sharp reflections of the window, LEDs and metals; existing fabrics with real weave; metals with real reflections; thin aligned grout.
-• Shower glass is clear (extra clear), transparent, with subtle reflections. Joinery stays joinery, never stone.
+• Shower glass is clear (extra clear), transparent, with subtle reflections, only where the screenshot has glass; an open shower stays open. Joinery stays joinery, never stone.
 • Light: neutral-warm white LED ~3500K only where the screenshot has yellow strips, same shape (linear strip = continuous line) and direction; strips in niches or coves stay hidden, only their light shows; no LED under cabinets or counters without a yellow strip (the gap stays in natural shadow); neutral color with no pink, orange or yellow cast; the warmth stays only near the strips, and light finishes keep the screenshot color.`;
 }
 function sameEnvImgs(n,opt,first=opt!==2){ return first?`Envie: 1º o print novo, depois ${n} render(s) prontos do ambiente`:`Envie: ${n} render(s) prontos do ambiente, por último o print novo`; }
@@ -2100,7 +2104,7 @@ COMO LER O QUE EU MANDO
 - Bloco TOP PRIORITIES logo após o GEOMETRY LOCK, com 4 a 6 linhas curtas sobre o que a IA mais erra nesta cena (objetos e áreas vazias, vão sem LED embaixo de móveis suspensos, posição e formato de cada LED, marcenaria x pedra, vidros); repita no fim.
 - Fita em nicho ou sanca é oculta: só a lavagem de luz aparece.
 - Luminárias exatas: LED só onde há faixa amarela, mesmo formato (fita linear = linha contínua), sentido e comprimento; nunca LED embaixo de gabinetes ou bancadas sem faixa amarela.
-- Vidro de box incolor por padrão (extra clear, transparente, reflexos sutis). Marcenaria nunca vira a pedra vizinha.
+- Vidro de box incolor por padrão (extra clear, transparente, reflexos sutis), só onde o print tem vidro; nunca acrescentar box de vidro. Marcenaria nunca vira a pedra vizinha.
 - Calor do LED só perto das fitas e spots; revestimentos claros mantêm a cor base do print (off-white continua off-white, nunca pêssego ou rosado), e metais rosé não tingem o ambiente.
 - Foto nítida, não pintura: microcontraste de câmera profissional, sombras de contato definidas, tecidos existentes com trama real (nunca acrescentar toalhas ou tecidos). Nada de névoa, raios de luz volumétricos, glow ou aspecto pintado/sonhador.
 - Todos os materiais com aparência física real: metal acetinado com brilho difuso, escovado com micro-riscos direcionais, polido com reflexo nítido do ambiente (nunca cromado de computador); madeira com veio e poro; pedra com profundidade; tecido com trama; vidro com reflexo e transparência reais. Nada de CGI ou plástico.
@@ -2260,7 +2264,7 @@ function sameNewEN(txt,n,opt,first=opt!==2){
 }
 const same={refs:[],print:null,opt:1,order:null}; // order: null = padrão do PDF
 function sameFirst(){ return same.order?same.order==="first":same.opt!==2; }
-function okImg(f){ return !!f&&/^image\/(jpeg|png|webp)$/.test(f.type) }
+function okImg(f){ return !!f&&isImg(f) }
 function fileUrl(f){ return f._u||(f._u=URL.createObjectURL(f)) }
 function dropZone(el,onFiles){
   el.addEventListener("dragover",e=>{ if([...(e.dataTransfer?.types||[])].includes("Files")){ e.preventDefault(); el.classList.add("over") } });
@@ -2268,12 +2272,12 @@ function dropZone(el,onFiles){
   el.addEventListener("drop",e=>{ e.preventDefault(); el.classList.remove("over"); onFiles(e.dataTransfer.files) });
 }
 function addRefs(files){
-  const fs=[...(files||[])].filter(okImg); if(!fs.length){ toast("Use JPG, PNG ou WebP"); return }
+  const fs=[...(files||[])].filter(okImg); if(!fs.length){ toast("Esse arquivo não é uma imagem"); return }
   const room=MAX_REFS-same.refs.length;
   if(fs.length>room) toast(room?`Cabem só mais ${room} render(s)`:`Use no máximo ${MAX_REFS} renders prontos`);
   same.refs.push(...fs.slice(0,room)); renderSame();
 }
-function setSamePrint(f){ if(!okImg(f)){ toast("Use JPG, PNG ou WebP"); return } same.print=f; renderSame(); }
+function setSamePrint(f){ if(!okImg(f)){ toast("Esse arquivo não é uma imagem"); return } same.print=f; renderSame(); }
 function sameOrder(){
   const P={f:same.print,t:"print do novo ângulo",d:"base de geometria, câmera e enquadramento"};
   const R=same.refs.map((f,i)=>({f,t:same.refs.length>1?`render pronto ${i+1}`:"render pronto",d:"referência de luz, cor e materiais"}));
@@ -2377,7 +2381,7 @@ $("tabGen").onclick=()=>showView("gen"); $("tabSame").onclick=()=>showView("same
 const cmp={a:null,b:null,aUrl:"",bUrl:"",mode:"drag",x:50,flip:false,dl:null};
 const CMP_TXT={a:"sketchup",b:"render ia"};
 async function setCmp(which,f){
-  if(!f||!/^image\/(jpeg|png|webp)$/.test(f.type)){toast("Use JPG, PNG ou WebP");return}
+  if(!f||!isImg(f)){toast("Esse arquivo não é uma imagem");return}
   const url=await readURL(f); cmp[which]=f; cmp[which+"Url"]=url;
   const th=$(which==="a"?"thA":"thB"); th.innerHTML=""; const im=document.createElement("img"); im.src=url; im.alt=""; th.append(im);
   $(which==="a"?"infA":"infB").textContent=f.name||"imagem anexada";
@@ -2423,8 +2427,8 @@ function cmpMode(m){ cmp.mode=m; renderCmp(); }
   });
 })();
 async function dropCmp(files,target){
-  const fs=[...(files||[])].filter(f=>/^image\/(jpeg|png|webp)$/.test(f.type));
-  if(!fs.length){ toast("Use JPG, PNG ou WebP"); return }
+  const fs=[...(files||[])].filter(f=>isImg(f));
+  if(!fs.length){ toast("Esse arquivo não é uma imagem"); return }
   if(target){ await setCmp(target,fs[0]); return }
   if(fs.length>1){ await setCmp("a",fs[0]); await setCmp("b",fs[1]); return }
   await setCmp(!cmp.a?"a":"b",fs[0]);
