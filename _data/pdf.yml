@@ -1,0 +1,59 @@
+# Conteúdo próprio do portfólio em PDF (o resto vem das outras seções do site).
+arquivo: "portfolio-lais-vieira.pdf"
+capa:
+  titulo: "portfólio"
+  destaque: "laís"
+  ano: "2026"
+  subtitulo: "renderização · modelagem 3D · detalhamento · projeto executivo"
+  foto: "/assets/img/perfil-alta.jpg"
+apresentacao:
+  saudacao: "muito prazer!"
+  texto: |-
+    Sou **Laís**, Designer Gráfico e estudante de Arquitetura e Urbanismo, atualmente cursando o 10º período. Desde muito nova, sou apaixonada pela arte de transformar espaços — sempre enxerguei na arquitetura e no design uma forma de dar vida às ideias, criar sensações e tornar ambientes memoráveis.
+
+    Atuo com terceirização de modelagem 3D, renderização, detalhamento e projeto executivo, atendendo arquitetos, designers e construtoras. Meu foco é entregar imagens e materiais técnicos que comuniquem com clareza, qualidade e sensibilidade cada projeto.
+  selos:
+    - icone: "formatura"
+      titulo: "bacharel em design gráfico"
+      texto: "cursando Arquitetura e Urbanismo — 10º período"
+    - icone: "medalha"
+      titulo: "múltiplos cursos"
+      texto: "renderização — modelagem — detalhamento"
+    - icone: "maleta"
+      titulo: "experiência prática em escritório"
+      texto: "estágio de 2 anos + freelancer em andamento"
+faixa:
+  - "renderização"
+  - "modelagem 3D"
+  - "detalhamento"
+  - "projeto executivo"
+  - "personalização de documentos"
+diferenciais:
+  titulo: "por que *terceirizar* comigo"
+  itens:
+    - icone: "alvo"
+      titulo: "você projeta, eu produzo"
+      texto: "assumo a produção técnica e visual para você ganhar tempo e focar no que importa: criar e atender seus clientes."
+    - icone: "imagem"
+      titulo: "V-Ray e IA no mesmo fluxo"
+      texto: "fotorrealismo tradicional quando o detalhe pede, renderização com IA quando o prazo pede — a melhor ferramenta para cada entrega."
+    - icone: "prancha"
+      titulo: "olhar de designer"
+      texto: "organização visual, composição e cuidado com a apresentação em cada imagem, prancha e documento."
+    - icone: "prancheta"
+      titulo: "entrega pronta para usar"
+      texto: "arquivos finalizados para apresentar ao cliente, levar para a obra ou entregar à banca."
+encerramento:
+  titulo: "obrigada!"
+  texto: "cada projeto tem uma história — vou adorar ajudar a contar a sua. chame no WhatsApp para conversarmos sobre o seu projeto e receber um orçamento."
+  botao: "falar no WhatsApp"
+secoes:
+  sobre: true
+  servicos: true
+  diferenciais: true
+  como_funciona: true
+  comparar: true
+  portfolio: true
+  projetos: true
+  formacao: true
+fotos_por_pagina: 9

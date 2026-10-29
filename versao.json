@@ -1,0 +1,5 @@
+---
+# Usado pelo painel para saber quando a publicação do site terminou.
+permalink: /versao.json
+---
+{"gerado": "{{ site.time | date_to_xmlschema }}"}

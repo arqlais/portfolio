@@ -89,6 +89,7 @@
               { type: 'image', name: 'imagem', label: '', pasta: 'assets/img/gallery', proporcao: '4/5', enquadramento: 'enquadramento', curto: true },
               texto('projeto', 'projeto / cliente'),
               { type: 'opcoes', name: 'tipo', label: '', opcoes: [['vray', 'V-Ray'], ['ia', 'IA']] },
+              { type: 'opcoes', name: 'pdf', label: '', opcoes: [['sim', 'no PDF'], ['nao', 'fora do PDF']] },
             ],
             novo: () => ({ imagem: '', projeto: '', tipo: 'vray' }) },
         ] },
@@ -127,11 +128,17 @@
               { type: 'image', name: 'imagem', label: 'imagem', pasta: 'assets/img/cases', proporcaoDe: 'formato', enquadramento: 'enquadramento' },
               { type: 'duas', campos: [texto('categoria', 'categoria (texto pequeno)'), titulo()] },
               textoLongo('texto', 'descrição'),
+              textoLongo('texto_servico', 'por que isso importa', { hint: 'aparece no portfólio em PDF, num destaque abaixo da descrição.' }),
               { type: 'list', name: 'ficha', label: 'ficha técnica', singular: 'linha', layout: 'linhas',
                 fields: [texto('rotulo', 'item'), texto('valor', 'valor')], novo: () => ({ rotulo: '', valor: '' }) },
               { type: 'duas', campos: [texto('legenda', 'legenda ao ampliar'), texto('descricao_alt', 'descrição da imagem (acessibilidade)')] },
+              { type: 'image', name: 'imagem_pdf', label: 'imagem no PDF (opcional)', pasta: 'assets/img/cases/extras', opcional: true,
+                hint: 'se ficar vazia, o PDF usa a imagem do site. ideal: a prancha em alta ou um PNG sem fundo.' },
+              { type: 'list', name: 'extras', label: 'imagens extras no PDF (até 3)', singular: 'imagem extra', resumo: (e) => e.legenda,
+                fields: [{ type: 'image', name: 'imagem', label: '', pasta: 'assets/img/cases/extras' }, texto('legenda', 'legenda')],
+                novo: () => ({ imagem: '', legenda: '' }) },
             ],
-            novo: () => ({ imagem: '', descricao_alt: '', legenda: '', categoria: '', titulo: '', texto: '', ficha: [{ rotulo: 'projeto', valor: '' }] }) },
+            novo: () => ({ imagem: '', descricao_alt: '', legenda: '', categoria: '', titulo: '', texto: '', texto_servico: '', ficha: [{ rotulo: 'projeto', valor: '' }] }) },
         ] },
         { titulo: 'textos da seção', campos: cabecalho },
       ],
@@ -414,9 +421,75 @@
         ] },
       ],
     },
+    {
+      id: 'pdf-capa', aba: 'pdf', arquivo: 'pdf', nome: 'capa e apresentação', modelo: 'portfolio-pdf.html',
+      titulo: 'capa e <span class="script">apresentação</span>',
+      descricao: 'a capa do portfólio em PDF, a página “muito prazer!” e a faixa de serviços.',
+      grupos: [
+        { titulo: 'capa', campos: [{ type: 'objeto', name: 'capa', campos: [
+          { type: 'image', name: 'foto', label: 'foto da capa', pasta: 'assets/img', proporcao: '106/138', forma: 'arco', enquadramento: 'foto_enquadramento' },
+          { type: 'duas', campos: [texto('titulo', 'título (fino, espaçado)'), texto('destaque', 'destaque (letra cursiva)')] },
+          { type: 'duas', campos: [texto('subtitulo', 'linha abaixo do título'), texto('ano', 'ano')] },
+        ] }] },
+        { titulo: 'muito prazer!', campos: [{ type: 'objeto', name: 'apresentacao', campos: [
+          texto('saudacao', 'saudação (em letra cursiva)'),
+          { type: 'markdown', name: 'texto', label: 'sua apresentação', hint: 'selecione palavras e clique em B para deixar em negrito. deixe uma linha em branco para começar outro parágrafo.' },
+          selos,
+        ] }] },
+        { titulo: 'faixa de serviços (capa)', campos: [
+          { type: 'list', name: 'faixa', label: 'serviços', singular: 'serviço', layout: 'chips' },
+        ] },
+      ],
+    },
+    {
+      id: 'pdf-vendas', aba: 'pdf', arquivo: 'pdf', nome: 'diferenciais e fechamento', modelo: 'portfolio-pdf.html',
+      titulo: 'diferenciais e <span class="script">fechamento</span>',
+      descricao: 'os argumentos que fazem o cliente querer fechar com você e a página final com WhatsApp e QR code.',
+      grupos: [
+        { titulo: 'por que terceirizar com você', campos: [{ type: 'objeto', name: 'diferenciais', campos: [
+          titulo(),
+          { type: 'list', name: 'itens', label: 'diferenciais', singular: 'diferencial', resumo: (d) => d.titulo,
+            fields: [{ type: 'icon', name: 'icone', label: 'ícone' }, texto('titulo', 'título'), textoLongo('texto', 'texto')],
+            novo: () => ({ icone: 'alvo', titulo: '', texto: '' }) },
+        ] }] },
+        { titulo: 'página final', campos: [{ type: 'objeto', name: 'encerramento', campos: [
+          texto('titulo', 'título (em letra cursiva)'), textoLongo('texto', 'texto'), texto('botao', 'texto do botão do WhatsApp'),
+        ] }] },
+      ],
+    },
+    {
+      id: 'pdf-paginas', aba: 'pdf', arquivo: 'pdf', nome: 'páginas do PDF', modelo: 'portfolio-pdf.html',
+      titulo: 'páginas do <span class="script">PDF</span>',
+      descricao: 'escolha quais páginas entram no portfólio. as fotos, serviços e estudos de caso vêm das seções do site — edite lá e o PDF acompanha.',
+      grupos: [
+        { titulo: 'o que aparece no PDF', campos: [{ type: 'objeto', name: 'secoes', campos: [
+          { type: 'liga', name: 'sobre', label: 'muito prazer! (apresentação e números)' },
+          { type: 'liga', name: 'servicos', label: 'serviços e para quem' },
+          { type: 'liga', name: 'diferenciais', label: 'por que terceirizar comigo' },
+          { type: 'liga', name: 'como_funciona', label: 'como funciona' },
+          { type: 'liga', name: 'comparar', label: 'do print ao render final (V-Ray × IA)' },
+          { type: 'liga', name: 'portfolio', label: 'portfólio de renders', hint: 'na seção “portfólio” do site, cada foto pode ficar “fora do PDF”.' },
+          { type: 'liga', name: 'projetos', label: 'estudos de caso (uma página cada)' },
+          { type: 'liga', name: 'formacao', label: 'cursos e softwares' },
+        ] }] },
+      ],
+    },
+    {
+      id: 'cursos', aba: 'pdf', arquivo: 'cursos', nome: 'cursos', modelo: 'portfolio-pdf.html',
+      titulo: 'cursos e <span class="script">formação</span>',
+      descricao: 'seus cursos com escola e carga horária. o total de horas é somado sozinho.',
+      grupos: [
+        { titulo: 'cursos', campos: [
+          { type: 'list', name: 'cursos', label: '', singular: 'curso', resumo: (c) => `${c.nome || ''}${c.horas ? ` · ${c.horas}h` : ''}`,
+            fields: [texto('nome', 'nome do curso'), { type: 'duas', campos: [texto('escola', 'escola / professor'), { type: 'number', name: 'horas', label: 'horas' }] }],
+            novo: () => ({ nome: '', escola: '', horas: 0 }) },
+        ] },
+        { titulo: 'textos da página', campos: cabecalho },
+      ],
+    },
   ];
   SECOES.forEach((sc) => { sc.id = sc.id || sc.arquivo; sc.aba = sc.aba || 'site'; });
-  const ABAS = [['site', 'site'], ['orcamento', 'orçamento (PDF)']];
+  const ABAS = [['site', 'site'], ['pdf', 'portfólio em PDF'], ['orcamento', 'orçamento (PDF)']];
   const secaoPorId = (id) => SECOES.find((sc) => sc.id === id);
   const ARQUIVOS = [...new Set(SECOES.map((sc) => sc.arquivo))];
 
@@ -425,8 +498,15 @@
   const dados = {};            // arquivo -> objeto
   const alterados = new Set(); // arquivos com mudanças não salvas
   const fotosNovas = new Map(); // caminho público -> { blob, url, enviada }
-  const modelosSite = {};      // index.html e _includes/*.html (prévia ao vivo do site)
+  const modelosSite = {};      // index.html, portfolio-pdf.html e _includes/*.html (prévias ao vivo)
+  const originais = {};        // arquivo -> conteúdo salvo (JSON), para saber o que mudou
   let secaoAtual = SECOES[0].id;
+  // Desfazer/refazer: fotos do conteúdo inteiro, guardadas a cada pausa na edição.
+  const historico = [];
+  let refazer = [];
+  let estavel = '';
+  let timerHistorico = null;
+  const NOMES_ARQUIVO = { pdf: 'portfólio em PDF', cursos: 'cursos', orcamento: 'orçamento' };
 
   /* ---------- Utilidades ---------- */
   const $ = (sel) => document.querySelector(sel);
@@ -501,13 +581,77 @@
     // Modelos do site (para a prévia ao vivo): a página e os trechos em _includes/.
     try {
       const inc = await gh(`/repos/${REPO}/contents/_includes?ref=${sha}`);
-      const nomes = ['index.html', ...inc.filter((f) => f.type === 'file').map((f) => `_includes/${f.name}`)];
+      const nomes = ['index.html', 'portfolio-pdf.html', ...inc.filter((f) => f.type === 'file').map((f) => `_includes/${f.name}`)];
       await Promise.all(nomes.map(async (n) => {
         modelosSite[n.replace(/^_includes\//, '')] = await gh(`/repos/${REPO}/contents/${n}?ref=${sha}`, { cru: true });
       }));
     } catch (_) { /* sem modelos, a prévia do site não aparece */ }
+    ARQUIVOS.forEach((a) => { originais[a] = assinatura(dados[a]); });
     alterados.clear();
+    historico.length = 0; refazer = []; estavel = JSON.stringify(dados);
+    atualizarDesfazer();
   };
+
+  /* ---------- O que mudou, desfazer e refazer ---------- */
+  // Compara sem listas/grupos vazios: abrir uma seção cria listas vazias que não são alterações de verdade.
+  const normalizar = (v) => {
+    if (Array.isArray(v)) return v.map(normalizar);
+    if (v && typeof v === 'object') {
+      const o = {};
+      Object.keys(v).forEach((k) => {
+        const x = normalizar(v[k]);
+        if (x === undefined || (Array.isArray(x) && !x.length) || (x && typeof x === 'object' && !Array.isArray(x) && !Object.keys(x).length)) return;
+        o[k] = x;
+      });
+      return o;
+    }
+    return v;
+  };
+  const assinatura = (v) => JSON.stringify(normalizar(v));
+  const recalcularAlterados = () => {
+    alterados.clear();
+    ARQUIVOS.forEach((a) => { if (dados[a] && assinatura(dados[a]) !== originais[a]) alterados.add(a); });
+  };
+  const guardarPasso = () => {
+    clearTimeout(timerHistorico); timerHistorico = null;
+    const atual = JSON.stringify(dados);
+    if (atual === estavel) return;
+    historico.push(estavel);
+    if (historico.length > 80) historico.shift();
+    estavel = atual;
+    refazer = [];
+    atualizarDesfazer();
+  };
+  const aplicarEstado = (json) => {
+    const novo = JSON.parse(json);
+    Object.keys(novo).forEach((a) => { dados[a] = novo[a]; });
+    estavel = json;
+    recalcularAlterados();
+    atualizarBarra();
+    redesenhar();
+    enviarLateral();
+    atualizarDesfazer();
+  };
+  const desfazer = () => {
+    guardarPasso();
+    if (!historico.length) return;
+    refazer.push(estavel);
+    aplicarEstado(historico.pop());
+    avisar('alteração desfeita.');
+  };
+  const refazerPasso = () => {
+    guardarPasso();
+    if (!refazer.length) return;
+    historico.push(estavel);
+    aplicarEstado(refazer.pop());
+    avisar('alteração refeita.');
+  };
+  function atualizarDesfazer() {
+    const d = document.getElementById('botao-desfazer');
+    const r = document.getElementById('botao-refazer');
+    if (d) d.disabled = !historico.length && !timerHistorico;
+    if (r) r.disabled = !refazer.length;
+  }
 
   const blobParaBase64 = (blob) => new Promise((ok, falha) => {
     const r = new FileReader();
@@ -547,7 +691,7 @@
         method: 'POST',
         body: { base_tree: commitPai.tree.sha, tree: arvore.map(({ _foto, ...item }) => item) },
       });
-      const nomes = arquivos.map((a) => (a === 'orcamento' ? 'orçamento' : SECOES.find((s) => s.arquivo === a).nome)).join(', ');
+      const nomes = arquivos.map((a) => NOMES_ARQUIVO[a] || SECOES.find((s) => s.arquivo === a).nome).join(', ');
       const commit = await gh(`/repos/${REPO}/git/commits`, {
         method: 'POST',
         body: { message: `Atualiza o site pelo painel (${nomes})`, tree: novaArvore.sha, parents: [pai] },
@@ -555,10 +699,15 @@
       await gh(`/repos/${REPO}/git/refs/heads/${BRANCH}`, { method: 'PATCH', body: { sha: commit.sha } });
 
       arvore.forEach((item) => { if (item._foto) item._foto.enviada = true; });
+      arquivos.forEach((a) => { originais[a] = assinatura(dados[a]); });
       alterados.clear();
       atualizarBarra();
       montarMenu();
-      avisar(arquivos.every((a) => a === 'orcamento') ? 'orçamento salvo!' : 'salvo! o site atualiza em cerca de 1 minuto.');
+      if (arquivos.every((a) => a === 'orcamento')) avisar('orçamento salvo!');
+      else {
+        avisar('salvo! acompanhe a publicação no topo do painel.');
+        acompanharPublicacao(commit.committer && commit.committer.date);
+      }
     } catch (e) {
       console.error(e);
       avisar(e.status === 401
@@ -568,6 +717,50 @@
       botao.disabled = false;
       botao.textContent = 'salvar e publicar';
     }
+  };
+
+  /* ---------- Status da publicação ---------- */
+  // Depois de salvar: o site é republicado pelo GitHub Pages (≈1 min) e o PDF é gerado de novo
+  // por uma automação (≈3 min). O painel consulta /versao.json e /assets/pdf/info.json até ver
+  // horários posteriores ao salvamento.
+  let timerStatus = null;
+  const mostrarStatus = (texto, tipo = '') => {
+    const chip = $('#status-publicacao');
+    if (!chip) return;
+    chip.hidden = !texto;
+    chip.className = `status ${tipo}`;
+    chip.textContent = texto;
+  };
+  const lerHorario = async (url) => {
+    try {
+      const r = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) return 0;
+      return Date.parse((await r.json()).gerado) || 0;
+    } catch (_) { return 0; }
+  };
+  const acompanharPublicacao = (dataCommit) => {
+    clearTimeout(timerStatus);
+    const desde = (Date.parse(dataCommit) || Date.now()) - 5000;
+    const inicio = Date.now();
+    let siteOk = false;
+    mostrarStatus('publicando o site…', 'andando');
+    const checar = async () => {
+      if (!siteOk && (await lerHorario('/versao.json')) >= desde) {
+        siteOk = true;
+        mostrarStatus('site no ar ✓ · gerando o PDF…', 'andando');
+      }
+      if (siteOk && (await lerHorario('/assets/pdf/info.json')) >= desde) {
+        mostrarStatus('site e PDF atualizados ✓', 'ok');
+        timerStatus = setTimeout(() => mostrarStatus(''), 15000);
+        return;
+      }
+      if (Date.now() - inicio > 12 * 60 * 1000) {
+        mostrarStatus(siteOk ? 'site no ar ✓ · o PDF está demorando, confira mais tarde' : 'a publicação está demorando — confira o site em alguns minutos', 'aviso');
+        return;
+      }
+      timerStatus = setTimeout(checar, 10000);
+    };
+    timerStatus = setTimeout(checar, 15000);
   };
 
   /* ---------- Fotos ---------- */
@@ -637,6 +830,131 @@
       m.append(el('div', 'vazia', 'sem foto'));
     }
     return m;
+  };
+
+  /* ---------- Biblioteca de imagens ---------- */
+  // Todas as imagens que já estão no site (pastas de assets/img) + as enviadas agora e ainda não salvas.
+  const PASTAS_BIB = [['todas', 'todas'], ['gallery', 'galeria'], ['compare', 'comparar'], ['cases', 'estudos de caso'], ['orcamento', 'orçamento'], ['outras', 'outras']];
+  const pastaDe = (caminho) => {
+    const m = String(caminho).match(/^\/?assets\/img\/([^/]+)\//);
+    return m && PASTAS_BIB.some(([k]) => k === m[1]) ? m[1] : 'outras';
+  };
+  let bibliotecaCache = null;
+  const carregarBiblioteca = async () => {
+    if (!bibliotecaCache) {
+      const arv = await gh(`/repos/${REPO}/git/trees/${BRANCH}?recursive=1`);
+      bibliotecaCache = arv.tree
+        .filter((t) => t.type === 'blob' && /^assets\/img\/.+\.(jpe?g|png|webp)$/i.test(t.path))
+        .map((t) => `/${t.path}`);
+    }
+    return [...[...fotosNovas.keys()].filter((c) => !bibliotecaCache.includes(c)).reverse(), ...bibliotecaCache];
+  };
+  const abrirBiblioteca = (pasta) => new Promise((resolver) => {
+    const modal = $('#modal-biblioteca');
+    const grade = $('#bib-grade');
+    const busca = $('#bib-busca');
+    const pastas = $('#bib-pastas');
+    let filtro = pastaDe(`/${pasta || ''}/x`);
+    if (filtro === 'outras') filtro = 'todas';
+    busca.value = '';
+    let todas = [];
+    const fechar = (valor) => {
+      modal.hidden = true;
+      document.body.style.overflow = '';
+      grade.innerHTML = '';
+      resolver(valor || null);
+    };
+    const desenhar = () => {
+      pastas.innerHTML = '';
+      PASTAS_BIB.forEach(([k, n]) => {
+        const qtd = k === 'todas' ? todas.length : todas.filter((c) => pastaDe(c) === k).length;
+        if (!qtd && k !== 'todas') return;
+        const b = el('button', k === filtro ? 'ativo' : '', `${n} (${qtd})`);
+        b.type = 'button';
+        b.onclick = () => { filtro = k; desenhar(); };
+        pastas.append(b);
+      });
+      const q = busca.value.trim().toLowerCase();
+      const lista = todas.filter((c) => (filtro === 'todas' || pastaDe(c) === filtro) && (!q || c.toLowerCase().includes(q)));
+      grade.innerHTML = '';
+      if (!lista.length) grade.append(el('p', 'dica', 'nenhuma imagem encontrada.'));
+      lista.forEach((c) => {
+        const b = el('button', 'bib-item');
+        b.type = 'button';
+        b.title = c.split('/').pop();
+        const img = el('img');
+        img.loading = 'lazy'; img.alt = ''; img.src = urlFoto(c);
+        b.append(img, el('span', null, fotosNovas.has(c) ? 'nova · ainda não salva' : c.split('/').pop()));
+        b.onclick = () => fechar(c);
+        grade.append(b);
+      });
+    };
+    busca.oninput = desenhar;
+    $('#bib-cancelar').onclick = () => fechar(null);
+    modal.onclick = (ev) => { if (ev.target === modal) fechar(null); };
+    const enviar = $('#bib-enviar');
+    enviar.disabled = false;
+    enviar.textContent = 'enviar do aparelho';
+    enviar.onclick = async () => {
+      const [arquivo] = await escolherArquivos(false);
+      if (!arquivo) return;
+      enviar.disabled = true;
+      enviar.textContent = 'preparando…';
+      try { fechar(await prepararFoto(arquivo, pasta || 'assets/img')); } catch (_) {
+        avisar('não consegui abrir essa imagem. tente uma foto em JPG ou PNG.', true);
+        enviar.disabled = false; enviar.textContent = 'enviar do aparelho';
+      }
+    };
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    grade.innerHTML = '<p class="dica">carregando imagens do site…</p>';
+    carregarBiblioteca().then((l) => { todas = l; desenhar(); }).catch(() => {
+      grade.innerHTML = '';
+      grade.append(el('p', 'dica', 'não foi possível carregar a biblioteca agora — use “enviar do aparelho”.'));
+    });
+  });
+
+  /* ---------- Histórico de versões ---------- */
+  const abrirHistorico = async () => {
+    const modal = $('#modal-historico');
+    const lista = $('#hist-lista');
+    lista.innerHTML = '<p class="dica">carregando…</p>';
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    const fechar = () => { modal.hidden = true; document.body.style.overflow = ''; };
+    $('#hist-fechar').onclick = fechar;
+    modal.onclick = (ev) => { if (ev.target === modal) fechar(); };
+    let commits;
+    try { commits = await gh(`/repos/${REPO}/commits?sha=${BRANCH}&path=_data&per_page=30`); } catch (_) {
+      lista.innerHTML = ''; lista.append(el('p', 'erro', 'não foi possível carregar o histórico agora.')); return;
+    }
+    lista.innerHTML = '';
+    const fmt = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    commits.forEach((c, i) => {
+      const item = el('div', 'hist-item');
+      const info = el('div');
+      info.append(el('b', null, c.commit.message.split('\n')[0].replace(/^Atualiza o site pelo painel/, 'salvo pelo painel')));
+      info.append(el('small', null, `${fmt.format(new Date(c.commit.committer.date))}${i === 0 ? ' · versão atual' : ''}`));
+      item.append(info);
+      if (i > 0) {
+        const b = el('button', 'btn btn-ghost btn-sm', 'restaurar');
+        b.type = 'button';
+        b.onclick = async () => {
+          if (!confirm('carregar o conteúdo desta versão? você vai poder conferir tudo antes de salvar e publicar.')) return;
+          b.disabled = true; b.textContent = 'carregando…';
+          guardarPasso();
+          await Promise.all(ARQUIVOS.map(async (a) => {
+            try { dados[a] = jsyaml.load(await gh(`/repos/${REPO}/contents/_data/${a}.yml?ref=${c.sha}`, { cru: true })) || {}; } catch (_) { /* arquivo não existia nessa versão */ }
+          }));
+          guardarPasso();
+          recalcularAlterados(); atualizarBarra(); mostrarSecao(secaoAtual, false); enviarLateral();
+          fechar();
+          avisar(alterados.size ? 'versão carregada. confira e clique em “salvar e publicar” para colocar no ar (ou em desfazer).' : 'essa versão é igual à atual.');
+        };
+        item.append(b);
+      }
+      lista.append(item);
+    });
   };
 
   /* ---------- Modal de enquadramento ---------- */
@@ -732,9 +1050,12 @@
 
   /* ---------- Formulários ---------- */
   const marcar = () => {
-    const secao = secaoPorId(secaoAtual);
-    alterados.add(secao.arquivo); atualizarBarra(); montarMenu();
+    recalcularAlterados();
+    atualizarBarra(); montarMenu();
     enviarLateral();
+    clearTimeout(timerHistorico);
+    timerHistorico = setTimeout(guardarPasso, 600);
+    atualizarDesfazer();
   };
   const redesenhar = () => {
     const y = window.scrollY;
@@ -853,6 +1174,7 @@
     }
     const wrap = el('div', 'campo');
     if (campo.label) wrap.append(el('span', 'rotulo', campo.label));
+    if (campo.hint) wrap.append(el('p', 'dica', campo.hint));
     const linha = el('div', 'foto-campo');
     const enq = campo.enquadramento ? obj[campo.enquadramento] : null;
     const miniatura = criarMoldura(obj[campo.name], campo, enq);
@@ -863,20 +1185,20 @@
     const trocar = el('button', 'btn btn-ghost btn-sm', obj[campo.name] ? (campo.curto ? 'trocar' : 'trocar foto') : 'escolher foto');
     trocar.type = 'button';
     trocar.onclick = async () => {
-      const [arquivo] = await escolherArquivos(false);
-      if (!arquivo) return;
-      trocar.disabled = true;
-      trocar.textContent = 'preparando…';
-      try {
-        obj[campo.name] = await prepararFoto(arquivo, campo.pasta);
-        if (campoBase.enquadramento && !campo.par) delete obj[campoBase.enquadramento];
-        marcar();
-      } catch (_) {
-        avisar('não consegui abrir essa imagem. tente uma foto em JPG ou PNG.', true);
-      }
+      const caminho = await abrirBiblioteca(campo.pasta);
+      if (!caminho || caminho === obj[campo.name]) return;
+      obj[campo.name] = caminho;
+      if (campoBase.enquadramento && !campo.par) delete obj[campoBase.enquadramento];
+      marcar();
       redesenhar();
     };
     botoes.append(trocar);
+    if (campo.opcional && obj[campo.name]) {
+      const tirar = el('button', 'btn btn-ghost btn-sm', 'remover');
+      tirar.type = 'button';
+      tirar.onclick = () => { delete obj[campo.name]; marcar(); redesenhar(); };
+      botoes.append(tirar);
+    }
 
     if (campo.enquadramento && obj[campo.name]) {
       const ajustar = el('button', 'btn btn-terra btn-sm', campo.curto ? 'enquadrar' : 'ajustar enquadramento');
@@ -1053,6 +1375,21 @@
     return wrap;
   };
 
+  // Interruptor liga/desliga (verdadeiro/falso).
+  const campoLiga = (campo, obj) => {
+    const wrap = el('label', 'campo-liga');
+    const textos = el('span', 'liga-textos');
+    textos.append(el('b', null, campo.label));
+    if (campo.hint) textos.append(el('small', null, campo.hint));
+    const chave = el('input');
+    chave.type = 'checkbox';
+    chave.className = 'liga';
+    chave.checked = obj[campo.name] !== false;
+    chave.onchange = () => { obj[campo.name] = chave.checked; marcar(); };
+    wrap.append(textos, chave);
+    return wrap;
+  };
+
   const botaoIcone = (simbolo, titulo, acao, desativado = false, perigo = false) => {
     const b = el('button', 'icone-btn' + (perigo ? ' perigo' : ''), simbolo);
     b.type = 'button';
@@ -1063,6 +1400,7 @@
     return b;
   };
 
+  const filtrosGrade = { busca: '', tipo: 'todas' };
   const campoLista = (campo, obj) => {
     if (!Array.isArray(obj[campo.name])) obj[campo.name] = [];
     const lista = obj[campo.name];
@@ -1102,6 +1440,40 @@
     const grade = campo.layout === 'grade';
     const linhas = campo.layout === 'linhas';
     const container = el('div', grade ? 'grade' : 'lista');
+    let ferramentas = null;
+    if (grade && lista.length > 1) {
+      ferramentas = el('div', 'grade-ferramentas');
+      const busca = el('input');
+      busca.type = 'search';
+      busca.placeholder = 'buscar por projeto…';
+      busca.value = filtrosGrade.busca;
+      const tipos = el('div', 'opcoes');
+      const contagem = el('span', 'grade-contagem');
+      [['todas', 'todas'], ['vray', 'V-Ray'], ['ia', 'IA'], ['fora', 'fora do PDF']].forEach(([v, n]) => {
+        const b = el('button', filtrosGrade.tipo === v ? 'ativo' : '', n);
+        b.type = 'button';
+        b.onclick = () => { filtrosGrade.tipo = v; tipos.querySelectorAll('button').forEach((x) => x.classList.toggle('ativo', x === b)); filtrar(); };
+        tipos.append(b);
+      });
+      const filtrar = () => {
+        const q = filtrosGrade.busca.trim().toLowerCase();
+        let vis = 0;
+        [...container.children].forEach((card, i) => {
+          const it = lista[i] || {};
+          const okTipo = filtrosGrade.tipo === 'todas' || (filtrosGrade.tipo === 'fora' ? it.pdf === 'nao' : (it.tipo || 'vray') === filtrosGrade.tipo);
+          const ok = okTipo && (!q || String(it.projeto || '').toLowerCase().includes(q));
+          card.hidden = !ok;
+          if (ok) vis += 1;
+        });
+        const nIa = lista.filter((x) => x.tipo === 'ia').length;
+        contagem.textContent = `${vis === lista.length ? '' : `${vis} de `}${lista.length} fotos · ${lista.length - nIa} V-Ray · ${nIa} IA`;
+        if (container._ordenar) container._ordenar.option('disabled', vis !== lista.length);
+      };
+      busca.oninput = () => { filtrosGrade.busca = busca.value; filtrar(); };
+      ferramentas.append(busca, tipos, contagem);
+      ferramentas._filtrar = filtrar;
+      wrap.append(ferramentas, el('p', 'dica', 'arraste uma foto para mudar a ordem (no celular, segure um instante antes de arrastar).'));
+    }
     lista.forEach((item, i) => {
       const card = el('div', 'item');
       const acoes = el('div', 'item-acoes');
@@ -1134,6 +1506,20 @@
       container.append(card);
     });
     wrap.append(container);
+    if (grade && window.Sortable && lista.length > 1) {
+      container._ordenar = window.Sortable.create(container, {
+        animation: 160, delay: 220, delayOnTouchOnly: true, ghostClass: 'arrastando',
+        filter: 'input, textarea, select, .opcoes, .foto-botoes, .item-acoes', preventOnFilter: false,
+        onEnd: (ev) => {
+          if (ev.oldIndex === ev.newIndex) return;
+          const [x] = lista.splice(ev.oldIndex, 1);
+          lista.splice(ev.newIndex, 0, x);
+          marcar();
+          redesenhar();
+        },
+      });
+    }
+    if (ferramentas) ferramentas._filtrar();
 
     const adicionar = el('div', 'adicionar');
     if (campo.fotoEmMassa) {
@@ -1181,6 +1567,13 @@
       case 'formato': return campoFormato(campo, obj);
       case 'list': return campoLista(campo, obj);
       case 'escala': return campoEscala(campo, obj);
+      case 'liga': return campoLiga(campo, obj);
+      case 'objeto': {
+        if (!obj[campo.name] || typeof obj[campo.name] !== 'object') obj[campo.name] = {};
+        const d = el('div', 'objeto');
+        campo.campos.forEach((c) => d.append(renderizarCampo(c, obj[campo.name])));
+        return d;
+      }
       case 'cor': return campoCor(campo, obj);
       default: return campoTexto(campo, obj);
     }
@@ -1246,15 +1639,15 @@
   const markdownSimples = (t) => String(t ?? '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
     .map((p) => `<p>${p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>')}</p>`).join('\n');
-  const htmlDoSite = async () => {
-    if (!modelosSite['index.html'] || !window.liquidjs) return null;
+  const htmlDoSite = async (modelo = 'index.html') => {
+    if (!modelosSite[modelo] || !window.liquidjs) return null;
     if (!motorSite) {
       motorSite = new window.liquidjs.Liquid({ jekyllInclude: true, templates: modelosSite, strictFilters: false });
       motorSite.registerFilter('relative_url', (v) => urlFoto(String(v ?? '')));
       motorSite.registerFilter('markdownify', markdownSimples);
       motorSite.registerFilter('jsonify', (v) => JSON.stringify(v));
     }
-    const fonte = modelosSite['index.html'].replace(/^---[\s\S]*?---\s*/, '');
+    const fonte = modelosSite[modelo].replace(/^---[\s\S]*?---\s*/, '');
     const html = await motorSite.parseAndRender(fonte, { site: { data: dados } });
     return html.replace(/<head>/i, `<head><base href="${location.origin}/">`);
   };
@@ -1267,21 +1660,23 @@
   let larguraSite = 1280;
   const telaLarga = () => window.matchMedia('(min-width: 1200px)').matches;
 
+  const LARGURA_A4 = 860; // folha A4 (794px) com a margem cinza da página do PDF
   const ajustarSite = () => {
     if (!lateralSite) return;
     const palco = $('#lateral-palco');
-    const escala = Math.min(1, (palco.clientWidth - 2) / larguraSite);
+    const largura = lateralSite.modelo === 'index.html' ? larguraSite : LARGURA_A4;
+    const escala = Math.min(1, (palco.clientWidth - 2) / largura);
     const q = lateralSite.quadro;
-    q.style.width = `${larguraSite}px`;
+    q.style.width = `${largura}px`;
     q.style.height = `${Math.round((palco.clientHeight - 2) / escala)}px`;
     q.style.transform = `scale(${escala})`;
-    lateralSite.folha.style.width = `${larguraSite * escala}px`;
+    lateralSite.folha.style.width = `${largura * escala}px`;
     lateralSite.folha.style.height = `${palco.clientHeight - 2}px`;
   };
   const desenharSite = async (ancora) => {
     if (!lateralSite) return;
     let html;
-    try { html = await htmlDoSite(); } catch (e) { console.error(e); return; }
+    try { html = await htmlDoSite(lateralSite.modelo); } catch (e) { console.error(e); return; }
     if (!html) { $('#lateral-palco').innerHTML = '<p class="dica" style="padding:16px">não foi possível montar a prévia do site.</p>'; lateralSite = null; return; }
     const q = lateralSite.quadro;
     const y = q.contentWindow ? q.contentWindow.scrollY : 0;
@@ -1292,15 +1687,15 @@
     };
     q.srcdoc = html;
   };
-  const criarSite = (ancora) => {
+  const criarSite = (ancora, modelo = 'index.html') => {
     const palco = $('#lateral-palco');
     palco.innerHTML = '';
     const folha = el('div', 'previa-folha previa-site');
     const quadro = el('iframe');
-    quadro.title = 'pré-visualização do site';
+    quadro.title = modelo === 'index.html' ? 'pré-visualização do site' : 'pré-visualização do portfólio em PDF';
     folha.append(quadro);
     palco.append(folha);
-    lateralSite = { folha, quadro };
+    lateralSite = { folha, quadro, modelo };
     ajustarSite();
     desenharSite(ancora);
   };
@@ -1308,7 +1703,8 @@
   const atualizarLateral = () => {
     const aside = $('#previa-lateral');
     const secao = secaoPorId(secaoAtual);
-    const ligar = !!secao && telaLarga() && !$('#tela-painel').hidden && (secao.aba === 'orcamento' || !!modelosSite['index.html']);
+    const modelo = secao && (secao.modelo || 'index.html');
+    const ligar = !!secao && telaLarga() && !$('#tela-painel').hidden && (secao.aba === 'orcamento' || !!modelosSite[modelo]);
     aside.hidden = !ligar;
     $('#tela-painel').classList.toggle('com-previa', ligar);
     $('#lateral-tamanhos').hidden = !(ligar && secao.aba === 'site');
@@ -1323,7 +1719,7 @@
       else ajustarFolha(lateral);
     } else {
       if (lateral) { folhas.delete(lateral); lateral = null; }
-      if (!lateralSite || !$('#lateral-palco').contains(lateralSite.folha)) criarSite(secao.ancora);
+      if (!lateralSite || lateralSite.modelo !== modelo || !$('#lateral-palco').contains(lateralSite.folha)) criarSite(secao.ancora, modelo);
       else {
         ajustarSite();
         const alvo = secao.ancora && secao.ancora.startsWith('#') && lateralSite.quadro.contentDocument
@@ -1362,6 +1758,38 @@
     if (alterados.has('orcamento')) {
       barra.append(el('span', 'dica', 'a pré-visualização e o PDF já mostram as alterações, mesmo antes de salvar.'));
     }
+    return barra;
+  };
+
+  /* ---------- Portfólio em PDF: ver, salvar agora e baixar o publicado ---------- */
+  const abrirPdfMontado = async (imprimir) => {
+    const janela = window.open('', '_blank');
+    if (!janela) { avisar('o navegador bloqueou a nova aba. permita pop-ups para lais3d.com.br e tente de novo.', true); return; }
+    janela.document.write('<p style="font-family:sans-serif;padding:24px">montando o portfólio…</p>');
+    let html;
+    try { html = await htmlDoSite('portfolio-pdf.html'); } catch (e) { console.error(e); }
+    if (!html) { janela.close(); avisar('não foi possível montar o PDF agora.', true); return; }
+    if (imprimir) {
+      html = html.replace('</body>', `<script>window.addEventListener('load',function(){var t=setInterval(function(){if(document.documentElement.classList.contains('pronto')){clearInterval(t);setTimeout(function(){window.print()},800)}},200)})<\/script></body>`);
+    }
+    janela.document.open();
+    janela.document.write(html);
+    janela.document.close();
+  };
+  const barraPdf = () => {
+    const barra = el('div', 'acoes-orcamento');
+    const ver = el('button', 'btn btn-ghost btn-sm', 'ver o PDF montado');
+    ver.type = 'button';
+    ver.onclick = () => abrirPdfMontado(false);
+    const agora = el('button', 'btn btn-ghost btn-sm', 'salvar PDF agora');
+    agora.type = 'button';
+    agora.title = 'abre a impressão do navegador: escolha “salvar como PDF”.';
+    agora.onclick = () => abrirPdfMontado(true);
+    const baixar = el('a', 'btn btn-primary btn-sm', 'baixar PDF publicado');
+    baixar.href = `/assets/pdf/${(dados.pdf && dados.pdf.arquivo) || 'portfolio-lais-vieira.pdf'}`;
+    baixar.target = '_blank'; baixar.rel = 'noopener';
+    barra.append(ver, agora, baixar);
+    barra.append(el('span', 'dica', 'ao salvar e publicar, o PDF do site é gerado de novo sozinho em cerca de 3 minutos (o botão do site sempre baixa a versão mais nova).'));
     return barra;
   };
 
@@ -1412,6 +1840,8 @@
     const p = el('p', null, secao.descricao + ' ');
     if (secao.aba === 'orcamento') {
       topo.append(h1, p, barraOrcamento());
+    } else if (secao.aba === 'pdf') {
+      topo.append(h1, p, barraPdf());
     } else {
       const link = el('a', null, 'ver no site ↗');
       link.href = `/${secao.ancora}`;
@@ -1502,6 +1932,17 @@
   };
 
   $('#botao-sair').onclick = () => sair();
+  $('#botao-historico').onclick = abrirHistorico;
+  $('#botao-desfazer').onclick = desfazer;
+  $('#botao-refazer').onclick = refazerPasso;
+  document.addEventListener('keydown', (ev) => {
+    if (!(ev.ctrlKey || ev.metaKey) || $('#tela-painel').hidden) return;
+    const tecla = ev.key.toLowerCase();
+    const digitando = /^(input|textarea)$/i.test(document.activeElement && document.activeElement.tagName);
+    if (tecla === 's') { ev.preventDefault(); if (alterados.size) salvar(); }
+    else if (tecla === 'z' && !digitando) { ev.preventDefault(); if (ev.shiftKey) refazerPasso(); else desfazer(); }
+    else if (tecla === 'y' && !digitando) { ev.preventDefault(); refazerPasso(); }
+  });
   $('#previa-fechar').onclick = fecharPrevia;
   document.querySelectorAll('#lateral-tamanhos button').forEach((b) => { b.onclick = () => escolherLarguraSite(Number(b.dataset.largura)); });
   $('#previa-pdf').onclick = salvarPdf;

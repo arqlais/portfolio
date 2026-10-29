@@ -94,6 +94,7 @@
               {% include icone.html nome="seta" %}
             </a>
             <a href="{{ wa }}" target="_blank" rel="noopener" class="btn btn-ghost">{{ inicio.botao_whatsapp | escape }}</a>
+            <a href="{{ '/assets/pdf/' | append: site.data.pdf.arquivo | relative_url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-pdf" download>{% include icone.html nome="download" %} portfólio em PDF</a>
           </div>
         </div>
       </div>
@@ -411,6 +412,7 @@
           <a href="mailto:{{ g.email }}">{{ g.email }}</a>
           <a href="{{ wa }}" target="_blank" rel="noopener">{{ g.whatsapp_exibicao | escape }}</a>
           <a href="{{ insta }}" target="_blank" rel="noopener">@{{ g.instagram_usuario | escape }}</a>
+          <a href="{{ '/assets/pdf/' | append: site.data.pdf.arquivo | relative_url }}" target="_blank" rel="noopener" download>baixar portfólio em PDF</a>
         </div>
       </div>
     </div>

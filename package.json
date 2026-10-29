@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-lais",
+  "private": true,
+  "description": "Ferramentas do site: gera o portfólio em PDF.",
+  "type": "module",
+  "scripts": {
+    "pdf": "node ferramentas/gerar-pdf.mjs _site assets/pdf/portfolio-lais-vieira.pdf"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}
