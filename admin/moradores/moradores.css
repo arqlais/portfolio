@@ -1,0 +1,148 @@
+/* Proposta para moradores — folha única de 794px (largura A4), altura conforme o conteúdo.
+ * As cores vêm do painel (variáveis definidas em render.js). */
+@font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-Light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-Medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Poppins';src:url('/assets/fonts/Poppins-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'The Seasons';src:url('/assets/fonts/TheSeasonsIt.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--fundo,#f7f5f1)}
+body{font-family:'Poppins',sans-serif;color:var(--texto);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#moradores{width:794px;margin:0 auto}
+.folha{width:794px;background:var(--fundo);padding:30px 0 38px;overflow:hidden}
+.script{font-family:'The Seasons',serif;font-style:italic;font-weight:400}
+b,strong{font-weight:500;color:var(--principal)}
+em{font-style:italic}
+.lab{display:block;font-size:9.3px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--destaque)}
+.wrap{padding:0 60px}
+[style*="--fx"]{object-fit:cover;object-position:var(--fx,50%) var(--fy,50%);transform:scale(var(--fz,1));transform-origin:var(--fx,50%) var(--fy,50%)}
+
+/* títulos: Poppins, com a palavra de ênfase em The Seasons */
+.t{font-weight:500;font-size:25px;line-height:1.2;letter-spacing:-.015em;color:var(--principal)}
+.t .script,.h1 .script{font-size:1.2em;letter-spacing:0;color:var(--destaque);line-height:.8}
+.sec{margin-top:60px}
+.sec>.lab{margin-bottom:9px}
+
+/* faixa do topo */
+.faixa{margin:0 38px;border-radius:19px;background:var(--principal);padding:15px 23px;display:flex;align-items:center;gap:15px;color:#fff}
+.faixa .k{width:38px;height:38px;border-radius:50%;background:var(--destaque-suave);display:grid;place-items:center;flex:none}
+.faixa .tx{flex:1;display:flex;flex-direction:column;gap:2px}
+.faixa .tx small{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--destaque-suave);font-weight:500}
+.faixa .tx span{font-size:12.5px}
+.faixa .tx b{font-weight:600;color:var(--destaque-suave)}
+.faixa .selo{font-size:8.8px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--destaque-suave);border:1px solid rgba(208,172,163,.55);border-radius:99px;padding:6px 14px;white-space:nowrap}
+
+/* topo */
+.hero{display:grid;grid-template-columns:1fr 257px;gap:45px;padding-top:38px;align-items:start}
+.marca{display:flex;align-items:flex-end;gap:10px}
+.marca .w{font-family:'The Seasons',serif;font-style:italic;font-size:35px;color:var(--principal);line-height:.8}
+.marca .w span{color:var(--destaque)}
+.marca small{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--secundaria);padding-bottom:2px}
+.h1{margin-top:45px;font-weight:500;font-size:36px;line-height:1.2;letter-spacing:-.025em;color:var(--principal)}
+.hero .txt{margin-top:26px;font-size:12.8px;line-height:1.75;font-weight:300}
+.destaque-img{position:relative;width:257px;height:321px;margin-top:30px}
+.destaque-img .img{position:absolute;inset:0;border-radius:23px;overflow:hidden;background:var(--destaque-claro)}
+.destaque-img .img img{width:100%;height:100%;object-fit:cover;display:block}
+.destaque-img .cap{position:absolute;right:11px;bottom:11px;background:rgba(42,67,82,.72);color:#fff;font-size:8px;letter-spacing:.16em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
+.destaque-img .eu{position:absolute;bottom:-34px;left:-34px;width:98px;height:98px;border-radius:50%;overflow:hidden;border:8px solid var(--fundo);box-shadow:0 0 0 1.3px var(--destaque-suave)}
+.destaque-img .eu img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block}
+
+/* carta e transparência */
+.nota{display:grid;grid-template-columns:1fr 234px;gap:26px;margin-top:76px;align-items:stretch}
+.carta{background:var(--cartao-suave);border-radius:19px;padding:57px 30px 25px;position:relative}
+.carta .aspas{position:absolute;top:15px;left:14px;font-family:'The Seasons',serif;font-style:italic;font-size:83px;color:var(--destaque-suave);line-height:1}
+.carta p{font-size:12px;line-height:1.75;font-weight:300}
+.carta .assina{margin-top:13px;font-family:'The Seasons',serif;font-style:italic;font-size:25px;color:var(--destaque);line-height:1}
+.transp{border:1px solid var(--destaque-suave);border-radius:19px;padding:23px;display:flex;flex-direction:column;justify-content:center;gap:9px}
+.transp .ic{width:34px;height:34px;border-radius:50%;background:var(--destaque-claro);display:grid;place-items:center}
+.transp p{font-size:10.7px;line-height:1.65;font-weight:300}
+
+/* motivos */
+.motivos{margin-top:26px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 38px}
+.mt{display:grid;grid-template-columns:53px 1fr;gap:11px;border-top:1px solid var(--principal);padding-top:15px}
+.mt .n{font-family:'The Seasons',serif;font-style:italic;font-size:37px;color:var(--destaque-suave);line-height:.9}
+.mt h3{font-size:12.8px;font-weight:500;color:var(--principal);line-height:1.3}
+.mt p{font-size:10.7px;line-height:1.6;font-weight:300;margin-top:5px}
+
+/* IA */
+.ia-txt{font-size:12px;line-height:1.7;font-weight:300;margin-top:11px;max-width:567px}
+.ia{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:19px}
+.ia .col{border-radius:19px;padding:23px}
+.ia .ruim{background:var(--cartao);border:1px solid var(--linhas)}
+.ia .bom{background:var(--destaque-claro)}
+.ia h4{font-size:12px;font-weight:500;color:var(--principal);display:flex;align-items:center;gap:9px}
+.ia h4 i{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:10.7px;flex:none}
+.ia .ruim h4 i{background:var(--cartao-suave);color:var(--destaque)}
+.ia .bom h4 i{background:var(--principal);color:#fff}
+.ia ul{list-style:none;margin-top:11px}
+.ia li{font-size:10.7px;line-height:1.55;font-weight:300;padding:6px 0;border-top:1px solid rgba(42,67,82,.1)}
+
+/* trabalhos (4:5) */
+.galeria{margin-top:30px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.galeria figure{position:relative;aspect-ratio:4/5;border-radius:15px;overflow:hidden;background:var(--destaque-claro)}
+.galeria img{width:100%;height:100%;object-fit:cover;display:block}
+.galeria figcaption{position:absolute;left:8px;bottom:8px;background:rgba(42,67,82,.72);color:#fff;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:99px}
+
+/* pacotes */
+.pacotes{margin-top:34px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px;align-items:stretch}
+.pk{border-radius:19px;padding:30px 21px 23px;text-align:center;display:flex;flex-direction:column;align-items:center;background:var(--cartao-suave);position:relative}
+.pk.dest{background:var(--principal);color:#e9e4de}
+.pk.dest .lab{color:var(--destaque-suave)}
+.pk h3{font-family:'The Seasons',serif;font-style:italic;font-weight:400;font-size:35px;color:var(--principal);line-height:1;margin-top:5px}
+.pk.dest h3{color:#fff}
+.pk .d{font-size:10px;line-height:1.5;margin-top:9px;font-weight:300;min-height:42px}
+.pk ul{list-style:none;margin:11px 0 19px;width:100%}
+.pk li{font-size:10px;line-height:1.4;padding:6px 0;border-top:1px solid var(--linhas);font-weight:300}
+.pk.dest li{border-color:rgba(255,255,255,.14)}
+.pk.dest li b,.pk.dest li strong{color:#fff}
+.pk .v{margin-top:auto;font-size:25px;font-weight:500;color:var(--principal);line-height:1}
+.pk.dest .v{color:#fff}
+.pk .x{font-size:9.3px;opacity:.75;margin-top:5px}
+.pk .pilula{position:absolute;top:-10px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:8.3px;letter-spacing:.18em;text-transform:uppercase;padding:4px 11px;border-radius:99px;background:var(--destaque-suave);color:var(--principal);font-weight:500}
+
+/* complementares */
+.extras{margin-top:34px;border:1px solid var(--linhas);border-radius:19px;padding:23px;background:var(--cartao);display:grid;grid-template-columns:166px 1fr;gap:23px;position:relative}
+.extras .ch h3{font-weight:500;font-size:14.7px;color:var(--principal);margin-top:5px;line-height:1.25}
+.extras .ch p{font-size:10px;line-height:1.55;font-weight:300;margin-top:8px}
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ei{border-radius:11px;padding:10px 12px;background:var(--cartao-suave);display:flex;flex-direction:column;gap:2px}
+.ei.eng{background:var(--destaque-claro)}
+.ei.largo{grid-column:span 2}
+.ei b{font-size:10.4px;font-weight:500;color:var(--principal)}
+.ei span{font-size:9px;line-height:1.45;font-weight:300}
+.legenda{position:absolute;left:23px;bottom:23px;font-size:8.5px;color:#8a817b;display:flex;align-items:center;gap:6px}
+.legenda i{width:11px;height:11px;border-radius:4px;background:var(--destaque-claro);display:inline-block}
+.legenda i.l{background:var(--cartao-suave);margin-left:8px}
+
+/* pagamento */
+.pag{margin-top:60px;padding:0 60px}
+.pag .sub{font-size:12px;font-weight:300;margin-top:9px;line-height:1.6}
+.pgrid{margin-top:30px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.pc{display:flex;flex-direction:column;background:var(--cartao);border:1px solid var(--linhas);border-radius:19px;padding:21px}
+.pc.etapas{background:var(--destaque-claro);border-color:var(--destaque-claro);grid-column:span 2}
+.pc .big{font-family:'The Seasons',serif;font-style:italic;font-size:32px;line-height:1;color:var(--destaque)}
+.pc.etapas .big{color:var(--principal)}
+.pc h4{font-size:11.5px;font-weight:500;color:var(--principal);margin-top:9px;line-height:1.3}
+.pc p{font-size:10px;line-height:1.6;font-weight:300;margin-top:5px}
+.colunas{display:grid;grid-template-columns:1fr 1.4fr;gap:15px;margin-top:9px}
+.colunas div{display:flex;flex-direction:column;gap:3px;border-top:1px solid rgba(42,67,82,.18);padding-top:8px}
+.colunas b{font-size:10px;font-weight:500;color:var(--principal)}
+.colunas span{font-size:9.8px;font-weight:300;line-height:1.4}
+.miudas{margin-top:23px;font-size:9px;line-height:1.6;color:#8a817b}
+
+/* fechamento */
+.final{margin:38px 38px 0;border-radius:26px;background:var(--secundaria);color:#eef0f1;display:flex;align-items:center;padding:34px 38px;gap:30px}
+.final .call{flex:1}
+.final .call .tt{font-size:18.7px;font-weight:500;letter-spacing:-.01em;color:#fff;white-space:nowrap}
+.final .call .tt .script{font-size:1.2em;color:var(--destaque-suave)}
+.final .call p{font-size:10.4px;opacity:.85;margin-top:8px;line-height:1.55}
+.final .ct{display:flex;flex-direction:column;gap:9px;font-size:10.9px;white-space:nowrap;flex:none}
+.final .ct span{display:inline-block;width:76px;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--destaque-suave)}
+.qr{width:91px;height:91px;background:#fff;border-radius:11px;padding:8px;flex:none}
+.qr svg,.qr img{width:100%;height:100%;display:block}
+
+.aviso-pdf{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:14px;background:#2a4352;color:#fff;padding:12px 14px 12px 22px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.2);font:15px 'Poppins',sans-serif;white-space:nowrap}
+.aviso-pdf button{font:inherit;font-weight:600;font-size:14px;letter-spacing:.06em;border:0;border-radius:99px;padding:10px 18px;background:#d0aca3;color:#2a4352;cursor:pointer}
+.vazio{padding:80px 40px;text-align:center;color:#8a817b;font-family:'Poppins',sans-serif}
+@media print{.aviso-pdf{display:none}}

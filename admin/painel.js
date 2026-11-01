@@ -492,9 +492,177 @@
         ] }] },
       ],
     },
+    /* ---------- Proposta para moradores (PDF de folha única, 794px) ---------- */
+    {
+      id: 'mor-aparencia', aba: 'moradores', arquivo: 'moradores', nome: 'cores e faixa do topo',
+      titulo: 'cores e <span class="script">faixa do topo</span>',
+      descricao: 'as cores de toda a proposta, a faixa escura do topo e o nome do arquivo.',
+      grupos: [
+        { titulo: 'faixa do topo', campos: [
+          texto('faixa_rotulo', 'texto pequeno (ex.: proposta exclusiva)'),
+          texto('faixa_texto', 'frase da faixa', { hint: 'use **dois asteriscos** para negrito.' }),
+          texto('faixa_selo', 'selo à direita', { hint: 'deixe vazio para não mostrar.' }),
+          texto('titulo_aba', 'nome do arquivo PDF', { hint: 'aparece como nome sugerido ao salvar o PDF.' }),
+        ] },
+        { titulo: 'cores', campos: [
+          { type: 'duas', campos: [cor('cor_fundo', 'fundo', '#f7f5f1'), cor('cor_cartao', 'cartões brancos', '#ffffff')] },
+          { type: 'duas', campos: [cor('cor_cartao_suave', 'cartões bege', '#f2ece6'), cor('cor_linhas', 'linhas e bordas', '#e7e2d9')] },
+          { type: 'duas', campos: [cor('cor_principal', 'principal (azul petróleo)', '#2a4352'), cor('cor_secundaria', 'bloco final', '#4a5d6b')] },
+          { type: 'duas', campos: [cor('cor_destaque', 'destaque (rosé)', '#af8c86'), cor('cor_destaque_suave', 'rosé suave', '#d0aca3')] },
+          { type: 'duas', campos: [cor('cor_destaque_claro', 'rosé bem claro (cartões)', '#e7d5cf'), cor('cor_texto', 'textos', '#584f4a')] },
+        ] },
+      ],
+    },
+    {
+      id: 'mor-topo', aba: 'moradores', arquivo: 'moradores', nome: 'topo, carta e transparência',
+      titulo: 'topo e <span class="script">carta</span>',
+      descricao: 'a frase de impacto, a imagem, sua foto, a cartinha e o bloco de transparência. nos títulos, o trecho entre *asteriscos* sai na letra The Seasons.',
+      grupos: [
+        { titulo: 'topo', campos: [
+          { type: 'duas', campos: [texto('marca', 'logo (texto)'), texto('marca_sub', 'texto ao lado do logo')] },
+          textoLongo('titulo', 'frase de impacto', { hint: 'cada linha do campo vira uma linha na folha. o trecho entre *asteriscos* sai em The Seasons.' }),
+          { type: 'markdown', name: 'texto', label: 'texto abaixo da frase', hint: 'use **dois asteriscos** para negrito.' },
+          { type: 'image', name: 'imagem_destaque', label: 'imagem do topo', pasta: 'assets/img/moradores', proporcao: '4/5', enquadramento: 'imagem_destaque_enquadramento' },
+          texto('imagem_legenda', 'legenda da imagem', { hint: 'deixe vazio para não mostrar.' }),
+          { type: 'image', name: 'foto', label: 'sua foto (círculo)', pasta: 'assets/img/moradores', proporcao: '1/1', enquadramento: 'foto_enquadramento' },
+        ] },
+        { titulo: 'cartinha', campos: [
+          { type: 'markdown', name: 'carta', label: 'texto da carta', hint: 'use **dois asteriscos** para negrito.' },
+          texto('carta_assinatura', 'assinatura (em The Seasons)'),
+        ] },
+        { titulo: 'transparência', campos: [
+          texto('transparencia_rotulo', 'título pequeno'),
+          { type: 'markdown', name: 'transparencia_texto', label: 'texto', hint: 'use **dois asteriscos** para negrito.' },
+        ] },
+      ],
+    },
+    {
+      id: 'mor-motivos', aba: 'moradores', arquivo: 'moradores', nome: 'por que fazer o projeto',
+      titulo: 'por que fazer <span class="script">o projeto</span>',
+      descricao: 'os motivos numerados (a numeração é automática).',
+      grupos: [
+        { titulo: 'motivos', campos: [
+          texto('motivos_chamada', 'chamada (texto pequeno acima do título)'), titulo('motivos_titulo'),
+          { type: 'list', name: 'motivos', label: 'motivos', singular: 'motivo', resumo: (x) => x.titulo,
+            fields: [texto('titulo', 'título'), textoLongo('texto', 'texto')],
+            novo: () => ({ titulo: '', texto: '' }) },
+        ] },
+      ],
+    },
+    {
+      id: 'mor-ia', aba: 'moradores', arquivo: 'moradores', nome: 'IA × projeto',
+      titulo: 'IA × <span class="script">projeto</span>',
+      descricao: 'o aviso sobre imagens de IA e as duas colunas de comparação.',
+      grupos: [
+        { titulo: 'aviso sobre IA', campos: [
+          texto('ia_chamada', 'chamada'), titulo('ia_titulo'),
+          { type: 'markdown', name: 'ia_texto', label: 'texto', hint: 'use **dois asteriscos** para negrito.' },
+          texto('ia_ruim_titulo', 'título da coluna “imagem de IA”'),
+          { type: 'list', name: 'ia_ruim', label: 'itens da coluna “imagem de IA”', singular: 'item', resumo: (x) => x.texto,
+            fields: [texto('texto', 'texto')], novo: () => ({ texto: '' }) },
+          texto('ia_bom_titulo', 'título da coluna “projeto de verdade”'),
+          { type: 'list', name: 'ia_bom', label: 'itens da coluna “projeto de verdade”', singular: 'item', resumo: (x) => x.texto,
+            fields: [texto('texto', 'texto')], novo: () => ({ texto: '' }) },
+        ] },
+      ],
+    },
+    {
+      id: 'mor-trabalhos', aba: 'moradores', arquivo: 'moradores', nome: 'trabalhos',
+      titulo: 'trabalhos <span class="script">reais</span>',
+      descricao: 'as fotos em 4:5. dá para escolher imagens que já estão no site ou enviar novas.',
+      grupos: [
+        { titulo: 'trabalhos', campos: [
+          texto('trabalhos_chamada', 'chamada'), titulo('trabalhos_titulo'),
+          { type: 'list', name: 'trabalhos', label: 'fotos', singular: 'foto', layout: 'grade', fotoEmMassa: 'imagem',
+            fields: [
+              { type: 'image', name: 'imagem', label: '', pasta: 'assets/img/moradores', proporcao: '4/5', enquadramento: 'enquadramento', curto: true },
+              texto('legenda', 'legenda'),
+            ],
+            novo: () => ({ imagem: '', legenda: '' }) },
+        ] },
+      ],
+    },
+    {
+      id: 'mor-pacotes', aba: 'moradores', arquivo: 'moradores', nome: 'pacotes',
+      titulo: '<span class="script">pacotes</span>',
+      descricao: 'os pacotes, o que cada um inclui e os valores. preencha a pílula de destaque só no pacote que deve aparecer em azul.',
+      grupos: [
+        { titulo: 'pacotes', campos: [
+          texto('pacotes_chamada', 'chamada'), titulo('pacotes_titulo'),
+          { type: 'list', name: 'pacotes', label: 'pacotes', singular: 'pacote', resumo: (x) => `${x.nome || ''} · ${x.valor || ''}`,
+            fields: [
+              { type: 'duas', campos: [texto('nome', 'nome (em The Seasons)'), texto('rotulo', 'texto pequeno acima do nome')] },
+              textoLongo('descricao', 'descrição curta'),
+              { type: 'list', name: 'itens', label: 'o que inclui', singular: 'item', resumo: (x) => x.texto,
+                fields: [texto('texto', 'texto', { hint: 'use **dois asteriscos** para negrito.' })], novo: () => ({ texto: '' }) },
+              { type: 'duas', campos: [texto('valor', 'valor (ex.: R$ 1.190)'), texto('parcelas', 'texto abaixo do valor')] },
+              texto('destaque', 'pílula de destaque', { hint: 'ex.: mais escolhido. o pacote com pílula fica em azul. deixe vazio nos outros.' }),
+            ],
+            novo: () => ({ rotulo: '', nome: '', descricao: '', itens: [], valor: '', parcelas: 'ou em até 6× no cartão', destaque: '' }) },
+        ] },
+      ],
+    },
+    {
+      id: 'mor-extras', aba: 'moradores', arquivo: 'moradores', nome: 'serviços sob consulta',
+      titulo: 'serviços <span class="script">sob consulta</span>',
+      descricao: 'os serviços complementares, sem valor. a cor do cartão mostra quem faz.',
+      grupos: [
+        { titulo: 'serviços complementares', campos: [
+          { type: 'duas', campos: [texto('extras_rotulo', 'texto pequeno'), texto('extras_titulo', 'título')] },
+          textoLongo('extras_texto', 'texto'),
+          { type: 'duas', campos: [texto('extras_legenda_engenheiro', 'legenda: engenheiro'), texto('extras_legenda_lais', 'legenda: Laís')] },
+          { type: 'list', name: 'extras', label: 'serviços', singular: 'serviço', resumo: (x) => x.titulo,
+            fields: [
+              texto('titulo', 'nome do serviço'), texto('texto', 'descrição'),
+              { type: 'opcoes', name: 'quem', label: 'quem faz', opcoes: [['engenheiro', 'engenheiro'], ['lais', 'Laís']] },
+            ],
+            novo: () => ({ titulo: '', texto: '', quem: 'lais' }) },
+        ] },
+      ],
+    },
+    {
+      id: 'mor-pagamento', aba: 'moradores', arquivo: 'moradores', nome: 'pagamento e regras',
+      titulo: 'pagamento e <span class="script">regras</span>',
+      descricao: 'as formas de pagamento e as letras miúdas que protegem o seu trabalho.',
+      grupos: [
+        { titulo: 'pague do seu jeito', campos: [
+          texto('pagamento_chamada', 'chamada'), titulo('pagamento_titulo'), textoLongo('pagamento_texto', 'texto'),
+        ] },
+        { titulo: 'cartão das etapas (em destaque)', campos: [
+          { type: 'duas', campos: [texto('etapas_destaque', 'destaque (em The Seasons)'), texto('etapas_titulo', 'título')] },
+          { type: 'list', name: 'etapas', label: 'colunas', singular: 'coluna', resumo: (x) => x.nome,
+            fields: [texto('nome', 'pacote(s)'), textoLongo('linhas', 'parcelas', { hint: 'uma parcela por linha.' })],
+            novo: () => ({ nome: '', linhas: '' }) },
+        ] },
+        { titulo: 'outras condições', campos: [
+          { type: 'list', name: 'condicoes', label: 'cartões', singular: 'cartão', resumo: (x) => x.titulo,
+            fields: [{ type: 'duas', campos: [texto('destaque', 'destaque (em The Seasons)'), texto('titulo', 'título')] }, textoLongo('texto', 'texto')],
+            novo: () => ({ destaque: '', titulo: '', texto: '' }) },
+        ] },
+        { titulo: 'letras miúdas', campos: [
+          textoLongo('letras_miudas', 'texto', { hint: 'validade, prazos, medidas, ajustes e o que não está incluso.' }),
+        ] },
+      ],
+    },
+    {
+      id: 'mor-contato', aba: 'moradores', arquivo: 'moradores', nome: 'contato',
+      titulo: 'chamada <span class="script">final</span>',
+      descricao: 'o bloco azul do fim, com contatos e o QR code do WhatsApp (gerado sozinho).',
+      grupos: [
+        { titulo: 'chamada final e contatos', campos: [
+          titulo('final_titulo', 'título'), textoLongo('final_texto', 'texto'),
+          texto('final_mensagem', 'mensagem que já vem escrita no WhatsApp (pelo QR code)'),
+          { type: 'duas', campos: [
+            texto('whatsapp_numero', 'WhatsApp (só números)', { hint: 'com 55 e DDD. ex.: 5511969288192' }),
+            texto('whatsapp_exibicao', 'WhatsApp (como aparece)'),
+          ] },
+          { type: 'duas', campos: [texto('instagram_usuario', 'Instagram (sem @)'), texto('site', 'site', { hint: 'deixe vazio para não mostrar.' })] },
+        ] },
+      ],
+    },
   ];
   SECOES.forEach((sc) => { sc.id = sc.id || sc.arquivo; sc.aba = sc.aba || 'site'; });
-  const ABAS = [['site', 'site'], ['pdf', 'portfólio em PDF'], ['orcamento', 'orçamento (PDF)']];
+  const ABAS = [['site', 'site'], ['pdf', 'portfólio em PDF'], ['orcamento', 'orçamento (PDF)'], ['moradores', 'proposta moradores (PDF)']];
   const secaoPorId = (id) => SECOES.find((sc) => sc.id === id);
   const ARQUIVOS = [...new Set(SECOES.map((sc) => sc.arquivo))];
 
@@ -511,7 +679,7 @@
   let refazer = [];
   let estavel = '';
   let timerHistorico = null;
-  const NOMES_ARQUIVO = { pdf: 'portfólio em PDF', orcamento: 'orçamento' };
+  const NOMES_ARQUIVO = { pdf: 'portfólio em PDF', orcamento: 'orçamento', moradores: 'proposta para moradores' };
 
   /* ---------- Utilidades ---------- */
   const $ = (sel) => document.querySelector(sel);
@@ -708,7 +876,7 @@
       alterados.clear();
       atualizarBarra();
       montarMenu();
-      if (arquivos.every((a) => a === 'orcamento')) avisar('orçamento salvo!');
+      if (arquivos.every((a) => FOLHAS[a])) avisar(arquivos.length === 1 && arquivos[0] === 'moradores' ? 'proposta salva!' : 'orçamento salvo!');
       else {
         avisar('salvo! acompanhe a publicação no topo do painel.');
         acompanharPublicacao(commit.committer && commit.committer.date);
@@ -839,7 +1007,7 @@
 
   /* ---------- Biblioteca de imagens ---------- */
   // Todas as imagens que já estão no site (pastas de assets/img) + as enviadas agora e ainda não salvas.
-  const PASTAS_BIB = [['todas', 'todas'], ['gallery', 'galeria'], ['compare', 'comparar'], ['cases', 'estudos de caso'], ['orcamento', 'orçamento'], ['outras', 'outras']];
+  const PASTAS_BIB = [['todas', 'todas'], ['gallery', 'galeria'], ['compare', 'comparar'], ['cases', 'estudos de caso'], ['orcamento', 'orçamento'], ['moradores', 'proposta moradores'], ['outras', 'outras']];
   const pastaDe = (caminho) => {
     const m = String(caminho).match(/^\/?assets\/img\/([^/]+)\//);
     return m && PASTAS_BIB.some(([k]) => k === m[1]) ? m[1] : 'outras';
@@ -1584,44 +1752,52 @@
     }
   };
 
-  /* ---------- Orçamento: pré-visualizar e salvar em PDF ---------- */
-  const PAGINA_PDF = '/admin/orcamento/pdf.html';
-  // Dados enviados para a página do orçamento (inclui fotos novas ainda não salvas).
-  const pacoteOrcamento = () => {
+  /* ---------- Orçamento e proposta para moradores: pré-visualizar e salvar em PDF ---------- */
+  // Cada aba de folha em PDF tem a sua página (desenhada no navegador) e a sua largura.
+  const FOLHAS = {
+    orcamento: { pagina: '/admin/orcamento/pdf.html', largura: 1024, titulo: 'pré-visualização do orçamento' },
+    moradores: { pagina: '/admin/moradores/pdf.html', largura: 794, titulo: 'pré-visualização da proposta para moradores' },
+  };
+  const abaAtual = () => (secaoPorId(secaoAtual) || SECOES[0]).aba;
+  // Dados enviados para a página da folha (inclui fotos novas ainda não salvas).
+  const pacoteFolha = (aba) => {
     const fotos = {};
     fotosNovas.forEach((f, caminho) => { fotos[caminho] = f.url; });
-    return { tipo: 'orcamento-dados', dados: JSON.parse(JSON.stringify(dados.orcamento || {})), fotos };
+    return { tipo: `${aba}-dados`, dados: JSON.parse(JSON.stringify(dados[aba] || {})), fotos };
   };
   // Folhas de pré-visualização abertas (janela modal e coluna ao lado, no computador).
-  const LARGURA_PDF = 1024;
   const folhas = new Set();
   const ajustarFolha = (f) => {
     if (!f.palco.isConnected) { folhas.delete(f); return; }
-    const escala = Math.min(1, (f.palco.clientWidth - 2) / LARGURA_PDF);
+    const largura = FOLHAS[f.aba].largura;
+    const escala = Math.min(1, (f.palco.clientWidth - 2) / largura);
     const altura = f.altura || 2000;
+    f.quadro.style.width = `${largura}px`;
     f.quadro.style.transform = `scale(${escala})`;
     f.quadro.style.height = `${altura}px`;
-    f.folha.style.width = `${LARGURA_PDF * escala}px`;
+    f.folha.style.width = `${largura * escala}px`;
     f.folha.style.height = `${altura * escala}px`;
   };
-  const criarFolha = (palco) => {
+  const criarFolha = (palco, aba = abaAtual()) => {
     palco.innerHTML = '';
     const folha = el('div', 'previa-folha');
     const quadro = el('iframe');
-    quadro.title = 'pré-visualização do orçamento';
-    quadro.src = PAGINA_PDF;
+    quadro.title = FOLHAS[aba].titulo;
+    quadro.src = FOLHAS[aba].pagina;
     folha.append(quadro);
     palco.append(folha);
-    const f = { palco, folha, quadro, altura: 0 };
+    const f = { palco, folha, quadro, altura: 0, aba };
     folhas.add(f);
     ajustarFolha(f);
     return f;
   };
-  // A página do orçamento avisa quando está pronta; respondemos com os dados.
+  // A página da folha avisa quando está pronta; respondemos com os dados.
   window.addEventListener('message', (ev) => {
-    if (ev.origin !== location.origin || !ev.data) return;
-    if (ev.data.tipo === 'orcamento-pronto') ev.source.postMessage(pacoteOrcamento(), location.origin);
-    if (ev.data.tipo === 'orcamento-altura') {
+    if (ev.origin !== location.origin || !ev.data || typeof ev.data.tipo !== 'string') return;
+    const [aba, evento] = ev.data.tipo.split('-');
+    if (!FOLHAS[aba]) return;
+    if (evento === 'pronto') ev.source.postMessage(pacoteFolha(aba), location.origin);
+    if (evento === 'altura') {
       folhas.forEach((f) => { if (f.quadro.contentWindow === ev.source) { f.altura = ev.data.altura; ajustarFolha(f); } });
     }
   });
@@ -1709,7 +1885,7 @@
     const aside = $('#previa-lateral');
     const secao = secaoPorId(secaoAtual);
     const modelo = secao && (secao.modelo || 'index.html');
-    const ligar = !!secao && telaLarga() && !$('#tela-painel').hidden && (secao.aba === 'orcamento' || !!modelosSite[modelo]);
+    const ligar = !!secao && telaLarga() && !$('#tela-painel').hidden && (!!FOLHAS[secao.aba] || !!modelosSite[modelo]);
     aside.hidden = !ligar;
     $('#tela-painel').classList.toggle('com-previa', ligar);
     $('#lateral-tamanhos').hidden = !(ligar && secao.aba === 'site');
@@ -1718,10 +1894,12 @@
       lateral = null; lateralSite = null; $('#lateral-palco').innerHTML = '';
       return;
     }
-    if (secao.aba === 'orcamento') {
+    if (FOLHAS[secao.aba]) {
       lateralSite = null;
-      if (!lateral || !$('#lateral-palco').contains(lateral.folha)) lateral = criarFolha($('#lateral-palco'));
-      else ajustarFolha(lateral);
+      if (!lateral || lateral.aba !== secao.aba || !$('#lateral-palco').contains(lateral.folha)) {
+        if (lateral) folhas.delete(lateral);
+        lateral = criarFolha($('#lateral-palco'), secao.aba);
+      } else ajustarFolha(lateral);
     } else {
       if (lateral) { folhas.delete(lateral); lateral = null; }
       if (!lateralSite || lateralSite.modelo !== modelo || !$('#lateral-palco').contains(lateralSite.folha)) criarSite(secao.ancora, modelo);
@@ -1736,7 +1914,7 @@
   const enviarLateral = () => {
     clearTimeout(timerLateral);
     timerLateral = setTimeout(() => {
-      if (lateral && lateral.quadro.contentWindow) lateral.quadro.contentWindow.postMessage(pacoteOrcamento(), location.origin);
+      if (lateral && lateral.quadro.contentWindow) lateral.quadro.contentWindow.postMessage(pacoteFolha(lateral.aba), location.origin);
       if (lateralSite) desenharSite();
     }, 350);
   };
@@ -1747,7 +1925,7 @@
   };
 
   const salvarPdf = () => {
-    const janela = window.open(`${PAGINA_PDF}?imprimir`, '_blank');
+    const janela = window.open(`${FOLHAS[FOLHAS[abaAtual()] ? abaAtual() : 'orcamento'].pagina}?imprimir`, '_blank');
     if (!janela) avisar('o navegador bloqueou a nova aba. permita pop-ups para lais3d.com.br e tente de novo.', true);
   };
 
@@ -1760,7 +1938,7 @@
     pdf.type = 'button';
     pdf.onclick = salvarPdf;
     barra.append(ver, pdf);
-    if (alterados.has('orcamento')) {
+    if (alterados.has(abaAtual())) {
       barra.append(el('span', 'dica', 'a pré-visualização e o PDF já mostram as alterações, mesmo antes de salvar.'));
     }
     return barra;
@@ -1843,7 +2021,7 @@
     const h1 = el('h1');
     h1.innerHTML = secao.titulo;
     const p = el('p', null, secao.descricao + ' ');
-    if (secao.aba === 'orcamento') {
+    if (FOLHAS[secao.aba]) {
       topo.append(h1, p, barraOrcamento());
     } else if (secao.aba === 'pdf') {
       topo.append(h1, p, barraPdf());

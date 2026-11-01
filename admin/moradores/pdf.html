@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<!-- largura fixa: no celular a página aparece igual ao PDF, só que reduzida -->
+<meta name="viewport" content="width=794">
+<meta name="robots" content="noindex">
+<title>Proposta para moradores — Laís Vieira</title>
+<link rel="stylesheet" href="moradores.css">
+<style id="tamanho-pagina"></style>
+</head>
+<body>
+<div id="moradores"><p class="vazio">abra a proposta pelo painel em lais3d.com.br/admin.</p></div>
+<div class="aviso-pdf" id="aviso-pdf" hidden>
+  <span>na janela que abrir, escolha <b style="color:inherit">salvar como PDF</b></span>
+  <button type="button" id="botao-imprimir">salvar em PDF</button>
+</div>
+
+<script src="../vendor/qrcode.js"></script>
+<script src="render.js"></script>
+<script>
+/* Recebe os dados do painel (janela que abriu esta, ou a página onde está embutida),
+ * desenha a proposta e, se pedido, abre a janela de impressão para salvar em PDF. */
+(() => {
+  const params = new URLSearchParams(location.search);
+  const imprimir = params.has('imprimir');
+  const painel = window.opener || (window.parent !== window ? window.parent : null);
+
+  // PDF em uma página só, contínua, do tamanho exato do conteúdo.
+  const ajustarPagina = () => {
+    const estilo = document.getElementById('tamanho-pagina');
+    estilo.textContent = '';
+    const altura = Math.ceil(document.getElementById('moradores').getBoundingClientRect().height);
+    estilo.textContent = `@page{size:794px ${altura + 2}px;margin:0}`
+      + `@media print{html,body{width:794px;height:${altura}px;overflow:hidden}}`;
+    return altura;
+  };
+
+  const esperarCarregar = async () => {
+    await (document.fonts ? document.fonts.ready : Promise.resolve());
+    await Promise.all([...document.images].map((img) => (img.complete ? null
+      : new Promise((ok) => { img.onload = img.onerror = ok; }))));
+  };
+
+  const abrirImpressao = () => { ajustarPagina(); window.print(); };
+  document.getElementById('botao-imprimir').onclick = abrirImpressao;
+
+  window.addEventListener('message', async (ev) => {
+    if (ev.origin !== location.origin || !ev.data || ev.data.tipo !== 'moradores-dados') return;
+    const fotos = ev.data.fotos || {};
+    const caixa = document.getElementById('moradores');
+    caixa.innerHTML = window.renderMoradores(ev.data.dados, (c) => fotos[c] || (c && !/^(https?:|blob:|data:|\/)/.test(c) ? '/' + c : c));
+    const folha = caixa.querySelector('.folha');
+    if (folha) document.body.style.background = getComputedStyle(folha).backgroundColor;
+    if (ev.data.dados && ev.data.dados.titulo_aba) document.title = ev.data.dados.titulo_aba;
+    await esperarCarregar();
+    const altura = ajustarPagina();
+    if (painel) painel.postMessage({ tipo: 'moradores-altura', altura }, location.origin);
+    if (imprimir) {
+      document.getElementById('aviso-pdf').hidden = false;
+      setTimeout(abrirImpressao, 300);
+    }
+  });
+
+  if (painel) painel.postMessage({ tipo: 'moradores-pronto' }, location.origin);
+})();
+</script>
+</body>
+</html>
