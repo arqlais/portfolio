@@ -146,3 +146,4 @@ em{font-style:italic}
 .aviso-pdf button{font:inherit;font-weight:600;font-size:14px;letter-spacing:.06em;border:0;border-radius:99px;padding:10px 18px;background:#d0aca3;color:#2a4352;cursor:pointer}
 .vazio{padding:80px 40px;text-align:center;color:#8a817b;font-family:'Poppins',sans-serif}
 @media print{.aviso-pdf{display:none}}
+.aviso-pdf[hidden]{display:none}

@@ -70,7 +70,7 @@
 
     return `
 <div class="folha" style="${vars}">
-  <div class="faixa">
+  <div class="faixa" id="m-topo">
     <div class="k"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--principal)" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></svg></div>
     <div class="tx"><small>${esc(m.faixa_rotulo)}</small><span>${inline(m.faixa_texto)}</span></div>
     ${m.faixa_selo ? `<div class="selo">${esc(m.faixa_selo)}</div>` : ''}
@@ -103,13 +103,13 @@
       </div>
     </div>
 
-    <div class="sec">
+    <div class="sec" id="m-motivos">
       <span class="lab">${esc(m.motivos_chamada)}</span>
       <h2 class="t">${titulo(m.motivos_titulo)}</h2>
       <div class="motivos">${motivos}</div>
     </div>
 
-    <div class="sec">
+    <div class="sec" id="m-ia">
       <span class="lab">${esc(m.ia_chamada)}</span>
       <h2 class="t">${titulo(m.ia_titulo)}</h2>
       <div class="ia-txt">${paragrafos(m.ia_texto)}</div>
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <div class="sec">
+    <div class="sec" id="m-trabalhos">
       <span class="lab">${esc(m.trabalhos_chamada)}</span>
       <h2 class="t">${titulo(m.trabalhos_titulo)}</h2>
       <div class="galeria">${lista(m.trabalhos).map((t) => `
@@ -127,12 +127,12 @@
       </div>
     </div>
 
-    <div class="sec">
+    <div class="sec" id="m-pacotes">
       <span class="lab">${esc(m.pacotes_chamada)}</span>
       <h2 class="t">${titulo(m.pacotes_titulo)}</h2>
       <div class="pacotes">${pacotes}</div>
       ${extras.length ? `
-      <div class="extras">
+      <div class="extras" id="m-extras">
         <div class="ch"><span class="lab">${esc(m.extras_rotulo)}</span><h3>${esc(m.extras_titulo)}</h3><p>${inline(m.extras_texto)}</p></div>
         <div class="eg">${extrasHtml}</div>
         <div class="legenda"><i></i>${esc(m.extras_legenda_engenheiro)} <i class="l"></i>${esc(m.extras_legenda_lais)}</div>
@@ -140,7 +140,7 @@
     </div>
   </div>
 
-  <div class="pag">
+  <div class="pag" id="m-pagamento">
     <span class="lab">${esc(m.pagamento_chamada)}</span>
     <h2 class="t" style="margin-top:9px">${titulo(m.pagamento_titulo)}</h2>
     <p class="sub">${inline(m.pagamento_texto)}</p>
@@ -152,7 +152,7 @@
     ${m.letras_miudas ? `<p class="miudas">${inline(m.letras_miudas)}</p>` : ''}
   </div>
 
-  <div class="final">
+  <div class="final" id="m-contato">
     <div class="call"><div class="tt">${titulo(m.final_titulo)}</div><p>${inline(m.final_texto)}</p></div>
     <div class="ct">
       ${m.whatsapp_exibicao ? `<div><span>WhatsApp</span>${esc(m.whatsapp_exibicao)}</div>` : ''}

@@ -24,6 +24,28 @@
     mapa: '<path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 4v13M15 7v13"/>',
     prancha: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
   };
+  // Ícones do painel (abas, menu e botões).
+  const ICONES_UI = {
+    globo: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    arquivo: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+    cifrao: '<path d="M12 3v18M16.5 7.5c-.8-1.3-2.5-2-4.5-2-2.5 0-4.5 1.3-4.5 3.2 0 4.3 9 2.3 9 6.6 0 1.9-2 3.2-4.5 3.2-2 0-3.7-.7-4.5-2"/>',
+    chave: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/>',
+    paleta: '<path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.9 1.4-2l-.3-.8c-.4-1.1.4-2.2 1.6-2.2H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/>',
+    casa: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+    pergunta: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/>',
+    faisca: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+    imagem: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-8 8"/>',
+    caixa: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/>',
+    ferramenta: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/>',
+    cartao: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>',
+    telefone: '<path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3.1 4.2 2 2 0 0 1 5.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L9 9.7a16 16 0 0 0 5.3 5.3l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.7.6 2.6.7a2 2 0 0 1 1.7 2z"/>',
+    pessoa: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    estrela: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/>',
+    camadas: '<path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/>',
+    lista: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    seta: '<path d="m6 9 6 6 6-6"/>',
+    arrastar: '<circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>',
+  };
   const svgIcone = (nome, mapa = ICONES) =>
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${mapa[nome] || ''}</svg>`;
   // Ícones da página de orçamento (vêm de orcamento/render.js).
@@ -494,7 +516,7 @@
     },
     /* ---------- Proposta para moradores (PDF de folha única, 794px) ---------- */
     {
-      id: 'mor-aparencia', aba: 'moradores', arquivo: 'moradores', nome: 'cores e faixa do topo',
+      id: 'mor-aparencia', aba: 'moradores', arquivo: 'moradores', ancora: '#m-topo', nome: 'cores e faixa do topo',
       titulo: 'cores e <span class="script">faixa do topo</span>',
       descricao: 'as cores de toda a proposta, a faixa escura do topo e o nome do arquivo.',
       grupos: [
@@ -514,7 +536,7 @@
       ],
     },
     {
-      id: 'mor-topo', aba: 'moradores', arquivo: 'moradores', nome: 'topo, carta e transparência',
+      id: 'mor-topo', aba: 'moradores', arquivo: 'moradores', ancora: '#m-topo', nome: 'topo, carta e transparência',
       titulo: 'topo e <span class="script">carta</span>',
       descricao: 'a frase de impacto, a imagem, sua foto, a cartinha e o bloco de transparência. nos títulos, o trecho entre *asteriscos* sai na letra The Seasons.',
       grupos: [
@@ -537,7 +559,7 @@
       ],
     },
     {
-      id: 'mor-motivos', aba: 'moradores', arquivo: 'moradores', nome: 'por que fazer o projeto',
+      id: 'mor-motivos', aba: 'moradores', arquivo: 'moradores', ancora: '#m-motivos', nome: 'por que fazer o projeto',
       titulo: 'por que fazer <span class="script">o projeto</span>',
       descricao: 'os motivos numerados (a numeração é automática).',
       grupos: [
@@ -550,7 +572,7 @@
       ],
     },
     {
-      id: 'mor-ia', aba: 'moradores', arquivo: 'moradores', nome: 'IA × projeto',
+      id: 'mor-ia', aba: 'moradores', arquivo: 'moradores', ancora: '#m-ia', nome: 'IA × projeto',
       titulo: 'IA × <span class="script">projeto</span>',
       descricao: 'o aviso sobre imagens de IA e as duas colunas de comparação.',
       grupos: [
@@ -558,16 +580,16 @@
           texto('ia_chamada', 'chamada'), titulo('ia_titulo'),
           { type: 'markdown', name: 'ia_texto', label: 'texto', hint: 'use **dois asteriscos** para negrito.' },
           texto('ia_ruim_titulo', 'título da coluna “imagem de IA”'),
-          { type: 'list', name: 'ia_ruim', label: 'itens da coluna “imagem de IA”', singular: 'item', resumo: (x) => x.texto,
+          { type: 'list', name: 'ia_ruim', label: 'itens da coluna “imagem de IA”', singular: 'item', layout: 'simples', resumo: (x) => x.texto,
             fields: [texto('texto', 'texto')], novo: () => ({ texto: '' }) },
           texto('ia_bom_titulo', 'título da coluna “projeto de verdade”'),
-          { type: 'list', name: 'ia_bom', label: 'itens da coluna “projeto de verdade”', singular: 'item', resumo: (x) => x.texto,
+          { type: 'list', name: 'ia_bom', label: 'itens da coluna “projeto de verdade”', singular: 'item', layout: 'simples', resumo: (x) => x.texto,
             fields: [texto('texto', 'texto')], novo: () => ({ texto: '' }) },
         ] },
       ],
     },
     {
-      id: 'mor-trabalhos', aba: 'moradores', arquivo: 'moradores', nome: 'trabalhos',
+      id: 'mor-trabalhos', aba: 'moradores', arquivo: 'moradores', ancora: '#m-trabalhos', nome: 'trabalhos',
       titulo: 'trabalhos <span class="script">reais</span>',
       descricao: 'as fotos em 4:5. dá para escolher imagens que já estão no site ou enviar novas.',
       grupos: [
@@ -583,7 +605,7 @@
       ],
     },
     {
-      id: 'mor-pacotes', aba: 'moradores', arquivo: 'moradores', nome: 'pacotes',
+      id: 'mor-pacotes', aba: 'moradores', arquivo: 'moradores', ancora: '#m-pacotes', nome: 'pacotes',
       titulo: '<span class="script">pacotes</span>',
       descricao: 'os pacotes, o que cada um inclui e os valores. preencha a pílula de destaque só no pacote que deve aparecer em azul.',
       grupos: [
@@ -593,7 +615,7 @@
             fields: [
               { type: 'duas', campos: [texto('nome', 'nome (em The Seasons)'), texto('rotulo', 'texto pequeno acima do nome')] },
               textoLongo('descricao', 'descrição curta'),
-              { type: 'list', name: 'itens', label: 'o que inclui', singular: 'item', resumo: (x) => x.texto,
+              { type: 'list', name: 'itens', label: 'o que inclui (Enter cria o próximo)', singular: 'item', layout: 'simples', resumo: (x) => x.texto,
                 fields: [texto('texto', 'texto', { hint: 'use **dois asteriscos** para negrito.' })], novo: () => ({ texto: '' }) },
               { type: 'duas', campos: [texto('valor', 'valor (ex.: R$ 1.190)'), texto('parcelas', 'texto abaixo do valor')] },
               texto('destaque', 'pílula de destaque', { hint: 'ex.: mais escolhido. o pacote com pílula fica em azul. deixe vazio nos outros.' }),
@@ -603,7 +625,7 @@
       ],
     },
     {
-      id: 'mor-extras', aba: 'moradores', arquivo: 'moradores', nome: 'serviços sob consulta',
+      id: 'mor-extras', aba: 'moradores', arquivo: 'moradores', ancora: '#m-extras', nome: 'serviços sob consulta',
       titulo: 'serviços <span class="script">sob consulta</span>',
       descricao: 'os serviços complementares, sem valor. a cor do cartão mostra quem faz.',
       grupos: [
@@ -621,7 +643,7 @@
       ],
     },
     {
-      id: 'mor-pagamento', aba: 'moradores', arquivo: 'moradores', nome: 'pagamento e regras',
+      id: 'mor-pagamento', aba: 'moradores', arquivo: 'moradores', ancora: '#m-pagamento', nome: 'pagamento e regras',
       titulo: 'pagamento e <span class="script">regras</span>',
       descricao: 'as formas de pagamento e as letras miúdas que protegem o seu trabalho.',
       grupos: [
@@ -645,7 +667,7 @@
       ],
     },
     {
-      id: 'mor-contato', aba: 'moradores', arquivo: 'moradores', nome: 'contato',
+      id: 'mor-contato', aba: 'moradores', arquivo: 'moradores', ancora: '#m-contato', nome: 'contato',
       titulo: 'chamada <span class="script">final</span>',
       descricao: 'o bloco azul do fim, com contatos e o QR code do WhatsApp (gerado sozinho).',
       grupos: [
@@ -663,6 +685,18 @@
   ];
   SECOES.forEach((sc) => { sc.id = sc.id || sc.arquivo; sc.aba = sc.aba || 'site'; });
   const ABAS = [['site', 'site'], ['pdf', 'portfólio em PDF'], ['orcamento', 'orçamento (PDF)'], ['moradores', 'proposta moradores (PDF)']];
+  const ICONE_ABA = { site: 'globo', pdf: 'arquivo', orcamento: 'cifrao', moradores: 'chave' };
+  // Ícone de cada parte no menu ao lado (por id da seção ou por palavra no nome).
+  const ICONE_SECAO = {
+    inicio: 'casa', portfolio: 'imagem', comparar: 'camadas', projetos: 'arquivo', servicos: 'ferramenta', para_quem: 'pessoa',
+    como_funciona: 'lista', sobre_mim: 'estrela', contato: 'telefone', cores: 'paleta', geral: 'telefone',
+    'orc-aparencia': 'paleta', 'orc-apresentacao': 'pessoa', 'orc-metodos': 'camadas', 'orc-tabela': 'lista', 'orc-valores': 'cifrao',
+    'orc-portfolio': 'imagem', 'orc-etapas': 'lista', 'orc-contato': 'telefone',
+    'pdf-capa': 'pessoa', 'pdf-trabalhos': 'imagem', 'pdf-final': 'telefone', 'pdf-paginas': 'camadas',
+    'mor-aparencia': 'paleta', 'mor-topo': 'casa', 'mor-motivos': 'pergunta', 'mor-ia': 'faisca', 'mor-trabalhos': 'imagem',
+    'mor-pacotes': 'caixa', 'mor-extras': 'ferramenta', 'mor-pagamento': 'cartao', 'mor-contato': 'telefone',
+  };
+  const iconeUi = (nome) => svgIcone(nome, ICONES_UI);
   const secaoPorId = (id) => SECOES.find((sc) => sc.id === id);
   const ARQUIVOS = [...new Set(SECOES.map((sc) => sc.arquivo))];
 
@@ -1574,6 +1608,7 @@
   };
 
   const filtrosGrade = { busca: '', tipo: 'todas' };
+  const itensAbertos = new WeakSet(); // itens de lista abertos (os outros mostram só o resumo)
   const campoLista = (campo, obj) => {
     if (!Array.isArray(obj[campo.name])) obj[campo.name] = [];
     const lista = obj[campo.name];
@@ -1607,6 +1642,51 @@
       };
       chips.append(add);
       wrap.append(chips);
+      return wrap;
+    }
+
+    if (campo.layout === 'simples') {
+      const caixa = el('div', 'lista-simples');
+      const f = campo.fields[0];
+      lista.forEach((item, i) => {
+        const linha = el('div', 'linha-simples');
+        linha.append(el('span', 'linha-num', String(i + 1)));
+        // Caixa de uma linha que cresce sozinha quando o texto é longo.
+        const input = el('textarea');
+        input.rows = 1;
+        input.value = item[f.name] ?? '';
+        input.placeholder = `escreva o ${campo.singular}…`;
+        const crescer = () => { input.style.height = 'auto'; input.style.height = `${input.scrollHeight}px`; };
+        input.oninput = () => { item[f.name] = input.value; crescer(); marcar(); };
+        requestAnimationFrame(crescer);
+        // Enter cria um novo item logo abaixo, já pronto para digitar.
+        input.onkeydown = (ev) => {
+          if (ev.key !== 'Enter') return;
+          ev.preventDefault();
+          lista.splice(i + 1, 0, campo.novo()); marcar(); redesenhar();
+          const todos = document.querySelectorAll(`.lista-simples[data-lista="${campo.name}"] textarea`);
+          if (todos[i + 1]) todos[i + 1].focus();
+        };
+        const acoes = el('div', 'item-acoes');
+        acoes.append(
+          botaoIcone('↑', 'mover para cima', () => mover(i, -1), i === 0),
+          botaoIcone('↓', 'mover para baixo', () => mover(i, 1), i === lista.length - 1),
+          botaoIcone('×', 'remover', () => { lista.splice(i, 1); marcar(); redesenhar(); }, false, true),
+        );
+        linha.append(input, acoes);
+        caixa.append(linha);
+      });
+      caixa.dataset.lista = campo.name;
+      wrap.append(caixa);
+      const add = el('button', 'btn btn-ghost btn-sm btn-add', `+ ${campo.singular}`);
+      add.type = 'button';
+      add.onclick = () => {
+        lista.push(campo.novo()); marcar(); redesenhar();
+        const todos = document.querySelectorAll(`.lista-simples[data-lista="${campo.name}"] textarea`);
+        if (todos.length) todos[todos.length - 1].focus();
+      };
+      wrap.append(add);
+      if (f.hint) wrap.append(el('p', 'dica', f.hint));
       return wrap;
     }
 
@@ -1670,11 +1750,28 @@
         rodape.append(...acoes.childNodes);
         card.append(rodape);
       } else {
+        // Cada item abre e fecha: fechado mostra só o resumo, o que deixa a seção curta e organizada.
+        const aberto = lista.length === 1 || itensAbertos.has(item);
+        card.classList.add('dobravel');
+        card.classList.toggle('aberto', aberto);
         const topo = el('div', 'item-topo');
         const resumo = campo.resumo && campo.resumo(item);
-        topo.append(el('strong', null, resumo && String(resumo).trim() ? resumo : `${campo.singular} ${i + 1}`), acoes);
+        const titulo = el('button', 'item-abrir');
+        titulo.type = 'button';
+        titulo.setAttribute('aria-expanded', String(aberto));
+        titulo.innerHTML = `<span class="ic-ui seta">${iconeUi('seta')}</span>`;
+        titulo.append(el('strong', null, resumo && String(resumo).trim() ? resumo : `${campo.singular} ${i + 1}`));
+        titulo.onclick = () => {
+          if (itensAbertos.has(item)) itensAbertos.delete(item); else itensAbertos.add(item);
+          redesenhar();
+        };
+        topo.append(titulo, acoes);
         card.append(topo);
-        campo.fields.forEach((f) => card.append(renderizarCampo(f, item)));
+        if (aberto) {
+          const corpo = el('div', 'item-corpo');
+          campo.fields.forEach((f) => corpo.append(renderizarCampo(f, item)));
+          card.append(corpo);
+        }
       }
       container.append(card);
     });
@@ -1720,7 +1817,7 @@
     } else {
       const b = el('button', 'btn btn-ghost btn-sm', `+ adicionar ${campo.singular}`);
       b.type = 'button';
-      b.onclick = () => { lista.push(campo.novo()); marcar(); redesenhar(); };
+      b.onclick = () => { const novo = campo.novo(); if (novo && typeof novo === 'object') itensAbertos.add(novo); lista.push(novo); marcar(); redesenhar(); };
       adicionar.append(b);
     }
     wrap.append(adicionar);
@@ -1798,10 +1895,27 @@
     if (!FOLHAS[aba]) return;
     if (evento === 'pronto') ev.source.postMessage(pacoteFolha(aba), location.origin);
     if (evento === 'altura') {
-      folhas.forEach((f) => { if (f.quadro.contentWindow === ev.source) { f.altura = ev.data.altura; ajustarFolha(f); } });
+      folhas.forEach((f) => {
+        if (f.quadro.contentWindow !== ev.source) return;
+        const primeira = !f.altura;
+        f.altura = ev.data.altura; ajustarFolha(f);
+        if (primeira && f === lateral) rolarFolha(f);
+      });
     }
   });
   window.addEventListener('resize', () => { folhas.forEach(ajustarFolha); atualizarLateral(); ajustarSite(); });
+
+  // Leva a prévia ao lado até a parte da folha que está sendo editada.
+  const rolarFolha = (f) => {
+    const secao = secaoPorId(secaoAtual);
+    if (!f || !secao || !secao.ancora || !secao.ancora.startsWith('#')) return;
+    const doc = f.quadro.contentDocument;
+    const alvo = doc && doc.querySelector(secao.ancora);
+    if (!alvo) return;
+    const escala = Math.min(1, (f.palco.clientWidth - 2) / FOLHAS[f.aba].largura);
+    const topo = (alvo.getBoundingClientRect().top + (doc.documentElement.scrollTop || 0)) * escala;
+    f.palco.scrollTo({ top: Math.max(0, topo - 16) });
+  };
 
   const abrirPrevia = () => {
     $('#modal-previa').hidden = false;
@@ -1899,7 +2013,7 @@
       if (!lateral || lateral.aba !== secao.aba || !$('#lateral-palco').contains(lateral.folha)) {
         if (lateral) folhas.delete(lateral);
         lateral = criarFolha($('#lateral-palco'), secao.aba);
-      } else ajustarFolha(lateral);
+      } else { ajustarFolha(lateral); rolarFolha(lateral); }
     } else {
       if (lateral) { folhas.delete(lateral); lateral = null; }
       if (!lateralSite || lateralSite.modelo !== modelo || !$('#lateral-palco').contains(lateralSite.folha)) criarSite(secao.ancora, modelo);
@@ -1982,7 +2096,9 @@
     const abas = $('#abas');
     abas.innerHTML = '';
     ABAS.forEach(([aba, nome]) => {
-      const b = el('button', aba === atual.aba ? 'ativo' : '', nome);
+      const b = el('button', aba === atual.aba ? 'ativo' : '');
+      b.innerHTML = `<span class="ic-ui">${iconeUi(ICONE_ABA[aba])}</span>`;
+      b.append(nome);
       b.type = 'button';
       if (SECOES.some((sc) => sc.aba === aba && alterados.has(sc.arquivo))) {
         const p = el('span', 'ponto');
@@ -1995,7 +2111,9 @@
     const menu = $('#menu');
     menu.innerHTML = '';
     SECOES.filter((sc) => sc.aba === atual.aba).forEach((sc) => {
-      const a = el('a', sc.id === secaoAtual ? 'ativo' : '', sc.nome);
+      const a = el('a', sc.id === secaoAtual ? 'ativo' : '');
+      a.innerHTML = `<span class="ic-ui">${iconeUi(ICONE_SECAO[sc.id] || 'lista')}</span>`;
+      a.append(sc.nome);
       a.href = `#${sc.id}`;
       if (sc.aba === 'site' && alterados.has(sc.arquivo)) {
         const p = el('span', 'ponto');
