@@ -8,3 +8,6 @@ exclude:
   - package-lock.json
   - node_modules
   - README.md
+  - CLAUDE.md
+  - COMO-CONTINUAR.md
+  - previas
